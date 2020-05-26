@@ -87,10 +87,6 @@ public class AccountServiceImpl implements AccountService {
       throw new BadRequestException("Account doesn't existed");
     }
 
-    if (!StringUtils.isEmpty(request.getPassword())) {
-      account.setPassword(passwordEncoder.encode(request.getPassword()));
-    }
-
     account.setFullName(request.getFullName());
     return accountRepository.save(account);
   }
@@ -115,9 +111,7 @@ public class AccountServiceImpl implements AccountService {
     if (!StringUtils.isEmpty(request.getFullName())) {
       account.setFullName(request.getFullName());
     }
-    if (!StringUtils.isEmpty(request.getPassword())) {
-      account.setPassword(passwordEncoder.encode(request.getPassword()));
-    }
+
     return accountRepository.save(account);
   }
 
@@ -182,10 +176,6 @@ public class AccountServiceImpl implements AccountService {
     account.setFullName(request.getFullName());
     account.setActive(true);
     account.setAllowInvite(false);
-
-    if (!StringUtils.isEmpty(request.getPassword())) {
-      account.setPassword(passwordEncoder.encode(request.getPassword()));
-    }
 
     if (role.getId() == RoleEnum.USER.getId()) {
 
