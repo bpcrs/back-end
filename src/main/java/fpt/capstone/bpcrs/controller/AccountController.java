@@ -11,7 +11,6 @@ import fpt.capstone.bpcrs.exception.BadRequestException;
 import fpt.capstone.bpcrs.model.Account;
 import fpt.capstone.bpcrs.payload.*;
 import fpt.capstone.bpcrs.service.AccountService;
-import fpt.capstone.bpcrs.service.RedisService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -19,6 +18,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.*;
@@ -39,8 +39,6 @@ public class AccountController {
 
   @Autowired private GoogleIdTokenVerifier googleIdTokenVerifier;
 
-  @Autowired private RedisService redisService;
-
   @GetMapping("/account")
   public ResponseEntity<?> getAccounts() {
     List<Account> accounts = accountService.getAccounts();
@@ -50,7 +48,7 @@ public class AccountController {
   }
 
   @PostMapping("/account")
-  public ResponseEntity<?> createAccount(@RequestBody AccountRequest request) {
+  public ResponseEntity<?> createAccount(@Valid @RequestBody AccountRequest request) {
     try {
       Account account = accountService.createAccount(request);
       AccountResponse response = AccountResponse.setResponse(account);
@@ -113,7 +111,7 @@ public class AccountController {
   }
 
   @PostMapping("/google/login")
-  public ResponseEntity<?> loginByGoogle(@RequestBody StringWrapperRequest wrapper) {
+  public ResponseEntity<?> loginByGoogle(@Valid @RequestBody StringWrapperRequest wrapper) {
     try {
 
       String token = wrapper.getString();
@@ -134,7 +132,6 @@ public class AccountController {
       Account account = accountService.setGoogleAccount(email, name, avatar);
       AccountResponse response = AccountResponse.setResponse(account);
       String jwt = tokenProvider.generateToken(response);
-      redisService.setLoginToken(account.getId().toString(), jwt);
       return ResponseEntity.ok(
           new ApiResponse<>(true, "Logged successfully", new LoginResponse(jwt)));
     } catch (BadRequestException | GeneralSecurityException | IOException ex) {

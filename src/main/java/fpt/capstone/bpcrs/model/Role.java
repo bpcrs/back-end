@@ -27,8 +27,7 @@ public class Role {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Integer id;
 
-  @Column
-  private String name;
+  @Column private String name;
 
   @Column(columnDefinition = "TINYINT(1) default 1")
   private boolean active;
