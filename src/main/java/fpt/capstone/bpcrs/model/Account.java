@@ -11,6 +11,7 @@ import org.hibernate.annotations.Type;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
+import java.util.Collection;
 import java.util.UUID;
 
 @Entity
@@ -20,20 +21,17 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
-@EqualsAndHashCode(of = "id", callSuper = false)
-@ToString(of = {"id"})
 @JsonIgnoreProperties(
     value = {"createdDate", "lastModifiedDate"},
     allowGetters = true)
-@JsonIdentityInfo(generator = ObjectIdGenerators.UUIDGenerator.class, property = "id")
 public class Account extends Auditing {
 
-  @Id
-  @GeneratedValue(generator = "uuid2")
-  @GenericGenerator(name = "uuid2", strategy = "uuid2")
-  @Column
-  @Type(type = "uuid-char")
-  private UUID id;
+//  @Id
+//  @GeneratedValue(generator = "uuid2")
+//  @GenericGenerator(name = "uuid2", strategy = "uuid2")
+//  @Column
+//  @Type(type = "uuid-char")
+//  private UUID id;
 
   @Column(unique = true, nullable = false, updatable = false)
   private String email;
@@ -59,5 +57,7 @@ public class Account extends Auditing {
   @Enumerated(EnumType.STRING)
   private AuthProvider provider;
 
+  @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
+  private Collection<Car> cars;
 
 }
