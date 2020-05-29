@@ -4,17 +4,12 @@ import fpt.capstone.bpcrs.component.Paging;
 import fpt.capstone.bpcrs.model.Car;
 import fpt.capstone.bpcrs.repository.CarRepository;
 import fpt.capstone.bpcrs.service.CarService;
-import lombok.Builder;
-import lombok.experimental.SuperBuilder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -45,6 +40,6 @@ public class CarServiceImpl implements CarService {
     @Override
     public Car getCarById(int id) {
         Optional<Car> car = carRepository.findById(id);
-        return car.isPresent() ? car.get() : null;
+        return car.orElse(null);
     }
 }

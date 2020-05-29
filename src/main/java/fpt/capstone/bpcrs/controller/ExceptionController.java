@@ -1,5 +1,6 @@
 package fpt.capstone.bpcrs.controller;
 
+import com.google.api.Http;
 import fpt.capstone.bpcrs.payload.ApiError;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -9,7 +10,9 @@ import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.util.ArrayList;
@@ -33,9 +36,9 @@ public class ExceptionController  extends ResponseEntityExceptionHandler {
         }
 
         ApiError apiError =
-                new ApiError(HttpStatus.BAD_REQUEST, ex.getLocalizedMessage(), errors);
+                new ApiError(ex.getLocalizedMessage(),errors);
         return handleExceptionInternal(
-                ex, apiError, headers, apiError.getStatus(), request);
+                ex, apiError, headers, HttpStatus.BAD_REQUEST, request);
     }
 
     @Override
@@ -45,8 +48,19 @@ public class ExceptionController  extends ResponseEntityExceptionHandler {
         String error = ex.getParameterName() + " parameter is missing";
 
         ApiError apiError =
-                new ApiError(HttpStatus.BAD_REQUEST, ex.getLocalizedMessage(), error);
-        return new ResponseEntity<Object>(
-                apiError, new HttpHeaders(), apiError.getStatus());
+                new ApiError(ex.getLocalizedMessage(), error);
+        return new ResponseEntity<>(apiError, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler({ MethodArgumentTypeMismatchException.class })
+    public ResponseEntity<Object> handleMethodArgumentTypeMismatch(
+            MethodArgumentTypeMismatchException ex, WebRequest request) {
+        String error =
+                ex.getName() + " should be of type " + ex.getRequiredType().getName();
+
+        ApiError apiError =
+                new ApiError(ex.getLocalizedMessage(), error);
+        return new ResponseEntity<>(
+                apiError, HttpStatus.BAD_REQUEST);
     }
 }

@@ -20,8 +20,7 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint, Se
   @Override
   public void commence(HttpServletRequest request, HttpServletResponse response,
                        AuthenticationException authException) throws IOException {
-    HttpStatus httpStatus = HttpStatus.valueOf(HttpServletResponse.SC_UNAUTHORIZED);
-    ApiError error = new ApiError(httpStatus, "", "");
+    ApiError error = new ApiError(HttpStatus.UNAUTHORIZED.toString(),"");
     response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
     response.setContentType("application/json");
     response.getWriter().append(new ObjectMapper().writeValueAsString(error));

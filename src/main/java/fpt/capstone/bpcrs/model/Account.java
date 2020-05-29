@@ -21,6 +21,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
+@EqualsAndHashCode(callSuper = false)
 @JsonIgnoreProperties(
     value = {"createdDate", "lastModifiedDate"},
     allowGetters = true)

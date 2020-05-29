@@ -1,14 +1,13 @@
 package fpt.capstone.bpcrs.model;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonView;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.fasterxml.jackson.annotation.*;
 import fpt.capstone.bpcrs.component.Auditing;
 import fpt.capstone.bpcrs.payload.CarPayload;
 import lombok.*;
+import org.springframework.beans.factory.annotation.Value;
 
 import javax.persistence.*;
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 @Entity
@@ -17,14 +16,14 @@ import javax.validation.constraints.NotNull;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-//@EqualsAndHashCode(of = "id", callSuper = false)
+@EqualsAndHashCode(callSuper = false)
 //@ToString(of = {"id"})
 @JsonIgnoreProperties(
         value = {"createdDate", "lastModifiedDate"},
         allowGetters = true)
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "ordinal")
 public class Car extends Auditing {
-//, groups = CarPayload.Request_CreateCar.class
+
     @Column
     @NotNull
     @JsonView(CarPayload.Request_CreateCar.class)
@@ -39,26 +38,30 @@ public class Car extends Auditing {
     @JsonView(CarPayload.Request_CreateCar.class)
     private int seat;
 
-    @Column
-    private boolean isAvaliable;
+    @Column(nullable = false, columnDefinition = "TINYINT(1) default 0")
+    private boolean isAvailable;
 
     @Column
+    @NotNull
     @JsonView(CarPayload.Request_CreateCar.class)
     private String sound;
 
     @Column
+    @NotNull
     @JsonView(CarPayload.Request_CreateCar.class)
     private String screen;
 
-    @Column
+    @Column(nullable = false, columnDefinition = "TINYINT(1) default 0")
     @JsonView(CarPayload.Request_CreateCar.class)
     private boolean autoDriver;
 
     @Column
+    @NotNull
     @JsonView(CarPayload.Request_CreateCar.class)
     private String plateNum;
 
     @Column
+    @NotNull
     @JsonView(CarPayload.Request_CreateCar.class)
     private String registrationNum;
 
