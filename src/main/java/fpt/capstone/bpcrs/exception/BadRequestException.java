@@ -8,7 +8,6 @@ public class BadRequestException extends RuntimeException {
 
   public BadRequestException(String message) {
     super(message);
-    System.out.println(message);
   }
 
   public BadRequestException(String message, Throwable cause) {

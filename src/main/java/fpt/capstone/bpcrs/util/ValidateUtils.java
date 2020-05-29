@@ -16,7 +16,6 @@ public class ValidateUtils {
         for (ConstraintViolation<Object> violation : violations) {
             errors.add(violation.getMessage());
         }
-//        violations.toArray()
         return errors;
     }
 }

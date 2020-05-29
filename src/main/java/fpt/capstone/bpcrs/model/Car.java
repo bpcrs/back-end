@@ -24,14 +24,14 @@ import javax.validation.constraints.NotNull;
         allowGetters = true)
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "ordinal")
 public class Car extends Auditing {
-
+//, groups = CarPayload.Request_CreateCar.class
     @Column
-    @NotNull(message = "[name] parameter is missing", groups = CarPayload.Request_CreateCar.class)
+    @NotNull
     @JsonView(CarPayload.Request_CreateCar.class)
     private String name;
 
     @Column
-    @NotNull(message = "[model] parameter is missing", groups = CarPayload.Request_CreateCar.class)
+    @NotNull
     @JsonView(CarPayload.Request_CreateCar.class)
     private String model;
 
