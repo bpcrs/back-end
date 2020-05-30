@@ -27,8 +27,11 @@ public class CarController {
     private BrandService brandService;
 
     @GetMapping
-    public ResponseEntity<?> getCars(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "10") int size) {
-        List<Car> cars = carService.getAllCarPaging(page, size);
+    public ResponseEntity<?> getCars(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "10") int size, @RequestParam(required = false) String search) {
+//        if (search != null){
+//
+//        }
+        List<Car> cars = carService.getAllCarPaging(page, size, search);
         return ResponseEntity.ok(new ApiResponse<>(true, cars));
     }
 
@@ -55,7 +58,8 @@ public class CarController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateCar(@PathVariable int id, @RequestBody Car updateCar){
+    public ResponseEntity<?> updateCar(@PathVariable int id, @JsonView(CarPayload.Request_CreateCar_Validate.class) @RequestBody CarPayload.RequestCreateCar request){
+
         return null;
     }
 

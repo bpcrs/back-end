@@ -1,13 +1,11 @@
 package fpt.capstone.bpcrs.service;
 
 import fpt.capstone.bpcrs.model.Car;
-import fpt.capstone.bpcrs.repository.CarRepository;
-import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
 public interface CarService {
-    List<Car> getAllCarPaging(int page, int size);
+    List<Car> getAllCarPaging(int page, int size, String search);
 
     Car createCar(Car newCar);
 
