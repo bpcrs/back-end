@@ -3,16 +3,15 @@ package fpt.capstone.bpcrs.controller;
 import com.fasterxml.jackson.annotation.JsonView;
 import fpt.capstone.bpcrs.model.Brand;
 import fpt.capstone.bpcrs.model.Car;
+import fpt.capstone.bpcrs.payload.ApiError;
 import fpt.capstone.bpcrs.payload.ApiResponse;
 import fpt.capstone.bpcrs.payload.CarPayload;
+import fpt.capstone.bpcrs.service.BrandService;
 import fpt.capstone.bpcrs.service.CarService;
-import fpt.capstone.bpcrs.util.ValidateUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -24,6 +23,8 @@ import java.util.List;
 public class CarController {
     @Autowired
     private CarService carService;
+    @Autowired
+    private BrandService brandService;
 
     @GetMapping
     public ResponseEntity<?> getCars(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "10") int size) {
@@ -32,10 +33,16 @@ public class CarController {
     }
 
     @PostMapping
-    public ResponseEntity<?> createCar(@JsonView(CarPayload.Request_CreateCar.class) @Valid @RequestBody CarPayload.Request newCar) {
-//        Car cars = carService.createCar(newCar);
-//        return ResponseEntity.ok(new ApiResponse<>(true, cars));
-        return ResponseEntity.ok(new ApiResponse<>(true, newCar));
+    public ResponseEntity<?> createCar(@JsonView(CarPayload.Request_CreateCar_Validate.class) @Valid @RequestBody CarPayload.RequestCreateCar request) {
+        Brand brand = brandService.getBrandById(request.getBrandId());
+        if (brand == null){
+            return ResponseEntity.ok(new ApiError("Brand with id=" + request.getBrandId() + " not found", ""));
+        }
+        Car newCar = Car.builder().brand(brand).model(request.getModel())
+                .name(request.getName()).plateNum(request.getPlateNum()).registrationNum(request.getRegistrationNum())
+                .screen(request.getScreen()).seat(request.getSeat()).sound(request.getSound()).build();
+        Car car = carService.createCar(newCar);
+        return ResponseEntity.ok(new ApiResponse<>(true, car));
     }
 
     @GetMapping("/{id}")

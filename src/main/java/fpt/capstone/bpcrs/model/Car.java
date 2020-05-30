@@ -4,10 +4,8 @@ import com.fasterxml.jackson.annotation.*;
 import fpt.capstone.bpcrs.component.Auditing;
 import fpt.capstone.bpcrs.payload.CarPayload;
 import lombok.*;
-import org.springframework.beans.factory.annotation.Value;
 
 import javax.persistence.*;
-import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 @Entity
@@ -26,16 +24,16 @@ public class Car extends Auditing {
 
     @Column
     @NotNull
-    @JsonView(CarPayload.Request_CreateCar.class)
+    @JsonView(CarPayload.Request_CreateCar_Validate.class)
     private String name;
 
     @Column
     @NotNull
-    @JsonView(CarPayload.Request_CreateCar.class)
+    @JsonView(CarPayload.Request_CreateCar_Validate.class)
     private String model;
 
     @Column
-    @JsonView(CarPayload.Request_CreateCar.class)
+    @JsonView(CarPayload.Request_CreateCar_Validate.class)
     private int seat;
 
     @Column(nullable = false, columnDefinition = "TINYINT(1) default 0")
@@ -43,26 +41,26 @@ public class Car extends Auditing {
 
     @Column
     @NotNull
-    @JsonView(CarPayload.Request_CreateCar.class)
+    @JsonView(CarPayload.Request_CreateCar_Validate.class)
     private String sound;
 
     @Column
     @NotNull
-    @JsonView(CarPayload.Request_CreateCar.class)
+    @JsonView(CarPayload.Request_CreateCar_Validate.class)
     private String screen;
 
     @Column(nullable = false, columnDefinition = "TINYINT(1) default 0")
-    @JsonView(CarPayload.Request_CreateCar.class)
+    @JsonView(CarPayload.Request_CreateCar_Validate.class)
     private boolean autoDriver;
 
     @Column
     @NotNull
-    @JsonView(CarPayload.Request_CreateCar.class)
+    @JsonView(CarPayload.Request_CreateCar_Validate.class)
     private String plateNum;
 
     @Column
     @NotNull
-    @JsonView(CarPayload.Request_CreateCar.class)
+    @JsonView(CarPayload.Request_CreateCar_Validate.class)
     private String registrationNum;
 
     @ManyToOne

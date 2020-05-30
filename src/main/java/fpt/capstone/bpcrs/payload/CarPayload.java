@@ -11,7 +11,7 @@ import javax.validation.constraints.Min;
 
 @NoArgsConstructor
 public class CarPayload {
-    public interface Request_CreateCar{
+    public interface Request_CreateCar_Validate {
 
     }
 
@@ -19,10 +19,11 @@ public class CarPayload {
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class Request extends Car {
+    public static class RequestCreateCar extends Car {
         @Min(1)
-        @JsonView(CarPayload.Request_CreateCar.class)
-        private int brand_id;
+        @JsonView(Request_CreateCar_Validate.class)
+        private int brandId;
+
     }
 
 }
