@@ -9,7 +9,7 @@ public interface CarService {
 
     Car createCar(Car newCar);
 
-    Car updateCar(Car updateCar);
+    Car updateCar(Car updateCar, int id);
 
     Car getCarById(int id);
 

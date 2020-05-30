@@ -70,4 +70,10 @@ public class Car extends Auditing {
     @ManyToOne
     @JoinColumn(name = "brand_id")
     private Brand brand;
+
+    public Car buildCar(){
+        return Car.builder().brand(brand).model(model)
+                .name(name).plateNum(plateNum).registrationNum(registrationNum)
+                .screen(screen).seat(seat).sound(sound).build();
+    }
 }

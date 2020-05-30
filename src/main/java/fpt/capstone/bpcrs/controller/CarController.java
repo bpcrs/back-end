@@ -38,10 +38,8 @@ public class CarController {
         if (brand == null){
             return ResponseEntity.ok(new ApiError("Brand with id=" + request.getBrandId() + " not found", ""));
         }
-        Car newCar = Car.builder().brand(brand).model(request.getModel())
-                .name(request.getName()).plateNum(request.getPlateNum()).registrationNum(request.getRegistrationNum())
-                .screen(request.getScreen()).seat(request.getSeat()).sound(request.getSound()).build();
-        Car car = carService.createCar(newCar);
+        request.setBrand(brand);
+        Car car = carService.createCar(request.buildCar());
         return ResponseEntity.ok(new ApiResponse<>(true, car));
     }
 
@@ -56,8 +54,17 @@ public class CarController {
 
     @PutMapping("/{id}")
     public ResponseEntity<?> updateCar(@PathVariable int id, @JsonView(CarPayload.Request_CreateCar_Validate.class) @RequestBody CarPayload.RequestCreateCar request){
-
-        return null;
+        Brand brand = brandService.getBrandById(request.getBrandId());
+        if (brand == null){
+            return new ResponseEntity(new ApiError("Brand with id=" + request.getBrandId() + " not found", ""), HttpStatus.BAD_REQUEST);
+        }
+        request.setBrand(brand);
+        boolean isExsited = carService.getCarById(id) != null;
+        if (!isExsited){
+            return new ResponseEntity(new ApiError("Car with id=" + request.getBrandId() + " not found", ""), HttpStatus.BAD_REQUEST);
+        }
+        Car car = carService.updateCar(request.buildCar(), id);
+        return ResponseEntity.ok(new ApiResponse<>(true, car));
     }
 
 }

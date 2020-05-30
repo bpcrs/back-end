@@ -5,6 +5,7 @@ import fpt.capstone.bpcrs.model.Car;
 import fpt.capstone.bpcrs.repository.CarRepository;
 import fpt.capstone.bpcrs.service.CarService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
@@ -33,8 +34,10 @@ public class CarServiceImpl implements CarService {
     }
 
     @Override
-    public Car updateCar(Car updateCar) {
-        return null;
+    public Car updateCar(Car updateCar, int id) {
+        Car existed = carRepository.getOne(id);
+        BeanUtils.copyProperties(updateCar,existed);
+        return carRepository.save(existed);
     }
 
     @Override
