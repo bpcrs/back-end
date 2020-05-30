@@ -9,8 +9,10 @@ import fpt.capstone.bpcrs.service.CarService;
 import fpt.capstone.bpcrs.util.ValidateUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -30,9 +32,10 @@ public class CarController {
     }
 
     @PostMapping
-    public ResponseEntity<?> createCar( @JsonView(CarPayload.Request_CreateCar.class) @Valid @RequestBody Car newCar) {
-        Car cars = carService.createCar(newCar);
-        return ResponseEntity.ok(new ApiResponse<>(true, cars));
+    public ResponseEntity<?> createCar(@JsonView(CarPayload.Request_CreateCar.class) @Valid @RequestBody CarPayload.Request newCar) {
+//        Car cars = carService.createCar(newCar);
+//        return ResponseEntity.ok(new ApiResponse<>(true, cars));
+        return ResponseEntity.ok(new ApiResponse<>(true, newCar));
     }
 
     @GetMapping("/{id}")
