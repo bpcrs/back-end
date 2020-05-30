@@ -27,10 +27,7 @@ public class CarController {
     private BrandService brandService;
 
     @GetMapping
-    public ResponseEntity<?> getCars(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "10") int size, @RequestParam(required = false) String search) {
-//        if (search != null){
-//
-//        }
+    public ResponseEntity<?> getCars(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "10") int size, @RequestParam(required = false, defaultValue = "") String search) {
         List<Car> cars = carService.getAllCarPaging(page, size, search);
         return ResponseEntity.ok(new ApiResponse<>(true, cars));
     }
