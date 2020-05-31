@@ -30,9 +30,7 @@ public class AccountResponse {
         .fullName(account.getFullName())
         .email(account.getEmail())
         .imageUrl(account.getImageUrl())
-        .provider(account.getProvider().name())
         .active(account.isActive())
-        .allowInvite(account.isAllowInvite())
         .roleId(account.getRole().getId())
         .roleName(account.getRole().getName())
         .build();
