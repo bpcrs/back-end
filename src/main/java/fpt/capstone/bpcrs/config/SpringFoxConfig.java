@@ -38,7 +38,7 @@ public class SpringFoxConfig {
 
   private ApiInfo getApiInfo() {
     return new ApiInfo(
-        "Email Template Builder System",
+        "Blockchain-based Personal Car Renting System",
         "FPT University Capstone project",
         "0.1",
         "TERMS OF SERVICE URL",
