@@ -49,35 +49,12 @@ public class  AccountController {
     return ResponseEntity.ok(new ApiResponse<>(true, "", response));
   }
 
-  @PostMapping
-  public ResponseEntity<?> createAccount(@Valid @RequestBody AccountRequest request) {
-    try {
-      Account account = accountService.createAccount(request);
-      AccountResponse response = AccountResponse.setResponse(account);
-      return ResponseEntity.ok(new ApiResponse<>(true, "Account created", response));
-    } catch (BadRequestException ex) {
-      return ResponseEntity.badRequest().body(new ApiResponse<>(false, ex.getMessage(), null));
-    }
-  }
-
   @PutMapping("/confirm")
   public ResponseEntity<?> confirmAccount(@RequestParam("token") String token) {
     try {
       AccountResponse accountResponse = tokenProvider.getTokenValue(token, AccountResponse.class);
       return ResponseEntity.ok(new ApiResponse<>(true, "", accountResponse));
     } catch (BadRequestException | IOException ex) {
-      return ResponseEntity.badRequest().body(new ApiResponse<>(false, ex.getMessage(), null));
-    }
-  }
-
-  @PutMapping("/{id}")
-  public ResponseEntity<?> updateAccount(
-      @PathVariable("id") int id, @RequestBody AccountRequest request) {
-    try {
-      Account account = accountService.updateAccount(id, request);
-      AccountResponse response = AccountResponse.setResponse(account);
-      return ResponseEntity.ok(new ApiResponse<>(true, "Account updated", response));
-    } catch (BadRequestException ex) {
       return ResponseEntity.badRequest().body(new ApiResponse<>(false, ex.getMessage(), null));
     }
   }

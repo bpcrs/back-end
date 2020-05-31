@@ -35,7 +35,7 @@ public class AccountServiceImpl implements AccountService {
       throw new BadRequestException("Account doesn't existed");
     }
     Account account = accountRepository.findById(id).get();
-    
+
     account.setActive(active);
     return accountRepository.save(account);
   }

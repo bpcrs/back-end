@@ -35,14 +35,4 @@ public class Account extends Auditing {
 
   @ManyToOne(optional = false)
   private Role role;
-<<<<<<< Updated upstream
-
-  @Enumerated(EnumType.STRING)
-  private AuthProvider provider;
-
-  @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
-  private Collection<Car> cars;
-
-=======
->>>>>>> Stashed changes
 }
