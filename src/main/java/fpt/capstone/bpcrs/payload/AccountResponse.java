@@ -14,7 +14,7 @@ import java.util.UUID;
 @NoArgsConstructor
 public class AccountResponse {
 
-  private UUID id;
+  private int id;
   private String fullName;
   private String email;
   private String imageUrl;

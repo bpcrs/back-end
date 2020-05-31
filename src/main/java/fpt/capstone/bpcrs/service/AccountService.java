@@ -13,7 +13,7 @@ public interface AccountService {
 
   List<Account> getAdminAccounts();
 
-  Account getAccount(UUID uuid);
+  Account getAccount(int uuid);
 
   Account getAccountByEmail(String email);
 
@@ -21,14 +21,14 @@ public interface AccountService {
 
   Account createAccount(AccountRequest request);
 
-  Account updateAccount(UUID uuid, AccountRequest request);
+  Account updateAccount(int uuid, AccountRequest request);
 
-  Account updateProfile(UUID uuid, AccountRequest request) throws IOException;
+  Account updateProfile(int uuid, AccountRequest request) throws IOException;
 
-  Account updateAccountStatus(UUID uuid, Boolean active);
+  Account updateAccountStatus(int uuid, Boolean active);
 
   Account setGoogleAccount(String email, String name, String avatar);
 
-  void confirmAccount(UUID uuid);
+  void confirmAccount(int uuid);
 
 }

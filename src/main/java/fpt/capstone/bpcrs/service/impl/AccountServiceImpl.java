@@ -40,7 +40,7 @@ public class AccountServiceImpl implements AccountService {
   }
 
   @Override
-  public Account getAccount(UUID uuid) {
+  public Account getAccount(int uuid) {
     return accountRepository.findById(uuid).orElse(null);
   }
 
@@ -80,7 +80,7 @@ public class AccountServiceImpl implements AccountService {
   }
 
   @Override
-  public Account updateAccount(UUID uuid, AccountRequest request) {
+  public Account updateAccount(int uuid, AccountRequest request) {
 
     Account account = getAccount(uuid);
     if (account == null) {
@@ -92,8 +92,7 @@ public class AccountServiceImpl implements AccountService {
   }
 
   @Override
-  public Account updateProfile(UUID uuid, AccountRequest request) throws IOException {
-
+  public Account updateProfile(int uuid, AccountRequest request) throws IOException {
     Account account = getAccount(uuid);
     if (account == null || account.getRole().getId().equals(RoleEnum.ADMINISTRATOR.getId())) {
       throw new BadRequestException("Account doesn't existed");
@@ -116,7 +115,7 @@ public class AccountServiceImpl implements AccountService {
   }
 
   @Override
-  public Account updateAccountStatus(UUID uuid, Boolean active) {
+  public Account updateAccountStatus(int uuid, Boolean active) {
     Account account = getAccount(uuid);
     if (account == null) {
       throw new BadRequestException("Account doesn't existed");
@@ -159,7 +158,7 @@ public class AccountServiceImpl implements AccountService {
   }
 
   @Override
-  public void confirmAccount(UUID uuid) {
+  public void confirmAccount(int uuid) {
     Account account = getAccount(uuid);
     if (account == null) {
       throw new BadRequestException("Account doesn't existed");

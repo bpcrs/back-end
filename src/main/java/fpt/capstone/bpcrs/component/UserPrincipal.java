@@ -11,7 +11,7 @@ import java.util.*;
 @Data
 public class UserPrincipal implements UserDetails {
 
-  private UUID id;
+  private int id;
   private String fullName;
   private String email;
   private boolean active;
@@ -21,7 +21,7 @@ public class UserPrincipal implements UserDetails {
   private Map<String, Object> attributes;
 
   public UserPrincipal(
-      UUID id,
+      int id,
       String fullName,
       String email,
       Boolean active,

@@ -28,7 +28,7 @@ public class CustomUserDetailsServiceImpl implements CustomUserDetailsService, U
   }
 
   @Override
-  public UserDetails loadUserFromID(UUID id) {
+  public UserDetails loadUserFromID(int id) {
     Account account = accountRepository.findById(id)
         .orElseThrow(() -> new UsernameNotFoundException("User not found\""));
     return UserPrincipal.create(account);

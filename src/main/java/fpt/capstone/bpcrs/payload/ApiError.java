@@ -12,19 +12,22 @@ import java.util.List;
 
 @Data
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ApiError {
 
-  private HttpStatus status;
+  private final boolean success = false;
   private String message;
   private List<String> errors;
 
-  public ApiError(final HttpStatus status, final String message, final String error) {
-    super();
-    this.status = status;
+
+  public ApiError(final String message, final String error) {
     this.message = message;
     errors = Collections.singletonList(error);
+  }
+
+  public ApiError(String message, List<String> errors) {
+    this.message = message;
+    this.errors = errors;
   }
 }

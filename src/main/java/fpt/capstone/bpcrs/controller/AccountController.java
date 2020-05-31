@@ -70,7 +70,7 @@ public class AccountController {
 
   @PutMapping("/account/{uuid}")
   public ResponseEntity<?> updateAccount(
-      @PathVariable("uuid") UUID id, @RequestBody AccountRequest request) {
+      @PathVariable("uuid") int id, @RequestBody AccountRequest request) {
     try {
       Account account = accountService.updateAccount(id, request);
       AccountResponse response = AccountResponse.setResponse(account);
@@ -82,7 +82,7 @@ public class AccountController {
 
   @PatchMapping("/account/{uuid}")
   public ResponseEntity<?> updateAccountStatus(
-      @PathVariable("uuid") UUID id, @RequestParam("active") boolean active) {
+      @PathVariable("uuid") int id, @RequestParam("active") boolean active) {
     try {
       Account account = accountService.updateAccountStatus(id, active);
       AccountResponse response = AccountResponse.setResponse(account);

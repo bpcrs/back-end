@@ -6,5 +6,5 @@ import java.util.UUID;
 
 public interface CustomUserDetailsService {
 
-  UserDetails loadUserFromID(UUID id);
+  UserDetails loadUserFromID(int id);
 }
