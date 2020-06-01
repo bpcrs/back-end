@@ -14,4 +14,12 @@ public class AccountPayload {
     public static class GoogleRequestLogin {
         private String token;
     }
+
+    @Data
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class LoginResponse {
+        private String accessToken;
+    }
 }

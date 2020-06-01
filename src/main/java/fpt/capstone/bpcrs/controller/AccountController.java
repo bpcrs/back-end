@@ -138,7 +138,7 @@ public class AccountController {
             AccountResponse response = AccountResponse.setResponse(account);
             String jwt = tokenProvider.generateToken(response);
             return ResponseEntity.ok(
-                    new ApiResponse<>(true, "Logged successfully", new LoginResponse(jwt)));
+                    new ApiResponse<>(true, "Logged successfully", new AccountPayload.LoginResponse(jwt)));
         } catch (BadRequestException | GeneralSecurityException | IOException ex) {
             return ResponseEntity.badRequest().body(new ApiResponse<>(false, ex.getMessage(), null));
         }
