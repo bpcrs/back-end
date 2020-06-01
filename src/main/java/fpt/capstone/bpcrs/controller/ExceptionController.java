@@ -2,6 +2,7 @@ package fpt.capstone.bpcrs.controller;
 
 import com.google.api.Http;
 import fpt.capstone.bpcrs.payload.ApiError;
+import io.swagger.annotations.Api;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
