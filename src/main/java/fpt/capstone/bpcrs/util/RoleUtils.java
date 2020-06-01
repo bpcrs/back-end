@@ -10,6 +10,6 @@ public class RoleUtils {
       return false;
     }
     return auth.getAuthorities().stream()
-        .anyMatch(r -> r.getAuthority().contains(RoleEnum.ADMINISTRATOR.getName()));
+        .anyMatch(r -> r.getAuthority().contains(RoleEnum.ADMINISTRATOR.name()));
   }
 }

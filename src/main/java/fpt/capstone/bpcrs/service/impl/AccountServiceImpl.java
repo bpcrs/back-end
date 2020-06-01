@@ -8,6 +8,7 @@ import fpt.capstone.bpcrs.model.Account;
 import fpt.capstone.bpcrs.model.Role;
 import fpt.capstone.bpcrs.payload.AccountRequest;
 import fpt.capstone.bpcrs.repository.AccountRepository;
+import fpt.capstone.bpcrs.repository.RoleRepository;
 import fpt.capstone.bpcrs.service.AccountService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,9 @@ public class AccountServiceImpl implements AccountService {
   private AccountRepository accountRepository;
 
   @Autowired
+  private RoleRepository roleRepository;
+
+  @Autowired
   private PasswordEncoder passwordEncoder;
 
   @Override
@@ -36,7 +40,7 @@ public class AccountServiceImpl implements AccountService {
 
   @Override
   public List<Account> getAdminAccounts() {
-    return accountRepository.getByRole_Id(RoleEnum.ADMINISTRATOR.getId());
+    return accountRepository.getAllByRole_Name(RoleEnum.ADMINISTRATOR.name());
   }
 
   @Override
@@ -55,12 +59,7 @@ public class AccountServiceImpl implements AccountService {
     if (getAccountByEmail(request.getEmail()) != null) {
       throw new BadRequestException("Email is existed");
     }
-
-    Role role = Role.builder()
-        .id(RoleEnum.USER.getId())
-        .name(RoleEnum.USER.toString())
-        .build();
-
+    Role role = roleRepository.findByName(RoleEnum.USER.name());
     return setNewAccount(request, AuthProvider.local, null, role);
   }
 
@@ -71,10 +70,7 @@ public class AccountServiceImpl implements AccountService {
       throw new BadRequestException("Email is existed");
     }
 
-    Role role = Role.builder()
-        .id(RoleEnum.ADMINISTRATOR.getId())
-        .name(RoleEnum.ADMINISTRATOR.toString())
-        .build();
+    Role role = null;
 
     return setNewAccount(request, AuthProvider.local, null, role);
   }
@@ -94,7 +90,7 @@ public class AccountServiceImpl implements AccountService {
   @Override
   public Account updateProfile(int uuid, AccountRequest request) throws IOException {
     Account account = getAccount(uuid);
-    if (account == null || account.getRole().getId().equals(RoleEnum.ADMINISTRATOR.getId())) {
+    if (account == null || account.getRole().getName().equals(RoleEnum.ADMINISTRATOR.name())) {
       throw new BadRequestException("Account doesn't existed");
     }
 
@@ -134,10 +130,7 @@ public class AccountServiceImpl implements AccountService {
           .fullName(name)
           .build();
 
-      Role role = Role.builder()
-          .id(RoleEnum.USER.getId())
-          .name(RoleEnum.USER.toString())
-          .build();
+      Role role = roleRepository.findByName(RoleEnum.USER.name());
 
       return setNewAccount(accountRequest, AuthProvider.google, avatar, role);
 
@@ -176,7 +169,7 @@ public class AccountServiceImpl implements AccountService {
     account.setActive(true);
     account.setAllowInvite(false);
 
-    if (role.getId() == RoleEnum.USER.getId()) {
+    if (role.getName().equals(RoleEnum.USER.name())) {
 
       if (provider.equals(AuthProvider.google)) {
         account.setApproved(true);

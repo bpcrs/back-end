@@ -1,6 +1,6 @@
 package fpt.capstone.bpcrs.component;
 
-import lombok.Getter;
+import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -10,7 +10,9 @@ import java.time.LocalDateTime;
 
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
-@Getter
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public abstract class Auditing {
 
   @CreatedDate

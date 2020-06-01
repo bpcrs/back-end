@@ -11,6 +11,7 @@ import org.hibernate.annotations.Type;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.UUID;
 
@@ -27,12 +28,6 @@ import java.util.UUID;
     allowGetters = true)
 public class Account extends Auditing {
 
-//  @Id
-//  @GeneratedValue(generator = "uuid2")
-//  @GenericGenerator(name = "uuid2", strategy = "uuid2")
-//  @Column
-//  @Type(type = "uuid-char")
-//  private UUID id;
 
   @Column(unique = true, nullable = false, updatable = false)
   private String email;
