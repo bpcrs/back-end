@@ -3,26 +3,23 @@ package fpt.capstone.bpcrs.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
-import com.google.api.client.json.webtoken.JsonWebSignature;
-import fpt.capstone.bpcrs.component.AuthenticationFacade;
-import fpt.capstone.bpcrs.component.GoogleAuthenticator;
 import fpt.capstone.bpcrs.component.JwtTokenProvider;
-import fpt.capstone.bpcrs.component.UserPrincipal;
 import fpt.capstone.bpcrs.exception.BadRequestException;
 import fpt.capstone.bpcrs.model.Account;
-import fpt.capstone.bpcrs.payload.*;
+import fpt.capstone.bpcrs.payload.AccountPayload;
+import fpt.capstone.bpcrs.payload.AccountResponse;
+import fpt.capstone.bpcrs.payload.ApiResponse;
 import fpt.capstone.bpcrs.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.core.Authentication;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.*;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
@@ -36,12 +33,6 @@ public class AccountController {
 
     @Autowired
     private AccountService accountService;
-
-    @Autowired
-    private AuthenticationFacade authenticationFacade;
-
-    @Autowired
-    private GoogleAuthenticator googleAuthenticator;
 
     @Autowired
     private GoogleIdTokenVerifier googleIdTokenVerifier;
@@ -74,24 +65,6 @@ public class AccountController {
         } catch (BadRequestException ex) {
             return ResponseEntity.badRequest().body(new ApiResponse<>(false, ex.getMessage(), null));
         }
-    }
-
-    @GetMapping("/google/authorize")
-    public ResponseEntity<?> getAuthorizedURL(
-            @RequestParam String redirectUri, @RequestParam String rawId) throws Exception {
-        Authentication auth = authenticationFacade.getAuthentication();
-        UserPrincipal userPrincipal = (UserPrincipal) auth.getPrincipal();
-
-        Map<String, Object> state = new HashMap<>();
-        state.put("rawId", rawId);
-        state.put("accountId", userPrincipal.getId());
-        state.put("redirectUri", redirectUri);
-
-        String encodedState =
-                Base64.getUrlEncoder().encodeToString(JSON_MAPPER.writeValueAsString(state).getBytes());
-        String authorize = googleAuthenticator.authorize(redirectUri, encodedState);
-
-        return ResponseEntity.ok(new ApiResponse<>(true, "Authorized url", authorize));
     }
 
     @PostMapping("/google/login")
