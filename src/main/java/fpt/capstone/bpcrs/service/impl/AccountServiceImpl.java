@@ -8,6 +8,7 @@ import fpt.capstone.bpcrs.payload.AccountRequest;
 import fpt.capstone.bpcrs.repository.AccountRepository;
 import fpt.capstone.bpcrs.repository.RoleRepository;
 import fpt.capstone.bpcrs.service.AccountService;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,6 +21,9 @@ public class AccountServiceImpl implements AccountService {
 
     @Autowired
     private AccountRepository accountRepository;
+
+    @ApiModelProperty
+    private RoleRepository roleRepository;
 
     @Override
     public List<Account> getAccounts() {
@@ -47,7 +51,7 @@ public class AccountServiceImpl implements AccountService {
         Account account = getAccountByEmail(email);
         if (account == null) {
             AccountRequest accountRequest = AccountRequest.builder().email(email).fullName(name).build();
-            Role role = Role.builder().id(RoleEnum.USER.getId()).name(RoleEnum.USER.toString()).build();
+            Role role = roleRepository.findByName(RoleEnum.USER.name());
             return setNewAccount(accountRequest, avatar, role);
         }
         if (!account.isActive()) {
