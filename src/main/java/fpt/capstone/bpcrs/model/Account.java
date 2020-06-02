@@ -17,22 +17,22 @@ import java.util.Collection;
 @EntityListeners(AuditingEntityListener.class)
 @EqualsAndHashCode(callSuper = false)
 @JsonIgnoreProperties(
-    value = {"createdDate", "lastModifiedDate"},
-    allowGetters = true)
+        value = {"createdDate", "lastModifiedDate"},
+        allowGetters = true)
 public class Account extends Auditing {
 
-  @Column(unique = true, nullable = false, updatable = false)
-  private String email;
+    @Column(unique = true, nullable = false, updatable = false)
+    private String email;
 
-  @Column(columnDefinition = "text")
-  private String imageUrl;
+    @Column(columnDefinition = "text")
+    private String imageUrl;
 
-  @Column(columnDefinition = "TINYINT(1) default 1")
-  private boolean active;
+    @Column(columnDefinition = "TINYINT(1) default 1")
+    private boolean active;
 
-  @Column(nullable = false)
-  private String fullName;
+    @Column(nullable = false)
+    private String fullName;
 
-  @ManyToOne(optional = false)
-  private Role role;
+    @ManyToOne(optional = false)
+    private Role role;
 }
