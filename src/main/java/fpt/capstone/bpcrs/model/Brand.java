@@ -5,6 +5,7 @@ import fpt.capstone.bpcrs.component.Auditing;
 import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.Collection;
 import java.util.List;
 
@@ -23,14 +24,20 @@ import java.util.List;
 public class Brand extends Auditing {
 
     @Column
+    @NotNull
     private String name;
 
     @Column
+    @NotNull
     private String logoLink;
 
     @OneToMany(mappedBy = "brand", cascade = CascadeType.ALL)
     @JsonBackReference
-    private Collection<Car> car;
+    private Collection<Car> cars;
 
+    public Brand buildBrand() {
+        return Brand.builder().name(name).logoLink(logoLink).cars(cars)
+                .build();
+    }
 
 }
