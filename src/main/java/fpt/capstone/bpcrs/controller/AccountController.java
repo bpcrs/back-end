@@ -95,9 +95,9 @@ public class AccountController {
     }
 
     @PostMapping("/google/login")
-    public ResponseEntity<?> loginByGoogle(@Valid @RequestBody StringWrapperRequest wrapper) {
+    public ResponseEntity<?> loginByGoogle(@Valid @RequestBody AccountPayload.GoogleRequestLogin requestLogin) {
         try {
-            String token = wrapper.getString();
+            String token = requestLogin.getToken();
             if (StringUtils.isEmpty(token)) {
                 throw new BadCredentialsException("Invalid login information");
             }
@@ -115,7 +115,7 @@ public class AccountController {
             AccountResponse response = AccountResponse.setResponse(account);
             String jwt = tokenProvider.generateToken(response);
             return ResponseEntity.ok(
-                    new ApiResponse<>(true, "Logged successfully", new LoginResponse(jwt)));
+                    new ApiResponse<>(true, "Logged successfully", new AccountPayload.LoginResponse(jwt)));
         } catch (BadRequestException | GeneralSecurityException | IOException ex) {
             return ResponseEntity.badRequest().body(new ApiResponse<>(false, ex.getMessage(), null));
         }

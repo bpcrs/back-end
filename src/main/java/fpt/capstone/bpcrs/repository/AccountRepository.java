@@ -13,6 +13,6 @@ public interface AccountRepository extends JpaRepository<Account, Integer> {
 
   Optional<Account> getByEmail(String email);
 
-  List<Account> getByRole_Id(Integer roleId);
+  List<Account> getAllByRole_Name(String name);
 
 }

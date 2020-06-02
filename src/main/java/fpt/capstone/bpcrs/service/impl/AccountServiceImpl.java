@@ -6,6 +6,7 @@ import fpt.capstone.bpcrs.model.Account;
 import fpt.capstone.bpcrs.model.Role;
 import fpt.capstone.bpcrs.payload.AccountRequest;
 import fpt.capstone.bpcrs.repository.AccountRepository;
+import fpt.capstone.bpcrs.repository.RoleRepository;
 import fpt.capstone.bpcrs.service.AccountService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

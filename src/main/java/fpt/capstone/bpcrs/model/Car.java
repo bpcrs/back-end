@@ -3,6 +3,7 @@ package fpt.capstone.bpcrs.model;
 import com.fasterxml.jackson.annotation.*;
 import fpt.capstone.bpcrs.component.Auditing;
 import fpt.capstone.bpcrs.payload.CarPayload;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 
 import javax.persistence.*;
@@ -68,6 +69,7 @@ public class Car extends Auditing {
     private Account owner;
 
     @ManyToOne
+    @ApiModelProperty(hidden = true)
     @JoinColumn(name = "brand_id")
     private Brand brand;
 
