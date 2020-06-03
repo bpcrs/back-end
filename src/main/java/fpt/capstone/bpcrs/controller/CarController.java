@@ -36,7 +36,7 @@ public class CarController {
     public ResponseEntity<?> createCar(@JsonView(CarPayload.Request_CreateCar_Validate.class) @Valid @RequestBody CarPayload.RequestCreateCar request) {
         Brand brand = brandService.getBrandById(request.getBrandId());
         if (brand == null){
-            return ResponseEntity.ok(new ApiError("Brand with id=" + request.getBrandId() + " not found", ""));
+            return new ResponseEntity(new ApiError("Brand with id=" + request.getBrandId() + " not found",""),HttpStatus.BAD_REQUEST);
         }
         request.setBrand(brand);
         Car car = carService.createCar(request.buildCar());
