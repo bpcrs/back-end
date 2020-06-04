@@ -8,6 +8,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.Set;
 
 @Entity
 @Data
@@ -21,7 +22,7 @@ import javax.validation.constraints.NotNull;
         value = {"createdDate", "lastModifiedDate"},
         allowGetters = true)
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "ordinal")
-public class Car extends Auditing {
+public class  Car extends Auditing {
 
     @Column
     @NotNull
@@ -79,4 +80,8 @@ public class Car extends Auditing {
                 .name(name).plateNum(plateNum).registrationNum(registrationNum)
                 .screen(screen).seat(seat).sound(sound).build();
     }
+
+    @ApiModelProperty(hidden = true)
+    @OneToMany(mappedBy = "car", cascade = CascadeType.ALL)
+    private Set<Booking> car;
 }

@@ -22,7 +22,7 @@ public class AccountServiceImpl implements AccountService {
     @Autowired
     private AccountRepository accountRepository;
 
-    @ApiModelProperty
+    @Autowired
     private RoleRepository roleRepository;
 
     @Override
