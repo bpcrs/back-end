@@ -1,9 +1,6 @@
 package fpt.capstone.bpcrs.model;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonView;
-import com.fasterxml.jackson.annotation.ObjectIdGenerator;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.fasterxml.jackson.annotation.*;
 import fpt.capstone.bpcrs.component.Auditing;
 import fpt.capstone.bpcrs.payload.ReviewPayload;
 import lombok.*;
@@ -32,10 +29,12 @@ public class Review extends Auditing {
     private String comment;
 
     @ManyToOne
+    @JsonBackReference
     @JoinColumn(name = "car_id")
     private Car car;
 
     @ManyToOne
+    @JsonBackReference
     @JoinColumn(name = "account_id")
     private Account renter;
 

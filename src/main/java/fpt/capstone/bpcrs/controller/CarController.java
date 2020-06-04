@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -20,6 +21,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/car")
 @Slf4j
+@Validated
 public class CarController {
     @Autowired
     private CarService carService;
@@ -53,16 +55,17 @@ public class CarController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateCar(@PathVariable int id, @JsonView(CarPayload.Request_CreateCar_Validate.class) @RequestBody CarPayload.RequestCreateCar request){
-        Brand brand = brandService.getBrandById(request.getBrandId());
-        if (brand == null){
-            return new ResponseEntity(new ApiError("Brand with id=" + request.getBrandId() + " not found", ""), HttpStatus.BAD_REQUEST);
-        }
-        request.setBrand(brand);
-        boolean isExsited = carService.getCarById(id) != null;
-        if (!isExsited){
-            return new ResponseEntity(new ApiError("Car with id=" + request.getBrandId() + " not found", ""), HttpStatus.BAD_REQUEST);
-        }
+    public ResponseEntity<?> updateCar(@PathVariable() int id, @RequestBody CarPayload.RequestUpdateCar request){
+//        Brand brand = brandService.getBrandById(request.getBrandId());
+//        if (brand == null){
+//            return new ResponseEntity(new ApiError("Brand with id=" + request.getBrandId() + " not found", ""), HttpStatus.BAD_REQUEST);
+//        }
+//        request.setBrand(brand);
+//        boolean isExsited = carService.getCarById(id) != null;
+//        if (!isExsited){
+//            return new ResponseEntity(new ApiError("Car with id=" + request.getBrandId() + " not found", ""), HttpStatus.BAD_REQUEST);
+//        }
+//        request.setId(id);
         Car car = carService.updateCar(request.buildCar(), id);
         return ResponseEntity.ok(new ApiResponse<>(true, car));
     }

@@ -11,9 +11,7 @@ import javax.validation.constraints.Min;
 
 @NoArgsConstructor
 public class CarPayload {
-    public interface Request_CreateCar_Validate {
-
-    }
+    public interface Request_CreateCar_Validate { }
 
     @EqualsAndHashCode(callSuper = true)
     @Data
@@ -23,6 +21,12 @@ public class CarPayload {
         @Min(1)
         @JsonView(Request_CreateCar_Validate.class)
         private int brandId;
+    }
+
+    @EqualsAndHashCode(callSuper = true)
+    @Data
+    @NoArgsConstructor
+    public static class RequestUpdateCar extends Car {
 
     }
 

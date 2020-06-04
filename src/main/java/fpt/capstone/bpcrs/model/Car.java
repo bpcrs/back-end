@@ -25,7 +25,7 @@ public class Car extends Auditing {
 
     @Column
     @NotNull
-    @JsonView(CarPayload.Request_CreateCar_Validate.class)
+    @JsonView({CarPayload.Request_CreateCar_Validate.class})
     private String name;
 
     @Column

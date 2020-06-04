@@ -64,4 +64,5 @@ public class ExceptionController  extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(
                 apiError, HttpStatus.BAD_REQUEST);
     }
+
 }
