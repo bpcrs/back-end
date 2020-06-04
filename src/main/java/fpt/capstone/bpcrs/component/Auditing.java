@@ -1,5 +1,6 @@
 package fpt.capstone.bpcrs.component;
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -16,15 +17,18 @@ import java.time.LocalDateTime;
 public abstract class Auditing {
 
   @CreatedDate
+  @ApiModelProperty(hidden = true)
   @Column(name = "created_date")
   protected LocalDateTime createdDate;
 
   @LastModifiedDate
+  @ApiModelProperty(hidden = true)
   @Column(name = "last_modified_date")
   protected LocalDateTime lastModifiedDate;
 
   @Id
   @Column
+  @ApiModelProperty(hidden = true)
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Integer id;
 }

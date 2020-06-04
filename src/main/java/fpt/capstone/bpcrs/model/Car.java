@@ -66,6 +66,7 @@ public class Car extends Auditing {
 
     @ManyToOne
     @JoinColumn(name = "owner_id")
+    @ApiModelProperty(hidden = true)
     private Account owner;
 
     @ManyToOne

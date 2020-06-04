@@ -2,6 +2,7 @@ package fpt.capstone.bpcrs.model;
 
 import com.fasterxml.jackson.annotation.*;
 import fpt.capstone.bpcrs.component.Auditing;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 
 import javax.persistence.*;
@@ -33,6 +34,7 @@ public class Brand extends Auditing {
 
     @OneToMany(mappedBy = "brand", cascade = CascadeType.ALL)
     @JsonBackReference
+    @ApiModelProperty(hidden = true)
     private Collection<Car> cars;
 
     public Brand buildBrand() {
