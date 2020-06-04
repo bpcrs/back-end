@@ -1,10 +1,8 @@
 package fpt.capstone.bpcrs.service;
 
 import fpt.capstone.bpcrs.model.Account;
-import fpt.capstone.bpcrs.payload.AccountRequest;
 
 import java.util.List;
-import java.util.UUID;
 
 public interface AccountService {
 
