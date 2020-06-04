@@ -8,6 +8,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.Set;
 
 @Entity
 @Data
@@ -78,4 +79,7 @@ public class Car extends Auditing {
                 .name(name).plateNum(plateNum).registrationNum(registrationNum)
                 .screen(screen).seat(seat).sound(sound).build();
     }
+
+    @OneToMany(mappedBy = "car", cascade = CascadeType.ALL)
+    private Set<Booking> car;
 }

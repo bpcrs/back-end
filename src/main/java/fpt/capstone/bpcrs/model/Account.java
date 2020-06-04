@@ -6,6 +6,7 @@ import lombok.*;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Entity
 @Data
@@ -34,4 +35,10 @@ public class Account extends Auditing {
 
     @ManyToOne(optional = false)
     private Role role;
+
+    @OneToMany(mappedBy = "renter", cascade = CascadeType.ALL)
+    private Set<Booking> renter_booking;
+
+    @OneToMany(mappedBy = "lessor", cascade = CascadeType.ALL)
+    private Set<Booking> lessor_booking;
 }
