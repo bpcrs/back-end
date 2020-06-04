@@ -2,6 +2,7 @@ package fpt.capstone.bpcrs.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import fpt.capstone.bpcrs.component.Auditing;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -33,5 +34,6 @@ public class Account extends Auditing {
     private String fullName;
 
     @ManyToOne(optional = false)
+    @ApiModelProperty(hidden = true)
     private Role role;
 }

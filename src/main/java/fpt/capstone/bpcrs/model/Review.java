@@ -3,6 +3,7 @@ package fpt.capstone.bpcrs.model;
 import com.fasterxml.jackson.annotation.*;
 import fpt.capstone.bpcrs.component.Auditing;
 import fpt.capstone.bpcrs.payload.ReviewPayload;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 
 import javax.persistence.*;
@@ -30,11 +31,13 @@ public class Review extends Auditing {
 
     @ManyToOne
     @JsonBackReference
+    @ApiModelProperty(hidden = true)
     @JoinColumn(name = "car_id")
     private Car car;
 
     @ManyToOne
     @JsonBackReference
+    @ApiModelProperty(hidden = true)
     @JoinColumn(name = "account_id")
     private Account renter;
 
