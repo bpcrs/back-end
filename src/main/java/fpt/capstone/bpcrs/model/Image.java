@@ -1,9 +1,6 @@
 package fpt.capstone.bpcrs.model;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonView;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.fasterxml.jackson.annotation.*;
 import fpt.capstone.bpcrs.component.Auditing;
 import fpt.capstone.bpcrs.payload.ImagePayload;
 import lombok.*;
@@ -31,6 +28,7 @@ public class Image extends Auditing {
     private String link;
 
     @ManyToOne
+    @JsonBackReference
     @JoinColumn(name = "car_id")
     private Car car;
 
