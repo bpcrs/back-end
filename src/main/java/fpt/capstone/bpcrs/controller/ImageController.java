@@ -30,6 +30,7 @@ public class ImageController {
     public ResponseEntity<?> getImages(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "10") int size,
                                        @RequestParam int carId) {
         List<Image> images = imageService.getAllImagePaging(page, size, carId);
+
         return ResponseEntity.ok(new ApiResponse<>(true, images));
     }
 

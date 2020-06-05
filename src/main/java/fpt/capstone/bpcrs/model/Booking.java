@@ -1,5 +1,6 @@
 package fpt.capstone.bpcrs.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonView;
 import fpt.capstone.bpcrs.component.Auditing;
@@ -9,6 +10,7 @@ import lombok.*;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
+import java.util.Collection;
 import java.util.Date;
 
 @Entity
@@ -45,22 +47,30 @@ public class Booking extends Auditing {
 
     @ManyToOne
     @NonNull
+    @JoinColumn(name = "renter_id")
     @ApiModelProperty(hidden = true)
     private Account renter;
 
     @ManyToOne
     @NonNull
+    @JoinColumn(name = "lessor_id")
     @ApiModelProperty(hidden = true)
     private Account lessor;
 
     @ManyToOne
     @NonNull
+    @JoinColumn(name = "car_id")
     @ApiModelProperty(hidden = true)
     private Car car;
 
-    public Booking buildCar() {
+    public Booking buildBooking() {
         return Booking.builder().car(car).lessor(lessor)
                 .renter(renter).description(description).status(status)
                 .destination(destination).from_date(from_date).to_date(to_date).build();
     }
+
+//    @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL)
+//    @JsonBackReference
+//    @ApiModelProperty(hidden = true)
+//    private Collection<Agreement> agreements;
 }

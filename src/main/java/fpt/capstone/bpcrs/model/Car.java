@@ -8,6 +8,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.Collection;
 import java.util.Set;
 
 @Entity
@@ -84,4 +85,9 @@ public class  Car extends Auditing {
     @ApiModelProperty(hidden = true)
     @OneToMany(mappedBy = "car", cascade = CascadeType.ALL)
     private Set<Booking> car;
+
+    @OneToMany(mappedBy = "car", cascade = CascadeType.ALL)
+    @JsonBackReference
+    @ApiModelProperty(hidden = true)
+    private Collection<Image> images;
 }

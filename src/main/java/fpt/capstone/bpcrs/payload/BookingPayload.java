@@ -22,7 +22,7 @@ public class BookingPayload {
     public static class RequestCreateBooking extends Booking {
         @Min(1)
         @JsonView(BookingPayload.Request_CreateBooking_Validate.class)
-        private int bookingId;
+        private int carId;
 
 
     }

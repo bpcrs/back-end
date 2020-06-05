@@ -56,7 +56,8 @@ public class BookingController {
     private ResponseEntity<?> createBooking(@JsonView(BookingPayload.Request_CreateBooking_Validate.class)
                                             @Valid @RequestBody BookingPayload.RequestCreateBooking request) {
         try {
-            Booking booking = bookingService.createBooking(request.buildCar());
+
+            Booking booking = bookingService.createBooking(request.buildBooking());
             return ResponseEntity.ok(new ApiResponse<>(true, "Booking was created", booking));
         } catch (BadRequestException ex) {
             return ResponseEntity.badRequest().body(new ApiResponse<>(false, ex.getMessage(), null));

@@ -38,7 +38,7 @@ public class Brand extends Auditing {
     private Collection<Car> cars;
 
     public Brand buildBrand() {
-        return Brand.builder().name(name).logoLink(logoLink).cars(cars)
+        return Brand.builder().name(name).logoLink(logoLink)
                 .build();
     }
 

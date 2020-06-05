@@ -30,13 +30,13 @@ public class Review extends Auditing {
     private String comment;
 
     @ManyToOne
-    @JsonBackReference
+//    @JsonBackReference
     @ApiModelProperty(hidden = true)
     @JoinColumn(name = "car_id")
     private Car car;
 
     @ManyToOne
-    @JsonBackReference
+//    @JsonBackReference
     @ApiModelProperty(hidden = true)
     @JoinColumn(name = "account_id")
     private Account renter;
