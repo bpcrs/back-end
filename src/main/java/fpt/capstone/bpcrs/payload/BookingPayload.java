@@ -1,6 +1,7 @@
 package fpt.capstone.bpcrs.payload;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import fpt.capstone.bpcrs.model.Booking;
 import fpt.capstone.bpcrs.model.Car;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -10,25 +11,19 @@ import lombok.NoArgsConstructor;
 import javax.validation.constraints.Min;
 
 @NoArgsConstructor
-public class CarPayload {
-    public interface Request_CreateCar_Validate { }
+public class BookingPayload {
+    public interface Request_CreateBooking_Validate {
+    }
 
     @EqualsAndHashCode(callSuper = true)
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class RequestCreateCar extends Car {
-
+    public static class RequestCreateBooking extends Booking {
         @Min(1)
-        @JsonView(Request_CreateCar_Validate.class)
-        private int brandId;
-    }
+        @JsonView(BookingPayload.Request_CreateBooking_Validate.class)
+        private int bookingId;
 
-    @EqualsAndHashCode(callSuper = true)
-    @Data
-    @NoArgsConstructor
-    public static class RequestUpdateCar extends Car {
 
     }
-
 }
