@@ -12,7 +12,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -29,18 +28,19 @@ public class AgreementServiceImpl implements AgreementService {
         return agreementRepository.save(agreement);
     }
 
-    @Override
-    public List<Agreement> getListAgreementByBookingID(int bookingId, int page, int size) {
-        Page<Agreement> agreements = agreementRepository.findAll(new Paging(page, size, Sort.unsorted()));
-        System.out.println("size: " + agreements.getSize());
 
-        return agreements.get().collect(Collectors.toList());
+
+    @Override
+    public List<Agreement> getListAgreementByBookingID(int bookingId) {
+        List<Agreement> agreements = agreementRepository.findAllByBooking_id(bookingId);
+
+        return agreements;
     }
 
     @Override
     public Agreement getAgreementById(int id) {
         Optional<Agreement> agreement = agreementRepository.findById(id);
-        System.out.println("Agreement data : " + agreement.toString());
+        System.out.println("Agreement id : " + agreement.get().getId());
         return agreement.orElse(null);
     }
 
@@ -50,5 +50,11 @@ public class AgreementServiceImpl implements AgreementService {
         Agreement existed = agreementRepository.getOne(id);
         BeanUtils.copyProperties(agreement, existed, IgnoreNullProperty.getNullPropertyNames(agreement));
         return agreementRepository.save(existed);
+    }
+
+    @Override
+    public List<Agreement> getListAgreementByCriteriaID(int criteriaId, int page, int size) {
+        Page<Agreement> agreements = agreementRepository.findAllByCriteria_Id(criteriaId, new Paging(page, size, Sort.unsorted()));
+        return agreements.get().collect(Collectors.toList());
     }
 }

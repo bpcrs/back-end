@@ -1,6 +1,6 @@
 package fpt.capstone.bpcrs.payload;
 
-import com.fasterxml.jackson.annotation.JsonView;
+import com.fasterxml.jackson.annotation.*;
 import fpt.capstone.bpcrs.model.Agreement;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -18,12 +18,19 @@ public class AgreementPayload {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class RequestCreateAgreement extends Agreement {
-//        @Min(1)
-//        @JsonView(Request_CreateAgreement_Validate.class)
-//        private int booking_id;
+        @Min(1)
+        @JsonView(Request_CreateAgreement_Validate.class)
+        private int booking_id;
 
         @Min(1)
         @JsonView(Request_CreateAgreement_Validate.class)
         private int criteria_id;
+    }
+
+    @EqualsAndHashCode(callSuper = true)
+    @Data
+    @NoArgsConstructor
+    public static class RequestUpdateAgreement extends Agreement {
+
     }
 }

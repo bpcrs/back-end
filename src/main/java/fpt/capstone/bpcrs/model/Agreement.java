@@ -1,9 +1,6 @@
 package fpt.capstone.bpcrs.model;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonView;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.fasterxml.jackson.annotation.*;
 import fpt.capstone.bpcrs.component.Auditing;
 import fpt.capstone.bpcrs.payload.AgreementPayload;
 import io.swagger.annotations.ApiModelProperty;
@@ -37,25 +34,24 @@ public class Agreement extends Auditing {
     private String status;
 
     @Column(nullable = false, columnDefinition = "TINYINT(1) default 0")
+    @JsonView(AgreementPayload.Request_CreateAgreement_Validate.class)
     private boolean isApproved;
 
-//    @ManyToOne
-//    @JoinColumn(name = "booking_id")
-//    @ApiModelProperty(hidden = true)
-    @Column
-    @NotNull
-    @JsonView(AgreementPayload.Request_CreateAgreement_Validate.class)
-    private int booking_id;
-
+    @ManyToOne
+//    @JsonBackReference(value = "booking_id")
+    @JoinColumn(name = "booking_id")
+    @ApiModelProperty(hidden = true)
+    private Booking booking;
 
     @ManyToOne
+//    @JsonBackReference(value = "criteria_id")
     @JoinColumn(name = "criteria_id")
     @ApiModelProperty(hidden = true)
     private Criteria criteria;
 
     public Agreement buildAgreement() {
         return Agreement.builder().value(value).status(status).isApproved(isApproved)
-                .booking_id(booking_id).criteria(criteria).build();
+                .booking(booking).criteria(criteria).build();
     }
 
 }

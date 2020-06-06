@@ -27,6 +27,7 @@ public class ImageController {
     private CarService carService;
 
     @GetMapping
+    //@JsonView(ImagePayload.Request_GetImage_Response.class)
     public ResponseEntity<?> getImages(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "10") int size,
                                        @RequestParam int carId) {
         List<Image> images = imageService.getAllImagePaging(page, size, carId);

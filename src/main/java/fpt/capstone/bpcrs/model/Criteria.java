@@ -1,15 +1,13 @@
 package fpt.capstone.bpcrs.model;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.fasterxml.jackson.annotation.*;
 import fpt.capstone.bpcrs.component.Auditing;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.Collection;
 
 @Entity
 @Data
@@ -33,8 +31,14 @@ public class Criteria extends Auditing {
     @NotNull
     private float unit;
 
+
     public Criteria buildCriteria() {
         return  Criteria.builder().name(name).unit(unit)
                 .build();
     }
+
+    @OneToMany(mappedBy = "criteria", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+//    @JsonManagedReference(value = "agreementM")
+    @ApiModelProperty(hidden = true)
+    private Collection<Agreement> agreements;
 }

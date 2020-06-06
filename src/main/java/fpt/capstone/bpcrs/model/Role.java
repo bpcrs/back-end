@@ -2,12 +2,14 @@ package fpt.capstone.bpcrs.model;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import fpt.capstone.bpcrs.component.Auditing;
 import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Set;
 
 @EqualsAndHashCode(callSuper = true)
@@ -20,7 +22,7 @@ import java.util.Set;
 @JsonIgnoreProperties(
         value = {"createdDate", "lastModifiedDate"},
         allowGetters = true)
-@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "id")
+@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "ordinal")
 public class Role extends Auditing {
 
     @Builder
@@ -35,6 +37,7 @@ public class Role extends Auditing {
     @Column(columnDefinition = "TINYINT(1) default 1")
     private boolean active;
 
-    @OneToMany(mappedBy = "role", cascade = CascadeType.ALL)
-    private Set<Account> accounts;
+    @OneToMany(mappedBy = "role", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+//    @JsonManagedReference(value = "accountM")
+    private List<Account> accounts;
 }

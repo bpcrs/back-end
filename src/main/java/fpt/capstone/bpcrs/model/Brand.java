@@ -32,10 +32,10 @@ public class Brand extends Auditing {
     @NotNull
     private String logoLink;
 
-    @OneToMany(mappedBy = "brand", cascade = CascadeType.ALL)
-    @JsonBackReference
+    @OneToMany(mappedBy = "brand", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+//    @JsonManagedReference(value = "carM")
     @ApiModelProperty(hidden = true)
-    private Collection<Car> cars;
+    private List<Car> cars;
 
     public Brand buildBrand() {
         return Brand.builder().name(name).logoLink(logoLink)

@@ -2,12 +2,10 @@ package fpt.capstone.bpcrs.controller;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import fpt.capstone.bpcrs.model.Agreement;
-import fpt.capstone.bpcrs.model.Booking;
 import fpt.capstone.bpcrs.model.Criteria;
 import fpt.capstone.bpcrs.payload.AgreementPayload;
 import fpt.capstone.bpcrs.payload.ApiError;
 import fpt.capstone.bpcrs.payload.ApiResponse;
-import fpt.capstone.bpcrs.repository.AgreementRepository;
 import fpt.capstone.bpcrs.service.AgreementService;
 import fpt.capstone.bpcrs.service.BookingService;
 import fpt.capstone.bpcrs.service.CriteriaService;
@@ -50,9 +48,10 @@ public class AgreementController {
         return ResponseEntity.ok(new ApiResponse<>(true, agreement));
     }
 
+
     @GetMapping("/get/{id}")
-    public ResponseEntity<?> getAgreementsByBookingId(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "10") int size, @PathVariable int id) {
-        List<Agreement> agreements = agreementService.getListAgreementByBookingID(page, size, id);
+    public ResponseEntity<?> getAgreementsByBookingId(@PathVariable int id) {
+        List<Agreement> agreements = agreementService.getListAgreementByBookingID(id);
         System.out.println("Have data? " + agreements.size());
         if (agreements.isEmpty()) {
             return new ResponseEntity(new ApiResponse<>(false, "Dont have any agreement with booking_id =" + id), HttpStatus.BAD_REQUEST);
@@ -70,7 +69,7 @@ public class AgreementController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateAgreement(@PathVariable() int id, @RequestBody AgreementPayload.RequestCreateAgreement request) {
+    public ResponseEntity<?> updateAgreement(@PathVariable() int id, @RequestBody AgreementPayload.RequestUpdateAgreement request) {
         boolean isExisted = agreementService.getAgreementById(id) != null;
         if (!isExisted) {
             return new ResponseEntity(new ApiError("Agreement with id = " + id + " not found", ""), HttpStatus.BAD_REQUEST);

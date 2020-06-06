@@ -9,6 +9,7 @@ import lombok.*;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -68,11 +69,13 @@ public class  Car extends Auditing {
 
     @ManyToOne
     @JoinColumn(name = "owner_id")
+//    @JsonBackReference(value = "owner")
     @ApiModelProperty(hidden = true)
     private Account owner;
 
     @ManyToOne
     @ApiModelProperty(hidden = true)
+//    @JsonBackReference(value = "brand_id")
     @JoinColumn(name = "brand_id")
     private Brand brand;
 
@@ -83,11 +86,12 @@ public class  Car extends Auditing {
     }
 
     @ApiModelProperty(hidden = true)
-    @OneToMany(mappedBy = "car", cascade = CascadeType.ALL)
-    private Set<Booking> car;
+    @OneToMany(mappedBy = "car", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+//    @JsonManagedReference(value = "carMs")
+    private List<Booking> car;
 
-    @OneToMany(mappedBy = "car", cascade = CascadeType.ALL)
-    @JsonBackReference
+    @OneToMany(mappedBy = "car", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+//    @JsonManagedReference(value = "imageM")
     @ApiModelProperty(hidden = true)
-    private Collection<Image> images;
+    private List<Image> images;
 }

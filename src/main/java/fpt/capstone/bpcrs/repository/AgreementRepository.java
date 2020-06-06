@@ -6,12 +6,14 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface AgreementRepository extends JpaRepository<Agreement, Integer> {
 
-    //Page<Agreement> findAllByBooking_id(int id, Pageable paging);
+    List<Agreement> findAllByBooking_id(int bookingId);
 
-    Page<Agreement> findAllByCriteria_Id(int id, Pageable paging);
+    Page<Agreement> findAllByCriteria_Id(int criteriaId, Pageable paging);
 
     Page<Agreement> findAll(Pageable paging);
 

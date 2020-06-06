@@ -14,6 +14,9 @@ public class ImagePayload {
     public interface Request_CreateImage_Validate {
 
     }
+    public interface Request_GetImage_Response {
+
+    }
 
     @EqualsAndHashCode(callSuper = true)
     @Data
