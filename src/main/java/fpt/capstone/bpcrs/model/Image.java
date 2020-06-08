@@ -32,8 +32,5 @@ public class Image extends Auditing {
     @JoinColumn(name = "car_id")
     private Car car;
 
-    public Image buildImage() {
-        return Image.builder().link(link).car(car)
-                .build();
-    }
+
 }

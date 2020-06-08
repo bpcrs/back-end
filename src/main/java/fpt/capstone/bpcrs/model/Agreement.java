@@ -44,9 +44,6 @@ public class Agreement extends Auditing {
     @ApiModelProperty(hidden = true)
     private Criteria criteria;
 
-    public Agreement buildAgreement() {
-        return Agreement.builder().value(value).status(status).isApproved(isApproved)
-                .booking(booking).criteria(criteria).build();
-    }
+
 
 }

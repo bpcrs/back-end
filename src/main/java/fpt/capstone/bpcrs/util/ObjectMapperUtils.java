@@ -1,6 +1,8 @@
 package fpt.capstone.bpcrs.util;
 
 import org.modelmapper.ModelMapper;
+import org.modelmapper.convention.NameTokenizers;
+import org.modelmapper.spi.NameTokenizer;
 
 import java.util.Collection;
 import java.util.List;
@@ -12,6 +14,7 @@ public class ObjectMapperUtils {
         if (modelMapper == null) {
             modelMapper = new ModelMapper();
         }
+        modelMapper.getConfiguration().setSourceNameTokenizer(NameTokenizers.UNDERSCORE);
         return modelMapper;
     }
 
