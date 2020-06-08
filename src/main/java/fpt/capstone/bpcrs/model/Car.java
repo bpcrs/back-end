@@ -69,11 +69,6 @@ public class  Car extends Auditing {
     @JoinColumn(name = "brand_id")
     private Brand brand;
 
-    public Car buildCar(){
-        return Car.builder().brand(brand).model(model)
-                .name(name).plateNum(plateNum).registrationNum(registrationNum)
-                .screen(screen).seat(seat).sound(sound).build();
-    }
 
     @ApiModelProperty(hidden = true)
     @OneToMany(mappedBy = "car", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
