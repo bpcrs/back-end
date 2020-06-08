@@ -22,16 +22,17 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public Booking updateBookingStatus(int id, String status) {
-        Booking booking = getBookingInformation(id);
-        if (booking.getStatus().equals(BookingEnum.CREATE.name())) {
-            if (status.equals(BookingEnum.CONFIRM.name()) || status.equals(BookingEnum.DENY.name())) {
-                booking.setStatus(status);
-            }
-        } else if (booking.getStatus().equals(BookingEnum.CONFIRM.name())) {
-            if (status.equals(BookingEnum.DONE.name()) || status.equals(BookingEnum.CANCEL.name())) {
-                booking.setStatus(status);
-            }
-        }
+        Booking booking = bookingRepository.getOne(id);
+//        if (booking.getStatus().equals(BookingEnum.CREATE.name())) {
+//            if (status.equals(BookingEnum.CONFIRM.name()) || status.equals(BookingEnum.DENY.name())) {
+//                booking.setStatus(status);
+//            }
+//        } else if (booking.getStatus().equals(BookingEnum.CONFIRM.name())) {
+//            if (status.equals(BookingEnum.DONE.name()) || status.equals(BookingEnum.CANCEL.name())) {
+//                booking.setStatus(status);
+//            }
+//        }
+        booking.setStatus(status);
         return bookingRepository.save(booking);
     }
 

@@ -12,7 +12,6 @@ import javax.validation.constraints.NotNull;
 
 @NoArgsConstructor
 public class AgreementPayload {
-    public interface Request_CreateAgreement_Validate {}
 
     @Data
     @NoArgsConstructor
@@ -36,12 +35,7 @@ public class AgreementPayload {
         private boolean isApproved;
     }
 
-    @EqualsAndHashCode(callSuper = true)
-    @Data
-    @NoArgsConstructor
-    public static class RequestUpdateAgreement extends Agreement {
 
-    }
 
     @Data
     @NoArgsConstructor

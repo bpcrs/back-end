@@ -32,11 +32,6 @@ public class Criteria extends Auditing {
     private float unit;
 
 
-    public Criteria buildCriteria() {
-        return  Criteria.builder().name(name).unit(unit)
-                .build();
-    }
-
     @OneToMany(mappedBy = "criteria", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @ApiModelProperty(hidden = true)
     private Collection<Agreement> agreements;

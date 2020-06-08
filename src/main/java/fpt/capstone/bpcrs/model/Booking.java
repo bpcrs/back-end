@@ -35,6 +35,7 @@ public class Booking extends Auditing {
     @Column(nullable = false)
     private String destination;
 
+    @Column(nullable = false)
     private String status;
 
     @Column(nullable = false)
@@ -58,11 +59,11 @@ public class Booking extends Auditing {
     @ApiModelProperty(hidden = true)
     private Car car;
 
-    public Booking buildBooking() {
-        return Booking.builder().car(car).lessor(lessor)
-                .renter(renter).description(description).status(status)
-                .destination(destination).from_date(from_date).to_date(to_date).build();
-    }
+//    public Booking buildBooking() {
+//        return Booking.builder().car(car).lessor(lessor)
+//                .renter(renter).description(description).status(status)
+//                .destination(destination).from_date(from_date).to_date(to_date).build();
+//    }
 
     @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @ApiModelProperty(hidden = true)
