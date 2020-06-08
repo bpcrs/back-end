@@ -25,26 +25,21 @@ public class Agreement extends Auditing {
 
     @Column
     @NotNull
-    @JsonView(AgreementPayload.Request_CreateAgreement_Validate.class)
     private String value;
 
     @Column
     @NotNull
-    @JsonView(AgreementPayload.Request_CreateAgreement_Validate.class)
     private String status;
 
     @Column(nullable = false, columnDefinition = "TINYINT(1) default 0")
-    @JsonView(AgreementPayload.Request_CreateAgreement_Validate.class)
     private boolean isApproved;
 
     @ManyToOne
-//    @JsonBackReference(value = "booking_id")
     @JoinColumn(name = "booking_id")
     @ApiModelProperty(hidden = true)
     private Booking booking;
 
     @ManyToOne
-//    @JsonBackReference(value = "criteria_id")
     @JoinColumn(name = "criteria_id")
     @ApiModelProperty(hidden = true)
     private Criteria criteria;

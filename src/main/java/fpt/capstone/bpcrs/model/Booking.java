@@ -26,22 +26,17 @@ import java.util.List;
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "ordinal")
 public class Booking extends Auditing {
 
-    @JsonView(BookingPayload.Request_CreateBooking_Validate.class)
     @Column(nullable = false)
     private Date from_date;
 
-    @JsonView(BookingPayload.Request_CreateBooking_Validate.class)
     @Column(nullable = false)
     private Date to_date;
 
-    @JsonView(BookingPayload.Request_CreateBooking_Validate.class)
     @Column(nullable = false)
     private String destination;
 
-    @JsonView(BookingPayload.Request_CreateBooking_Validate.class)
     private String status;
 
-    @JsonView(BookingPayload.Request_CreateBooking_Validate.class)
     @Column(nullable = false)
     private String description;
 
@@ -59,7 +54,6 @@ public class Booking extends Auditing {
 
     @ManyToOne
     @NonNull
-//    @JsonBackReference(value = "carM")
     @JoinColumn(name = "car_id")
     @ApiModelProperty(hidden = true)
     private Car car;
@@ -71,7 +65,6 @@ public class Booking extends Auditing {
     }
 
     @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-//    @JsonManagedReference(value = "agreementM")
     @ApiModelProperty(hidden = true)
     private List<Agreement> agreements;
 }

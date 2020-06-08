@@ -8,23 +8,26 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 
 @NoArgsConstructor
 public class ImagePayload {
-    public interface Request_CreateImage_Validate {
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class RequestCreateImage{
+        @Min(1)
+        private int carId;
 
-    }
-    public interface Request_GetImage_Response {
-
+        @NotNull
+        private String link;
     }
 
     @EqualsAndHashCode(callSuper = true)
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class RequestCreateImage extends Image {
-        @Min(1)
-        @JsonView(Request_CreateImage_Validate.class)
-        private int carId;
+    public static class ResponseCreateImage extends RequestCreateImage{
+        private int id;
     }
 }

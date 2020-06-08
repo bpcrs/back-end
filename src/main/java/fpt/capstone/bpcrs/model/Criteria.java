@@ -38,7 +38,6 @@ public class Criteria extends Auditing {
     }
 
     @OneToMany(mappedBy = "criteria", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-//    @JsonManagedReference(value = "agreementM")
     @ApiModelProperty(hidden = true)
     private Collection<Agreement> agreements;
 }

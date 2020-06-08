@@ -33,7 +33,6 @@ public class Brand extends Auditing {
     private String logoLink;
 
     @OneToMany(mappedBy = "brand", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-//    @JsonManagedReference(value = "carM")
     @ApiModelProperty(hidden = true)
     private List<Car> cars;
 

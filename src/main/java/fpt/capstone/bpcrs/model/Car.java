@@ -28,16 +28,13 @@ public class  Car extends Auditing {
 
     @Column
     @NotNull
-    @JsonView({CarPayload.Request_CreateCar_Validate.class})
     private String name;
 
     @Column
     @NotNull
-    @JsonView(CarPayload.Request_CreateCar_Validate.class)
     private String model;
 
     @Column
-    @JsonView(CarPayload.Request_CreateCar_Validate.class)
     private int seat;
 
     @Column(nullable = false, columnDefinition = "TINYINT(1) default 0")
@@ -45,37 +42,30 @@ public class  Car extends Auditing {
 
     @Column
     @NotNull
-    @JsonView(CarPayload.Request_CreateCar_Validate.class)
     private String sound;
 
     @Column
     @NotNull
-    @JsonView(CarPayload.Request_CreateCar_Validate.class)
     private String screen;
 
     @Column(nullable = false, columnDefinition = "TINYINT(1) default 0")
-    @JsonView(CarPayload.Request_CreateCar_Validate.class)
     private boolean autoDriver;
 
     @Column
     @NotNull
-    @JsonView(CarPayload.Request_CreateCar_Validate.class)
     private String plateNum;
 
     @Column
     @NotNull
-    @JsonView(CarPayload.Request_CreateCar_Validate.class)
     private String registrationNum;
 
     @ManyToOne
     @JoinColumn(name = "owner_id")
-//    @JsonBackReference(value = "owner")
     @ApiModelProperty(hidden = true)
     private Account owner;
 
     @ManyToOne
     @ApiModelProperty(hidden = true)
-//    @JsonBackReference(value = "brand_id")
     @JoinColumn(name = "brand_id")
     private Brand brand;
 
@@ -87,11 +77,9 @@ public class  Car extends Auditing {
 
     @ApiModelProperty(hidden = true)
     @OneToMany(mappedBy = "car", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-//    @JsonManagedReference(value = "carMs")
     private List<Booking> car;
 
     @OneToMany(mappedBy = "car", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-//    @JsonManagedReference(value = "imageM")
     @ApiModelProperty(hidden = true)
     private List<Image> images;
 }

@@ -1,7 +1,9 @@
 package fpt.capstone.bpcrs.component;
 
+import fpt.capstone.bpcrs.util.ObjectMapperUtils;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
+import org.modelmapper.ModelMapper;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -31,4 +33,14 @@ public abstract class Auditing {
   @ApiModelProperty(hidden = true)
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Integer id;
+
+  public Object buildObject(Object request, boolean isRequest){
+    ModelMapper modelMapper = ObjectMapperUtils.getModelMapper();
+    if (isRequest) {
+      modelMapper.map(request, this);
+      return this;
+    }
+    modelMapper.map(this, request);
+    return request;
+  }
 }
