@@ -52,6 +52,8 @@ public class BookingPayload {
     @NoArgsConstructor
     public static class ResponseCreateBooking {
 
+        private int id;
+
         @Min(1)
         private int carId;
 

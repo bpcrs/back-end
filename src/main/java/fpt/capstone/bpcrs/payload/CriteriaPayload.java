@@ -26,6 +26,8 @@ public class CriteriaPayload {
     @Data
     @NoArgsConstructor
     public static class ResposneCreateCriteria {
+        private int id;
+
         @NotNull
         private String name;
 
