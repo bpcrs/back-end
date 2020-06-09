@@ -2,40 +2,48 @@ package fpt.capstone.bpcrs.model;
 
 import com.fasterxml.jackson.annotation.*;
 import fpt.capstone.bpcrs.component.Auditing;
-import fpt.capstone.bpcrs.payload.ReviewPayload;
-import fpt.capstone.bpcrs.util.ObjectMapperUtils;
+import fpt.capstone.bpcrs.payload.AgreementPayload;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
-import org.modelmapper.ModelMapper;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
 @Entity
 @Data
-@Table(name = "review")
+@Table(name = "agreement")
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
+//@ToString(of = {"id"})
+@JsonIgnoreProperties(
+        value = {"createdDate", "lastModifiedDate"},
+        allowGetters = true)
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "ordinal")
-public class Review extends Auditing {
+public class Agreement extends Auditing {
 
     @Column
     @NotNull
-    private int rating;
+    private String value;
 
     @Column
     @NotNull
-    private String comment;
+    private String status;
+
+    @Column(nullable = false, columnDefinition = "TINYINT(1) default 0")
+    private boolean isApproved;
 
     @ManyToOne
+    @JoinColumn(name = "booking_id")
     @ApiModelProperty(hidden = true)
-    @JoinColumn(name = "car_id")
-    private Car car;
+    private Booking booking;
 
     @ManyToOne
+    @JoinColumn(name = "criteria_id")
     @ApiModelProperty(hidden = true)
-    @JoinColumn(name = "account_id")
-    private Account renter;
+    private Criteria criteria;
+
+
+
 }

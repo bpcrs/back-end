@@ -8,6 +8,8 @@ import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -26,16 +28,13 @@ public class  Car extends Auditing {
 
     @Column
     @NotNull
-    @JsonView({CarPayload.Request_CreateCar_Validate.class})
     private String name;
 
     @Column
     @NotNull
-    @JsonView(CarPayload.Request_CreateCar_Validate.class)
     private String model;
 
     @Column
-    @JsonView(CarPayload.Request_CreateCar_Validate.class)
     private int seat;
 
     @Column(nullable = false, columnDefinition = "TINYINT(1) default 0")
@@ -43,26 +42,21 @@ public class  Car extends Auditing {
 
     @Column
     @NotNull
-    @JsonView(CarPayload.Request_CreateCar_Validate.class)
     private String sound;
 
     @Column
     @NotNull
-    @JsonView(CarPayload.Request_CreateCar_Validate.class)
     private String screen;
 
     @Column(nullable = false, columnDefinition = "TINYINT(1) default 0")
-    @JsonView(CarPayload.Request_CreateCar_Validate.class)
     private boolean autoDriver;
 
     @Column
     @NotNull
-    @JsonView(CarPayload.Request_CreateCar_Validate.class)
     private String plateNum;
 
     @Column
     @NotNull
-    @JsonView(CarPayload.Request_CreateCar_Validate.class)
     private String registrationNum;
 
     @ManyToOne
@@ -75,13 +69,12 @@ public class  Car extends Auditing {
     @JoinColumn(name = "brand_id")
     private Brand brand;
 
-    public Car buildCar(){
-        return Car.builder().brand(brand).model(model)
-                .name(name).plateNum(plateNum).registrationNum(registrationNum)
-                .screen(screen).seat(seat).sound(sound).build();
-    }
 
     @ApiModelProperty(hidden = true)
-    @OneToMany(mappedBy = "car", cascade = CascadeType.ALL)
-    private Set<Booking> car;
+    @OneToMany(mappedBy = "car", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Booking> car;
+
+    @OneToMany(mappedBy = "car", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ApiModelProperty(hidden = true)
+    private List<Image> images;
 }

@@ -25,17 +25,12 @@ public class Image extends Auditing {
 
     @Column
     @NotNull
-    @JsonView(ImagePayload.Request_CreateImage_Validate.class)
     private String link;
 
     @ManyToOne
-    @JsonBackReference
     @ApiModelProperty(hidden = true)
     @JoinColumn(name = "car_id")
     private Car car;
 
-    public Image buildImage() {
-        return Image.builder().link(link).car(car)
-                .build();
-    }
+
 }

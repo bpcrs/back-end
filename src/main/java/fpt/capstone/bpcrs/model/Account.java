@@ -1,6 +1,9 @@
 package fpt.capstone.bpcrs.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import fpt.capstone.bpcrs.component.Auditing;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
@@ -19,6 +22,7 @@ import javax.persistence.*;
 @JsonIgnoreProperties(
         value = {"createdDate", "lastModifiedDate"},
         allowGetters = true)
+@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "ordinal")
 public class Account extends Auditing {
 
     @Column(unique = true, nullable = false, updatable = false)
@@ -35,5 +39,6 @@ public class Account extends Auditing {
 
     @ManyToOne(optional = false)
     @ApiModelProperty(hidden = true)
+//    @JsonBackReference(value = "role")
     private Role role;
 }

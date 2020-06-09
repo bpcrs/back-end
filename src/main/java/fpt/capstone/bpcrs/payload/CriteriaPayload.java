@@ -1,20 +1,35 @@
 package fpt.capstone.bpcrs.payload;
 
 import fpt.capstone.bpcrs.model.Criteria;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotNull;
+
 @NoArgsConstructor
 public class CriteriaPayload {
-    public interface Request_CreateCriteria_Validate {
 
-    }
 
-    @EqualsAndHashCode(callSuper = true)
     @Data
     @NoArgsConstructor
-    public static class RequestCreateCriteria extends Criteria {
+    @AllArgsConstructor
+    public static class RequestCreateCriteria  {
+        @NotNull
+        private String name;
 
+        @NotNull
+        private float unit;
+    }
+
+    @Data
+    @NoArgsConstructor
+    public static class ResposneCreateCriteria {
+        @NotNull
+        private String name;
+
+        @NotNull
+        private float unit;
     }
 }
