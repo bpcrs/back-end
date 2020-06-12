@@ -1,16 +1,17 @@
 package fpt.capstone.bpcrs.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import fpt.capstone.bpcrs.component.JwtTokenProvider;
 import fpt.capstone.bpcrs.exception.BadRequestException;
 import fpt.capstone.bpcrs.model.Account;
 import fpt.capstone.bpcrs.payload.AccountPayload;
-import fpt.capstone.bpcrs.payload.AccountResponse;
+import fpt.capstone.bpcrs.payload.AccountPayload.AccountResponse;
 import fpt.capstone.bpcrs.payload.ApiResponse;
 import fpt.capstone.bpcrs.service.AccountService;
+import fpt.capstone.bpcrs.util.ObjectMapperUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.util.StringUtils;
@@ -26,8 +27,6 @@ import java.util.stream.Collectors;
 @RequestMapping("/account")
 public class AccountController {
 
-    private static final ObjectMapper JSON_MAPPER = new ObjectMapper();
-
     @Autowired
     private JwtTokenProvider tokenProvider;
 
@@ -40,19 +39,11 @@ public class AccountController {
     @GetMapping
     public ResponseEntity<?> getAccounts() {
         List<Account> accounts = accountService.getAccounts();
-        List<AccountResponse> response =
-                accounts.stream().map(AccountResponse::setResponse).collect(Collectors.toList());
-        return ResponseEntity.ok(new ApiResponse<>(true, "", response));
-    }
-
-    @PutMapping("/confirm")
-    public ResponseEntity<?> confirmAccount(@RequestParam("token") String token) {
-        try {
-            AccountResponse accountResponse = tokenProvider.getTokenValue(token, AccountResponse.class);
-            return ResponseEntity.ok(new ApiResponse<>(true, "", accountResponse));
-        } catch (BadRequestException | IOException ex) {
-            return ResponseEntity.badRequest().body(new ApiResponse<>(false, ex.getMessage(), null));
+        if(accounts.isEmpty()){
+            return new ResponseEntity(new ApiResponse<>(false, "List account is empty"), HttpStatus.BAD_REQUEST);
         }
+        List<AccountPayload.AccountResponse>  responses = ObjectMapperUtils.mapAll(accounts, AccountPayload.AccountResponse.class);
+        return ResponseEntity.ok(new ApiResponse<>(true, "Get list account successfull", responses));
     }
 
     @PatchMapping("/{id}")
@@ -60,7 +51,7 @@ public class AccountController {
             @PathVariable("id") int id, @RequestParam("active") boolean active) {
         try {
             Account account = accountService.updateAccountStatus(id, active);
-            AccountResponse response = AccountResponse.setResponse(account);
+            AccountPayload.AccountResponse response = ObjectMapperUtils.map(account, AccountPayload.AccountResponse.class);
             return ResponseEntity.ok(new ApiResponse<>(true, "Account updated", response));
         } catch (BadRequestException ex) {
             return ResponseEntity.badRequest().body(new ApiResponse<>(false, ex.getMessage(), null));
@@ -82,10 +73,10 @@ public class AccountController {
             GoogleIdToken.Payload payload = googleIdToken.getPayload();
             String email = payload.getEmail();
             String name = (String) payload.get("name");
-            String avatar = (String) payload.get("picture");
+            String imageUrl = (String) payload.get("picture");
 
-            Account account = accountService.setGoogleAccount(email, name, avatar);
-            AccountResponse response = AccountResponse.setResponse(account);
+            Account account = accountService.setGoogleAccount(email, name, imageUrl);
+            AccountPayload.LoginResponse response = ObjectMapperUtils.map(account, AccountPayload.LoginResponse.class);
             String jwt = tokenProvider.generateToken(response);
             return ResponseEntity.ok(
                     new ApiResponse<>(true, "Logged successfully", new AccountPayload.LoginResponse(jwt)));

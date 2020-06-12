@@ -12,6 +12,6 @@ public interface AccountService {
 
   Account updateAccountStatus(int id, Boolean active);
 
-  Account setGoogleAccount(String email, String name, String avatar);
+  Account setGoogleAccount(String email, String name, String imageUrl);
 
 }
