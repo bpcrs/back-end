@@ -69,12 +69,10 @@ public class AccountController {
             if (googleIdToken == null) {
                 throw new BadRequestException("Google token error");
             }
-
             GoogleIdToken.Payload payload = googleIdToken.getPayload();
             String email = payload.getEmail();
             String name = (String) payload.get("name");
             String imageUrl = (String) payload.get("picture");
-
             Account account = accountService.setGoogleAccount(email, name, imageUrl);
             AccountPayload.LoginResponse response = ObjectMapperUtils.map(account, AccountPayload.LoginResponse.class);
             String jwt = tokenProvider.generateToken(response);

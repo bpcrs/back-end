@@ -37,6 +37,7 @@ public class AccountPayload {
         @NonNull
         private String fullName;
 
+        @NonNull
         private String imageUrl;
 
         @NonNull
