@@ -2,7 +2,7 @@ package fpt.capstone.bpcrs.filter;
 
 import fpt.capstone.bpcrs.component.JwtTokenProvider;
 
-import fpt.capstone.bpcrs.payload.AccountResponse;
+import fpt.capstone.bpcrs.payload.AccountPayload;
 import fpt.capstone.bpcrs.service.CustomUserDetailsService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +35,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         try {
             String jwt = getJwtFromRequest(request);
             if (StringUtils.hasText(jwt) && tokenProvider.validateToken(jwt)) {
-                AccountResponse json = tokenProvider.getTokenValue(jwt, AccountResponse.class);
+                AccountPayload.AccountResponse json = tokenProvider.getTokenValue(jwt, AccountPayload.AccountResponse.class);
                 UserDetails userDetails = customUserDetailsService.loadUserFromID(json.getId());
                 UsernamePasswordAuthenticationToken authentication =
                         new UsernamePasswordAuthenticationToken(

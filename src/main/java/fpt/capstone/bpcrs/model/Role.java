@@ -25,12 +25,6 @@ import java.util.Set;
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "ordinal")
 public class Role extends Auditing {
 
-    @Builder
-    public Role(LocalDateTime createdDate, LocalDateTime lastModifiedDate, Integer id, String name) {
-        super(createdDate, lastModifiedDate, id);
-        this.name = name;
-    }
-
     @Column
     private String name;
 
@@ -38,6 +32,5 @@ public class Role extends Auditing {
     private boolean active;
 
     @OneToMany(mappedBy = "role", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-//    @JsonManagedReference(value = "accountM")
     private List<Account> accounts;
 }

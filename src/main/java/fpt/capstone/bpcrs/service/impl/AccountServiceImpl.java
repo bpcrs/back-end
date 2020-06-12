@@ -4,11 +4,9 @@ import fpt.capstone.bpcrs.constant.RoleEnum;
 import fpt.capstone.bpcrs.exception.BadRequestException;
 import fpt.capstone.bpcrs.model.Account;
 import fpt.capstone.bpcrs.model.Role;
-import fpt.capstone.bpcrs.payload.AccountRequest;
 import fpt.capstone.bpcrs.repository.AccountRepository;
 import fpt.capstone.bpcrs.repository.RoleRepository;
 import fpt.capstone.bpcrs.service.AccountService;
-import io.swagger.annotations.ApiModelProperty;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -47,27 +45,26 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public Account setGoogleAccount(String email, String name, String avatar) {
+    public Account setGoogleAccount(String email, String name, String imageUrl) {
         Account account = getAccountByEmail(email);
         if (account == null) {
-            AccountRequest accountRequest = AccountRequest.builder().email(email).fullName(name).build();
             Role role = roleRepository.findByName(RoleEnum.USER.name());
-            return setNewAccount(accountRequest, avatar, role);
+            return setNewAccount(email, name, imageUrl, role);
         }
         if (!account.isActive()) {
             throw new BadRequestException("This account was locked");
         }
         account.setFullName(name);
-        account.setImageUrl(avatar);
+        account.setImageUrl(imageUrl);
         return accountRepository.save(account);
     }
 
-    private Account setNewAccount(AccountRequest request, String avatarURL, Role role) {
+    private Account setNewAccount(String email, String fullName, String imageUrl, Role role) {
         Account account = new Account();
-        account.setEmail(request.getEmail());
-        account.setFullName(request.getFullName());
+        account.setEmail(email);
+        account.setFullName(fullName);
         account.setActive(true);
-        account.setImageUrl(avatarURL);
+        account.setImageUrl(imageUrl);
         account.setRole(role);
         return accountRepository.save(account);
     }

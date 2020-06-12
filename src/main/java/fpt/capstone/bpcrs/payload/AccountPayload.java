@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
 
 public class AccountPayload {
 
@@ -21,5 +22,25 @@ public class AccountPayload {
     @NoArgsConstructor
     public static class LoginResponse {
         private String accessToken;
+    }
+
+    @Data
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class AccountResponse {
+        private int id;
+
+        @NonNull
+        private String email;
+
+        @NonNull
+        private String fullName;
+
+        @NonNull
+        private String imageUrl;
+
+        @NonNull
+        private boolean active;
     }
 }
