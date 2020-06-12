@@ -10,6 +10,7 @@ import fpt.capstone.bpcrs.payload.AccountPayload.AccountResponse;
 import fpt.capstone.bpcrs.payload.ApiResponse;
 import fpt.capstone.bpcrs.service.AccountService;
 import fpt.capstone.bpcrs.util.ObjectMapperUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,6 +26,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/account")
+@Slf4j
 public class AccountController {
 
     @Autowired
@@ -58,7 +60,7 @@ public class AccountController {
         }
     }
 
-    @PostMapping("/google/login")
+    @PostMapping("/login")
     public ResponseEntity<?> loginByGoogle(@Valid @RequestBody AccountPayload.GoogleRequestLogin requestLogin) {
         try {
             String token = requestLogin.getToken();
