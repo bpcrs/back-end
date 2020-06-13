@@ -1,15 +1,13 @@
 package fpt.capstone.bpcrs.controller;
 
-import com.fasterxml.jackson.annotation.JsonView;
 import fpt.capstone.bpcrs.model.Brand;
 import fpt.capstone.bpcrs.model.Car;
-import fpt.capstone.bpcrs.model.Review;
 import fpt.capstone.bpcrs.payload.ApiError;
 import fpt.capstone.bpcrs.payload.ApiResponse;
 import fpt.capstone.bpcrs.payload.CarPayload;
-import fpt.capstone.bpcrs.payload.ReviewPayload;
 import fpt.capstone.bpcrs.service.BrandService;
 import fpt.capstone.bpcrs.service.CarService;
+import fpt.capstone.bpcrs.service.DappService;
 import fpt.capstone.bpcrs.util.ObjectMapperUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,11 +28,13 @@ public class CarController {
     private CarService carService;
     @Autowired
     private BrandService brandService;
-
+    @Autowired
+    private DappService dappService;
     @GetMapping
     public ResponseEntity<?> getCars(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "10") int size, @RequestParam(required = false, defaultValue = "") String search) {
         List<Car> cars = carService.getAllCarPaging(page, size, search);
         List<CarPayload.ResponseGetCar> carList = ObjectMapperUtils.mapAll(cars,CarPayload.ResponseGetCar.class);
+        dappService.getDapp();
         return ResponseEntity.ok(new ApiResponse<>(true, carList));
     }
 
