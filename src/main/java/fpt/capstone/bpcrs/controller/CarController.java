@@ -34,7 +34,6 @@ public class CarController {
     public ResponseEntity<?> getCars(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "10") int size, @RequestParam(required = false, defaultValue = "") String search) {
         List<Car> cars = carService.getAllCarPaging(page, size, search);
         List<CarPayload.ResponseGetCar> carList = ObjectMapperUtils.mapAll(cars,CarPayload.ResponseGetCar.class);
-        dappService.getDapp();
         return ResponseEntity.ok(new ApiResponse<>(true, carList));
     }
 

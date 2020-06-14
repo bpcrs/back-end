@@ -14,12 +14,15 @@ public class DappService {
     @Value("${dapp.port}")
     private int dappPort;
 
-    public void getDapp(){
-        ManagedChannel channel = ManagedChannelBuilder.forAddress(dappHost,dappPort).usePlaintext().build();
+    public void getDapp(String funcName, String[] args) {
+        ManagedChannel channel = ManagedChannelBuilder.forAddress(dappHost, dappPort).usePlaintext().build();
         QueryServiceGrpc.QueryServiceBlockingStub stub = QueryServiceGrpc.newBlockingStub(channel);
-
-        QueryProto.QueryResponse response = stub.sendQuery(QueryProto.QueryRequest.newBuilder().setChaincode("fabcar")
-                .setUsername("admin").setChannel("mychannel").setFuncName("queryAllCars").build());
+        QueryProto.QueryRequest.Builder builder = QueryProto.QueryRequest.newBuilder().setChaincode("fabcar")
+                .setUsername("admin").setChannel("mychannel").setFuncName(funcName);
+        for (int i = 0; i < args.length; i++) {
+            builder.setArgs(i,args[i]);
+        }
+        QueryProto.QueryResponse response = stub.sendQuery(builder.build());
         System.out.println(response.getMessage());
         System.out.println(response.getData());
         channel.shutdown();
