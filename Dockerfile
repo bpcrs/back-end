@@ -6,6 +6,6 @@ RUN gradle build --no-daemon
 
 FROM  openjdk:8-jdk-alpine
 
-COPY --from=builder src/build/libs/*.jar bpcrs.jar
+COPY --from=builder /home/gradle/src/src/build/libs/*.jar bpcrs.jar
 EXPOSE 5000
 ENTRYPOINT ["java","-jar","/bpcrs.jar"]
