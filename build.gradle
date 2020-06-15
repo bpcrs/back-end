@@ -82,6 +82,6 @@ task protoTask{
     }
 }
 
-test {
-    useJUnitPlatform()
-}
+//test {
+//    useJUnitPlatform()
+//}
