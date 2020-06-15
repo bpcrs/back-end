@@ -1,5 +1,6 @@
 FROM gradle:4.7.0-jdk8-alpine AS build
 COPY --chown=gradle:gradle . /
+USER root
 RUN gradle build --no-daemon
 
 FROM  openjdk:8-jdk-alpine
