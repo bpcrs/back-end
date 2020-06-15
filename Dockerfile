@@ -1,7 +1,8 @@
-FROM gradle:4.7.0-jdk8-alpine AS builder
-COPY --chown=gradle:gradle . /
+FROM gradle:6.3.0-jdk8 AS builder
+COPY --chown=gradle:gradle . /home/gradle/src
+WORKDIR /home/gradle/src
 USER root
-RUN gradle build --no-daemon
+RUN gradle build
 
 FROM  openjdk:8-jdk-alpine
 
