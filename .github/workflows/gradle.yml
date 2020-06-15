@@ -23,3 +23,5 @@ jobs:
         password: e009f9fc037c61ddc31fbea450677c43cac31569
         registry: docker.pkg.github.com
         repository: bpcrs/back-end
+        image: back-end/bpcrs-backend
+        githubOrg: bpcrs
