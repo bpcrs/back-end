@@ -29,6 +29,7 @@ public class AccountPayload {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class AccountResponse {
+        @NonNull
         private int id;
 
         @NonNull
@@ -41,6 +42,6 @@ public class AccountPayload {
         private String imageUrl;
 
         @NonNull
-        private boolean active;
+        private String role;
     }
 }
