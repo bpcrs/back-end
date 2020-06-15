@@ -16,11 +16,18 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - name: Build and push Docker images
-      uses: docker/build-push-action@v1.1.0
-      with:
-        username: hungpt
-        password: e009f9fc037c61ddc31fbea450677c43cac31569
-        registry: docker.pkg.github.com
-        repository: bpcrs/back-end
+#     - name: Build and push Docker images
+#       uses: docker/build-push-action@v1.1.0
+#       with:
+#         username: hungpt
+#         password: e009f9fc037c61ddc31fbea450677c43cac31569
+#         registry: docker.pkg.github.com
+#         repository: bpcrs/back-end
         
+    - name: Docker Package Registry
+      uses: craftech-io/package-action@v3.1.0
+      with:
+        access_token: e009f9fc037c61ddc31fbea450677c43cac31569
+        username: hungptse
+        image_name: bpcrs-backend
+  
