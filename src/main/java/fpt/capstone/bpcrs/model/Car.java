@@ -19,7 +19,6 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
-//@ToString(of = {"id"})
 @JsonIgnoreProperties(
         value = {"createdDate", "lastModifiedDate"},
         allowGetters = true)
@@ -57,7 +56,7 @@ public class  Car extends Auditing {
 
     @Column
     @NotNull
-    private String registrationNum;
+    private String VIN;
 
     @ManyToOne
     @JoinColumn(name = "owner_id")
@@ -77,4 +76,6 @@ public class  Car extends Auditing {
     @OneToMany(mappedBy = "car", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @ApiModelProperty(hidden = true)
     private List<Image> images;
+
+
 }

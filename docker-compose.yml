@@ -1,0 +1,25 @@
+version: "3"
+services:
+  bpcrs-db:
+    image: mysql:8.0.17
+    environment:
+      MYSQL_DATABASE: 'bpcrs'
+      MYSQL_ROOT_PASSWORD: '1qaz2wsx'
+    command: --default-authentication-plugin=mysql_native_password
+    ports:
+      - 3306:3306
+    restart: on-failure
+    networks:
+      - bpcrs
+  bpcrs-backend:
+    image: bpcrs-backend:latest
+    volumes:
+      - ./:/app
+    working_dir: /app
+    ports:
+      - 5000:5000
+    networks:
+      - bpcrs
+networks:
+  bpcrs:
+    driver: bridge
