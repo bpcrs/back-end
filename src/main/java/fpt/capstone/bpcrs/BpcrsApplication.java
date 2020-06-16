@@ -31,11 +31,11 @@ public class BpcrsApplication extends SpringBootServletInitializer {
   @Bean
   public CommandLineRunner initData(RoleRepository roleRepository, AccountRepository accountRepository) {
     return args -> {
-      if ((roleRepository.findByName(RoleEnum.ADMINISTRATOR.name()) == null) || (roleRepository.findByName(RoleEnum.ADMINISTRATOR.name()) == null)) {
+      if ((roleRepository.findByName(RoleEnum.ADMINISTRATOR.name()) == null) || (roleRepository.findByName(RoleEnum.USER.name()) == null)) {
         Role admin = new Role(RoleEnum.ADMINISTRATOR.name(), true, null);
         roleRepository.save(admin);
         roleRepository.save(new Role(RoleEnum.USER.name(), true, null));
-        accountRepository.save(Account.builder().email(SA_MAIL).fullName("ADMIN").role(admin).build());
+        accountRepository.save(Account.builder().email(SA_MAIL).fullName("ADMIN").role(admin).imageUrl("default").build());
       }
     };
   }
