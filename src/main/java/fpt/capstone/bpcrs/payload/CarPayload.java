@@ -1,14 +1,9 @@
 package fpt.capstone.bpcrs.payload;
 
-import com.fasterxml.jackson.annotation.JsonView;
-import fpt.capstone.bpcrs.model.Car;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
 public class CarPayload {
