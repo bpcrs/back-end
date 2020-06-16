@@ -20,8 +20,6 @@ public class BrandPayload {
         private String name;
         @NotNull
         private String logoLink;
-        @Min(1)
-        private int carId;
     }
 
     @EqualsAndHashCode(callSuper = true)

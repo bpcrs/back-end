@@ -41,10 +41,6 @@ public class BrandController {
 
     @PostMapping
     public ResponseEntity<?> createBrand(@Valid @RequestBody BrandPayload.RequestCreateBrand request) {
-        Car car =  carService.getCarById(request.getCarId());
-        if (car == null) {
-            return new ResponseEntity<>(new ApiError("Car with id = " + request.getCarId() + " not found", ""), HttpStatus.BAD_REQUEST);
-        }
         BrandPayload.ResponseCreateBrand response = new BrandPayload.ResponseCreateBrand();
         Brand newBrand = (Brand) new Brand().buildObject(request, true);
         brandService.createBrand(newBrand).buildObject(response, false);
