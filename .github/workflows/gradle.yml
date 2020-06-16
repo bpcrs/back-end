@@ -19,7 +19,7 @@ jobs:
     - name: Docker Package Registry
       uses: craftech-io/package-action@v3.1.0
       with:
-        access_token: e009f9fc037c61ddc31fbea450677c43cac31569
-        username: hungptse
+        access_token: ${{ secrets.GITHUB_TOKEN }}
+        username: ${{ github.actor }}
         image_name: bpcrs-backend
   
