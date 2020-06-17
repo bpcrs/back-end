@@ -11,6 +11,7 @@ import fpt.capstone.bpcrs.service.AccountService;
 import fpt.capstone.bpcrs.service.CarService;
 import fpt.capstone.bpcrs.service.ReviewService;
 import fpt.capstone.bpcrs.util.ObjectMapperUtils;
+import javax.annotation.security.RolesAllowed;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +35,7 @@ public class ReviewController {
     private AccountService accountService;
 
     @GetMapping
+    @RolesAllowed({"USER", "ADMINISTRATOR"})
     public ResponseEntity<?> getReviews(@RequestParam(defaultValue = "1") int page,
                                         @RequestParam(defaultValue = "10") int size,
                                         @RequestParam int carId) {
@@ -43,6 +45,7 @@ public class ReviewController {
     }
 
     @PostMapping
+    @RolesAllowed("USER")
     public ResponseEntity<?> createReview(@Valid @RequestBody ReviewPayload.RequestCreateReview request) {
         Car car = carService.getCarById(request.getCarId());
         if (car == null) {
@@ -54,6 +57,4 @@ public class ReviewController {
         reviewService.createReview(newReview).buildObject(response, false);
         return ResponseEntity.ok(new ApiResponse<>(true, response));
     }
-
-
 }

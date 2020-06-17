@@ -1,6 +1,5 @@
 package fpt.capstone.bpcrs.controller;
 
-import com.fasterxml.jackson.annotation.JsonView;
 import fpt.capstone.bpcrs.model.Agreement;
 import fpt.capstone.bpcrs.model.Booking;
 import fpt.capstone.bpcrs.model.Criteria;
@@ -11,15 +10,21 @@ import fpt.capstone.bpcrs.service.AgreementService;
 import fpt.capstone.bpcrs.service.BookingService;
 import fpt.capstone.bpcrs.service.CriteriaService;
 import fpt.capstone.bpcrs.util.ObjectMapperUtils;
+import java.util.List;
+import javax.annotation.security.RolesAllowed;
+import javax.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
-
-import javax.validation.Valid;
-import java.util.List;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/agreement")
@@ -33,13 +38,12 @@ public class AgreementController {
     private BookingService bookingService;
 
     @PostMapping
+    @RolesAllowed("ADMINISTRATOR")
     public ResponseEntity<?> createAgreement( @Valid @RequestBody AgreementPayload.RequestCreateAgreement request) {
         Booking booking = bookingService.getBookingInformation(request.getBookingId());
         if (booking == null) {
             return new ResponseEntity(new ApiError("Booking with id = " + request.getBookingId() + " not found", ""), HttpStatus.BAD_REQUEST);
         }
-
-
         Criteria criteria = criteriaService.getCriteria(request.getCriteriaId());
         if (criteria == null) {
             return new ResponseEntity(new ApiError("Criteria with id = " + request.getCriteriaId() + " not found", ""), HttpStatus.BAD_REQUEST);
@@ -52,8 +56,8 @@ public class AgreementController {
         return ResponseEntity.ok(new ApiResponse<>(true, response));
     }
 
-
     @GetMapping("/get/{id}")
+    @RolesAllowed({"USER", "ADMINISTRATOR"})
     public ResponseEntity<?> getAgreementsByBookingId(@PathVariable int id) {
         List<Agreement> agreements = agreementService.getListAgreementByBookingID(id);
         if (agreements.isEmpty()) {
@@ -64,6 +68,7 @@ public class AgreementController {
     }
 
     @GetMapping()
+    @RolesAllowed({"USER", "ADMINISTRATOR"})
     public ResponseEntity<?> getAgreementById(@RequestParam int id) {
         Agreement agreement = agreementService.getAgreementById(id);
         if (agreement == null) {
@@ -74,6 +79,7 @@ public class AgreementController {
     }
 
     @PutMapping("/{id}")
+    @RolesAllowed("USER")
     public ResponseEntity<?> updateAgreement(@PathVariable() int id, @RequestBody AgreementPayload.RequestCreateAgreement request) {
         boolean isExisted = agreementService.getAgreementById(id) != null;
         if (!isExisted) {

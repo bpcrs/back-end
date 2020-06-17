@@ -10,6 +10,7 @@ import fpt.capstone.bpcrs.service.CarService;
 import fpt.capstone.bpcrs.service.DappService;
 import fpt.capstone.bpcrs.util.ObjectMapperUtils;
 import java.util.List;
+import javax.annotation.security.RolesAllowed;
 import javax.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +37,9 @@ public class CarController {
     private BrandService brandService;
     @Autowired
     private DappService dappService;
+
     @GetMapping
+    @RolesAllowed({"USER", "ADMINISTRATOR"})
     public ResponseEntity<?> getCars(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "10") int size, @RequestParam(required = false, defaultValue = "") String search) {
         List<Car> cars = carService.getAllCarPaging(page, size, search);
         List<CarPayload.ResponseGetCar> carList = ObjectMapperUtils.mapAll(cars,CarPayload.ResponseGetCar.class);
@@ -44,6 +47,7 @@ public class CarController {
     }
 
     @PostMapping
+    @RolesAllowed("USER")
     public ResponseEntity<?> createCar(@Valid @RequestBody CarPayload.ResponseGetCar request) {
         Brand brand = brandService.getBrandById(request.getBrandId());
         if (brand == null){
@@ -57,6 +61,7 @@ public class CarController {
     }
 //
     @GetMapping("/{id}")
+    @RolesAllowed({"USER", "ADMINISTRATOR"})
     public ResponseEntity<?> getCar(@PathVariable() int id){
         CarPayload.ResponseGetCar response = new CarPayload.ResponseGetCar();
         Car car = carService.getCarById(id);
@@ -68,6 +73,7 @@ public class CarController {
     }
 
     @PutMapping("/{id}")
+    @RolesAllowed({"USER", "ADMINISTRATOR"})
     public ResponseEntity<?> updateCar(@PathVariable() int id, @RequestBody CarPayload.RequestUpdateCar request){
         Car car = carService.getCarById(id);
         if (car == null){

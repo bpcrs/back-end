@@ -42,13 +42,4 @@ public class GoogleAuthenticator {
         .setApprovalPrompt("force")
         .build();
   }
-
-  public String authorize(String redirectUri, String state)
-      throws GeneralSecurityException, IOException {
-    AuthorizationCodeRequestUrl authorizationUrl = getFlow()
-        .newAuthorizationUrl()
-        .setState(state)
-        .setRedirectUri(redirectUri);
-    return authorizationUrl.build();
-  }
 }

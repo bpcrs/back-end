@@ -11,6 +11,7 @@ import fpt.capstone.bpcrs.payload.ReviewPayload;
 import fpt.capstone.bpcrs.service.CarService;
 import fpt.capstone.bpcrs.service.ImageService;
 import fpt.capstone.bpcrs.util.ObjectMapperUtils;
+import javax.annotation.security.RolesAllowed;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -30,6 +31,7 @@ public class ImageController {
     private CarService carService;
 
     @GetMapping
+    @RolesAllowed({"USER", "ADMINISTRATOR"})
     public ResponseEntity<?> getImages(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "10") int size,
                                        @RequestParam int carId) {
         Car car =  carService.getCarById(carId);
@@ -42,6 +44,7 @@ public class ImageController {
     }
 
     @PostMapping
+    @RolesAllowed("USER")
     public ResponseEntity<?> createImage(@Valid @RequestBody ImagePayload.RequestCreateImage request) {
         Car car =  carService.getCarById(request.getCarId());
         if (car == null) {
