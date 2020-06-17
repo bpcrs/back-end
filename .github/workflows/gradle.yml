@@ -29,6 +29,5 @@ jobs:
       with:
         command: sh deploy.sh
         host: 34.87.125.208
-        user: jeremy
-        key: ${{ secrets.SSH_KEY }}
-        args: "-tt"
+        username: jeremy
+        privateKey: ${{ secrets.SSH_KEY }}
