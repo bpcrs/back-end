@@ -1,15 +1,20 @@
 package fpt.capstone.bpcrs.model;
 
-import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import fpt.capstone.bpcrs.component.Auditing;
-import fpt.capstone.bpcrs.payload.ReviewPayload;
-import fpt.capstone.bpcrs.util.ObjectMapperUtils;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.*;
-import org.modelmapper.ModelMapper;
-
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Data

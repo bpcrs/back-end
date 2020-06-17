@@ -1,13 +1,11 @@
 package fpt.capstone.bpcrs.service.impl;
 
-import fpt.capstone.bpcrs.constant.BookingEnum;
 import fpt.capstone.bpcrs.model.Booking;
 import fpt.capstone.bpcrs.repository.BookingRepository;
 import fpt.capstone.bpcrs.service.BookingService;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class BookingServiceImpl implements BookingService {

@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.BeanIds;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -15,9 +16,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -38,10 +36,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(AuthenticationManagerBuilder authenticationManagerBuilder)
-            throws Exception {
+        throws Exception {
         authenticationManagerBuilder
-                .userDetailsService(customUserDetailsService)
-                .passwordEncoder(passwordEncoder());
+            .userDetailsService(customUserDetailsService);
     }
 
     @Bean(BeanIds.AUTHENTICATION_MANAGER)
@@ -49,151 +46,21 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManagerBean();
     }
-
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
-    //  @Override
-//  protected void configure(HttpSecurity http) throws Exception {
-//    http.cors()
-//        .and()
-//        .csrf()
-//        .disable()
-//        .formLogin()
-//        .disable()
-//        .httpBasic()
-//        .disable()
-//        .sessionManagement()
-//        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-//        .and()
-//        .exceptionHandling()
-//        .authenticationEntryPoint(jwtAuthenticationEntryPoint);
-//
-//    // All
-//    http.authorizeRequests()
-//        .antMatchers(HttpMethod.GET, "/", "/ws/*", "/ws/**")
-//        .permitAll()
-//        .antMatchers(HttpMethod.POST, "/login", "/google/login", "/register")
-//        .permitAll();
-//
-//    // User
-//    http.authorizeRequests()
-//        .antMatchers(
-//            HttpMethod.GET, "/user", "/session/user", "/session/user/*", "/google/authorize")
-//        .hasRole(USER.getName())
-//        .antMatchers(HttpMethod.POST, "/rating")
-//        .hasRole(USER.getName())
-//        .antMatchers(HttpMethod.PUT, "/session/user/**")
-//        .hasRole(USER.getName())
-//        .antMatchers(HttpMethod.PATCH, "/file/*")
-//        .hasRole(USER.getName())
-//        .antMatchers(HttpMethod.DELETE, "/userblock/*")
-//        .hasRole(USER.getName());
-//
-//    // Administrator
-//    http.authorizeRequests()
-//        .antMatchers(HttpMethod.GET, "/account")
-//        .hasRole(ADMINISTRATOR.getName())
-//        .antMatchers(HttpMethod.POST, "/category", "/account")
-//        .hasRole(ADMINISTRATOR.getName())
-//        .antMatchers(HttpMethod.PUT, "/category/*", "/account/*")
-//        .hasRole(ADMINISTRATOR.getName())
-//        .antMatchers(HttpMethod.PATCH, "/account/*")
-//        .hasRole(ADMINISTRATOR.getName())
-//        .antMatchers(HttpMethod.DELETE, "/template/*")
-//        .hasRole(ADMINISTRATOR.getName());
-//
-//    // Logged
-//    http.authorizeRequests()
-//        .antMatchers(
-//            HttpMethod.GET, "/user")
-//        .authenticated()
-//        .antMatchers(HttpMethod.POST, "/file")
-//        .authenticated()
-//        .antMatchers(HttpMethod.PUT, "/user", "/file/*")
-//        .authenticated();
-//
-//     Swagger
-//    http.authorizeRequests()
-//        .antMatchers("/v2/api-docs", "/configuration/**", "/swagger*/**", "/webjars/**")
-//        .permitAll();
-//
-//    http.authorizeRequests().anyRequest().denyAll();
-//    http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
-//  }
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.cors().and().csrf()
-                .disable().formLogin()
-                .disable().httpBasic()
-                .disable().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
-                .exceptionHandling();
-//                .authenticationEntryPoint(jwtAuthenticationEntryPoint);
-
-//        // All
-//        http.authorizeRequests()
-//                .antMatchers(HttpMethod.GET, "/", "/category", "/template", "/template/*",
-//                        "/template/author/*",
-//                        "/tutorial", "/tutorial/*", "/confirm/*", "/ws/*", "/ws/**")
-//                .permitAll()
-//                .antMatchers(HttpMethod.POST, "/login", "/google/login", "/register", "/email/confirm")
-//                .permitAll()
-//                .antMatchers("/email/draft/gmail") // Redirect URI from Google
-//                .permitAll();
-//
-//        // User
-//        http.authorizeRequests()
-//                .antMatchers(HttpMethod.GET, "/rating", "/workspace", "/raw/*", "/user", "/useremail",
-//                        "/userblock", "/userblock/*", "/session/raw/*", "/session/user", "/session/user/*",
-//                        "/google/authorize")
-//                .hasRole(USER.getName())
-//                .antMatchers(HttpMethod.POST, "/rating", "/template", "/workspace", "/rate", "/raw",
-//                        "/email/send", "/email/confirm/*", "/email/draft/*", "/publish", "/useremail",
-//                        "/userblock", "/userblock/sync", "/session/raw")
-//                .hasRole(USER.getName())
-//                .antMatchers(HttpMethod.PUT, "/rating", "/workspace/*", "/raw/*", "/user", "/user/invite",
-//                        "/userblock/*",
-//                        "/session/raw/**", "/session/user/**")
-//                .hasRole(USER.getName())
-//                .antMatchers(HttpMethod.PATCH, "/raw/**", "/userblock/*", "/file/*")
-//                .hasRole(USER.getName())
-//                .antMatchers(HttpMethod.DELETE, "/workspace/*", "/raw/*", "/useremail/*",
-//                        "/userblock/*")
-//                .hasRole(USER.getName());
-//
-//        // Administrator
-//        http.authorizeRequests().antMatchers(HttpMethod.GET, "/account", "/editor/file")
-//                .hasRole(ADMINISTRATOR.getName())
-//                .antMatchers(HttpMethod.POST, "/category", "/account", "/tutorial", "/template",
-//                        "/editor/file")
-//                .hasRole(ADMINISTRATOR.getName())
-//                .antMatchers(HttpMethod.PUT, "/category/*", "/template/*", "/account/*", "/tutorial/*",
-//                        "/publish/approve/*", "/publish/deny/*")
-//                .hasRole(ADMINISTRATOR.getName())
-//                .antMatchers(HttpMethod.PATCH, "/account/*", "/tutorial/*")
-//                .hasRole(ADMINISTRATOR.getName())
-//                .antMatchers(HttpMethod.DELETE, "/template/*", "/editor/file")
-//                .hasRole(ADMINISTRATOR.getName());
-//
-//        // Logged
-//        http.authorizeRequests()
-//                .antMatchers(HttpMethod.GET, "/user", "/file", "/publish", "/notification",
-//                        "/notification/all")
-//                .authenticated()
-//                .antMatchers(HttpMethod.POST, "/file", "/notification/*")
-//                .authenticated()
-//                .antMatchers(HttpMethod.PUT, "/user", "/file/*")
-//                .authenticated();
-
+            .disable().formLogin()
+            .disable().httpBasic()
+            .disable().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            .and()
+            .exceptionHandling();
         // Swagger
         http.authorizeRequests()
-                .antMatchers("/v2/api-docs", "/configuration/**", "/swagger*/**", "/webjars/**")
-                .permitAll();
+            .antMatchers("/v2/api-docs", "/configuration/**", "/swagger*/**", "/webjars/**")
+            .permitAll();
 
-//        http.authorizeRequests().anyRequest().denyAll();
-        http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+        http.authorizeRequests()
+            .antMatchers(HttpMethod.GET,"/account")
+            .permitAll();
     }
 }

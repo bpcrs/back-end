@@ -1,25 +1,23 @@
 package fpt.capstone.bpcrs.controller;
 
 import fpt.capstone.bpcrs.model.Brand;
-import fpt.capstone.bpcrs.model.Car;
-import fpt.capstone.bpcrs.model.Review;
-import fpt.capstone.bpcrs.payload.ApiError;
 import fpt.capstone.bpcrs.payload.ApiResponse;
 import fpt.capstone.bpcrs.payload.BrandPayload;
-import fpt.capstone.bpcrs.payload.ReviewPayload;
 import fpt.capstone.bpcrs.service.BrandService;
 import fpt.capstone.bpcrs.service.CarService;
 import fpt.capstone.bpcrs.util.ObjectMapperUtils;
-import lombok.extern.slf4j.Slf4j;
-import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import javax.validation.Valid;
-import java.util.ArrayList;
 import java.util.List;
+import javax.annotation.security.RolesAllowed;
+import javax.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/brand")
@@ -33,6 +31,7 @@ public class BrandController {
     private BrandService brandService;
 
     @GetMapping
+    @RolesAllowed({"USER", "ADMINISTRATOR"})
     public ResponseEntity<?> getBrands(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "10") int size) {
         List<Brand> brands = brandService.getAllBrand(page, size);
         List<BrandPayload.ResponseCreateBrand> brandList = ObjectMapperUtils.mapAll(brands,BrandPayload.ResponseCreateBrand.class);
@@ -40,6 +39,7 @@ public class BrandController {
     }
 
     @PostMapping
+    @RolesAllowed("ADMINISTRATOR")
     public ResponseEntity<?> createBrand(@Valid @RequestBody BrandPayload.RequestCreateBrand request) {
         BrandPayload.ResponseCreateBrand response = new BrandPayload.ResponseCreateBrand();
         Brand newBrand = (Brand) new Brand().buildObject(request, true);

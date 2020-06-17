@@ -1,7 +1,6 @@
 package fpt.capstone.bpcrs.service;
 
 import fpt.capstone.bpcrs.model.Criteria;
-
 import java.util.List;
 
 public interface CriteriaService {

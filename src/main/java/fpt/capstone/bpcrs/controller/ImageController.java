@@ -1,24 +1,26 @@
 package fpt.capstone.bpcrs.controller;
 
-import com.fasterxml.jackson.annotation.JsonView;
 import fpt.capstone.bpcrs.model.Car;
 import fpt.capstone.bpcrs.model.Image;
-import fpt.capstone.bpcrs.model.Review;
 import fpt.capstone.bpcrs.payload.ApiError;
 import fpt.capstone.bpcrs.payload.ApiResponse;
 import fpt.capstone.bpcrs.payload.ImagePayload;
-import fpt.capstone.bpcrs.payload.ReviewPayload;
 import fpt.capstone.bpcrs.service.CarService;
 import fpt.capstone.bpcrs.service.ImageService;
 import fpt.capstone.bpcrs.util.ObjectMapperUtils;
+import java.util.List;
+import javax.annotation.security.RolesAllowed;
+import javax.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import javax.validation.Valid;
-import java.util.List;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping
@@ -30,6 +32,7 @@ public class ImageController {
     private CarService carService;
 
     @GetMapping
+    @RolesAllowed({"USER", "ADMINISTRATOR"})
     public ResponseEntity<?> getImages(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "10") int size,
                                        @RequestParam int carId) {
         Car car =  carService.getCarById(carId);
@@ -42,6 +45,7 @@ public class ImageController {
     }
 
     @PostMapping
+    @RolesAllowed("USER")
     public ResponseEntity<?> createImage(@Valid @RequestBody ImagePayload.RequestCreateImage request) {
         Car car =  carService.getCarById(request.getCarId());
         if (car == null) {

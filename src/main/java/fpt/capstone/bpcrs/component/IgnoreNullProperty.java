@@ -1,10 +1,9 @@
 package fpt.capstone.bpcrs.component;
 
-import org.springframework.beans.BeanWrapper;
-import org.springframework.beans.BeanWrapperImpl;
-
 import java.util.HashSet;
 import java.util.Set;
+import org.springframework.beans.BeanWrapper;
+import org.springframework.beans.BeanWrapperImpl;
 
 public class IgnoreNullProperty {
 
