@@ -1,12 +1,10 @@
 package fpt.capstone.bpcrs.util;
 
-import fpt.capstone.bpcrs.model.Car;
-
-import javax.validation.ConstraintViolation;
-import javax.validation.Validation;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
 
 public class ValidateUtils {
 

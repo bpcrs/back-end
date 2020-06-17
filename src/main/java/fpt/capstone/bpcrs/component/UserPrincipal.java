@@ -1,12 +1,14 @@
 package fpt.capstone.bpcrs.component;
 
 import fpt.capstone.bpcrs.model.Account;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
-
-import java.util.*;
 
 @Data
 public class UserPrincipal implements UserDetails {

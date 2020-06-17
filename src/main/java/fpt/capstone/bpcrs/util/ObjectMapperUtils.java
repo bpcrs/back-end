@@ -1,12 +1,10 @@
 package fpt.capstone.bpcrs.util;
 
-import org.modelmapper.ModelMapper;
-import org.modelmapper.convention.NameTokenizers;
-import org.modelmapper.spi.NameTokenizer;
-
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.modelmapper.ModelMapper;
+import org.modelmapper.convention.NameTokenizers;
 
 public class ObjectMapperUtils {
     private static ModelMapper modelMapper = null;

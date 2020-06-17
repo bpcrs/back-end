@@ -1,14 +1,10 @@
 package fpt.capstone.bpcrs.payload;
 
-import com.fasterxml.jackson.annotation.*;
-import fpt.capstone.bpcrs.model.Agreement;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
 public class AgreementPayload {
