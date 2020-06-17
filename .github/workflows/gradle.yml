@@ -31,3 +31,4 @@ jobs:
         host: 34.87.125.208
         user: jeremy
         key: ${{ secrets.SSH_KEY }}
+        args: "-tt"
