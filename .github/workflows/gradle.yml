@@ -22,4 +22,5 @@ jobs:
         access_token: ${{ secrets.GITHUB_TOKEN }}
         username: ${{ github.actor }}
         image_name: bpcrs-backend
+        tags: lastest
   
