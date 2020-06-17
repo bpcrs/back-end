@@ -1,0 +1,7 @@
+---
+spring.profiles: dev
+spring.profiles.include: dev
+---
+spring.profiles: prod
+spring.profiles.include: prod
+---

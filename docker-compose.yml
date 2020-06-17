@@ -12,10 +12,12 @@ services:
     networks:
       - bpcrs
   bpcrs-backend:
-    image: docker.pkg.github.com/bpcrs/back-end/bpcrs-backend:7ad583fb0cb882987e6b9d58dce57dc4e5ef3521
+    image: docker.pkg.github.com/bpcrs/back-end/bpcrs-backend:latest
     volumes:
       - ./:/app
     working_dir: /app
+    environment:
+      SPRING_PROFILES_ACTIVE=prod
     ports:
       - 5000:5000
     networks:
