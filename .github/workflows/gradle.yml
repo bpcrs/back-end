@@ -24,3 +24,10 @@ jobs:
         image_name: bpcrs-backend
         tags: latest
   
+    - name: Remote SSH Commands
+      uses: fifsky/ssh-action@v0.0.4
+      with:
+        command: docker-compose up -d 
+        host: 34.87.125.208
+        user: jeremy
+        key: ${{ secrets.SSH_KEY }}
