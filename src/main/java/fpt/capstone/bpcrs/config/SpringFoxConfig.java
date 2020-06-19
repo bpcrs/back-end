@@ -2,6 +2,8 @@ package fpt.capstone.bpcrs.config;
 
 import java.util.Collections;
 import java.util.List;
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -21,6 +23,9 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @Import(springfox.bean.validators.configuration.BeanValidatorPluginsConfiguration.class)
 public class SpringFoxConfig {
 
+  @Value("${app.host}")
+  private String hostName;
+
   @Bean
   public Docket apiDocket() {
     return new Docket(DocumentationType.SWAGGER_2)
@@ -28,7 +33,7 @@ public class SpringFoxConfig {
         .apis(RequestHandlerSelectors.any())
         .paths(PathSelectors.any())
         .build()
-        .useDefaultResponseMessages(false)
+        .useDefaultResponseMessages(false).host(hostName)
         .forCodeGeneration(true)
         .apiInfo(getApiInfo())
         .securitySchemes(Collections.singletonList(apiKey()))

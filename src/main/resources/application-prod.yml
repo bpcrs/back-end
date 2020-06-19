@@ -3,3 +3,5 @@ spring:
     username: root
     password: 1qaz2wsx
     url: jdbc:mysql://bpcrs-db:3306/bpcrs
+app:
+  host: api.bpcrs.network
