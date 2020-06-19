@@ -68,7 +68,7 @@ public class CarController {
             car.buildObject(response,false);
             return ResponseEntity.ok(new ApiResponse<>(true,response));
         }
-        return new ResponseEntity(new ApiResponse<>(false,"Not found car with id=" + id ), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity(new ApiResponse<>(false, "Car with id=" + id + " not found"), HttpStatus.BAD_REQUEST);
     }
 
     @PutMapping("/{id}")

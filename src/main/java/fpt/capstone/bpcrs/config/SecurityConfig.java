@@ -1,6 +1,5 @@
 package fpt.capstone.bpcrs.config;
 
-import fpt.capstone.bpcrs.component.JwtAuthenticationEntryPoint;
 import fpt.capstone.bpcrs.filter.JwtAuthenticationFilter;
 import fpt.capstone.bpcrs.service.impl.CustomUserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,9 +24,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private CustomUserDetailsServiceImpl customUserDetailsService;
-
-    @Autowired
-    private JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
     @Bean
     public JwtAuthenticationFilter jwtAuthenticationFilter() {

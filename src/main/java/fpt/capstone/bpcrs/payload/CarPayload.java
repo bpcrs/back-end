@@ -42,6 +42,8 @@ public class CarPayload {
         private int id;
         @NotNull
         private int brandId;
+        @NotNull
+        private String VIN;
     }
 
     @Data
