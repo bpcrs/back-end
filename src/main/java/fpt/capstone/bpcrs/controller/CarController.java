@@ -35,8 +35,6 @@ public class CarController {
     private CarService carService;
     @Autowired
     private BrandService brandService;
-    @Autowired
-    private DappService dappService;
 
     @GetMapping
     public ResponseEntity<?> getCars(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "10") int size, @RequestParam(required = false, defaultValue = "") String search) {
@@ -58,7 +56,7 @@ public class CarController {
         carService.createCar(newCar).buildObject(response, false);
         return ResponseEntity.ok(new ApiResponse<>(true, response));
     }
-//
+
     @GetMapping("/{id}")
     @RolesAllowed({"USER", "ADMINISTRATOR"})
     public ResponseEntity<?> getCar(@PathVariable() int id){
