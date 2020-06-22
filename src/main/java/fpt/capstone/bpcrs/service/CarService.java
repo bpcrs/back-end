@@ -12,4 +12,5 @@ public interface CarService {
 
     Car updateCar(Car updateCar, int id);
 
+    int count();
 }

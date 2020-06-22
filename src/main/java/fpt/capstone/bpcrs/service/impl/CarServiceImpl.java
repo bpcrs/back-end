@@ -46,4 +46,9 @@ public class CarServiceImpl implements CarService {
         BeanUtils.copyProperties(updateCar, car, IgnoreNullProperty.getNullPropertyNames(updateCar));
         return carRepository.save(car);
     }
+
+    @Override
+    public int count() {
+        return (int) carRepository.count();
+    }
 }

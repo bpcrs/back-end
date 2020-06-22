@@ -5,10 +5,13 @@ import fpt.capstone.bpcrs.model.Car;
 import fpt.capstone.bpcrs.payload.ApiError;
 import fpt.capstone.bpcrs.payload.ApiResponse;
 import fpt.capstone.bpcrs.payload.CarPayload;
+import fpt.capstone.bpcrs.payload.PagingPayload;
 import fpt.capstone.bpcrs.service.BrandService;
 import fpt.capstone.bpcrs.service.CarService;
 import fpt.capstone.bpcrs.service.DappService;
 import fpt.capstone.bpcrs.util.ObjectMapperUtils;
+
+import java.util.Collections;
 import java.util.List;
 import javax.annotation.security.RolesAllowed;
 import javax.validation.Valid;
@@ -40,7 +43,8 @@ public class CarController {
     public ResponseEntity<?> getCars(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "10") int size, @RequestParam(required = false, defaultValue = "") String search) {
         List<Car> cars = carService.getAllCarPaging(page, size, search);
         List<CarPayload.ResponseGetCar> carList = ObjectMapperUtils.mapAll(cars,CarPayload.ResponseGetCar.class);
-        return ResponseEntity.ok(new ApiResponse<>(true, carList));
+        PagingPayload pagingPayload = PagingPayload.builder().data(carList).count(carService.count()).build();
+        return ResponseEntity.ok(new ApiResponse<>(true, pagingPayload));
     }
 
     @PostMapping
