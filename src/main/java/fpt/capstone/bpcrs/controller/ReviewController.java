@@ -1,5 +1,7 @@
 package fpt.capstone.bpcrs.controller;
 
+import fpt.capstone.bpcrs.component.UserPrincipal;
+import fpt.capstone.bpcrs.model.Account;
 import fpt.capstone.bpcrs.model.Car;
 import fpt.capstone.bpcrs.model.Review;
 import fpt.capstone.bpcrs.payload.ApiError;
@@ -16,6 +18,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -47,6 +51,7 @@ public class ReviewController {
     @PostMapping
     @RolesAllowed("USER")
     public ResponseEntity<?> createReview(@Valid @RequestBody ReviewPayload.RequestCreateReview request) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         Car car = carService.getCarById(request.getCarId());
         if (car == null) {
             return new ResponseEntity(new ApiError("Car with id= " + request.getCarId() + " not found", ""),
@@ -54,6 +59,9 @@ public class ReviewController {
         }
         ReviewPayload.ResponseCreateReview response = new ReviewPayload.ResponseCreateReview();
         Review newReview = (Review) new Review().buildObject(request, true);
+        newReview.setCar(car);
+        UserPrincipal userPrincipal = (UserPrincipal) auth.getPrincipal();
+        newReview.setRenter(accountService.getAccountByEmail(userPrincipal.getEmail()));
         reviewService.createReview(newReview).buildObject(response, false);
         return ResponseEntity.ok(new ApiResponse<>(true, response));
     }
