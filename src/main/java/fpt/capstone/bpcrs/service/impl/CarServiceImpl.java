@@ -24,7 +24,7 @@ public class CarServiceImpl implements CarService {
 
     @Override
     public List<Car> getAllCarPaging(int page, int size, String search) {
-        Page<Car> cars = carRepository.findAllByNameContains(search,new Paging(page,size,Sort.unsorted()));
+        Page<Car> cars = carRepository.findAllByNameContainsAndIsAvailableIsTrue(search,new Paging(page,size,Sort.unsorted()));
         return cars.get().collect(Collectors.toList());
     }
 
@@ -32,7 +32,6 @@ public class CarServiceImpl implements CarService {
     public Car createCar(Car newCar) {
         return carRepository.save(newCar);
     }
-
 
     @Override
     public Car getCarById(int id) {
@@ -49,6 +48,7 @@ public class CarServiceImpl implements CarService {
 
     @Override
     public int count() {
-        return (int) carRepository.count();
+        return carRepository.countAllByIsAvailableIsTrue();
     }
+
 }

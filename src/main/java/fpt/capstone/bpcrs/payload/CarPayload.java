@@ -27,12 +27,13 @@ public class CarPayload {
         private boolean autoDriver;
         @NotNull
         private String plateNum;
-        @NotNull
         private int brandId;
         @NotNull
         private int id;
         private String VIN;
         private AccountPayload.AccountResponse owner;
+        @NotNull
+        private double price;
     }
 
     @Data
@@ -47,7 +48,7 @@ public class CarPayload {
         private String screen;
         private boolean autoDriver;
         private String plateNum;
-        private String registrationNum;
+        private double price;
     }
 
 }

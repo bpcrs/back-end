@@ -67,6 +67,10 @@ public class  Car extends Auditing {
     @NotNull
     private String VIN;
 
+    @Column
+    @NotNull
+    private double price;
+
     @ManyToOne
     @JoinColumn(name = "owner_id")
     @ApiModelProperty(hidden = true)
