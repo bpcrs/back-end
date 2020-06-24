@@ -51,7 +51,6 @@ public class ReviewController {
     @PostMapping
     @RolesAllowed("USER")
     public ResponseEntity<?> createReview(@Valid @RequestBody ReviewPayload.RequestCreateReview request) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         Car car = carService.getCarById(request.getCarId());
         if (car == null) {
             return new ResponseEntity(new ApiError("Car with id= " + request.getCarId() + " not found", ""),
@@ -60,8 +59,7 @@ public class ReviewController {
         ReviewPayload.ResponseCreateReview response = new ReviewPayload.ResponseCreateReview();
         Review newReview = (Review) new Review().buildObject(request, true);
         newReview.setCar(car);
-        UserPrincipal userPrincipal = (UserPrincipal) auth.getPrincipal();
-        newReview.setRenter(accountService.getAccountByEmail(userPrincipal.getEmail()));
+        newReview.setRenter(accountService.getCurrentUser());
         reviewService.createReview(newReview).buildObject(response, false);
         return ResponseEntity.ok(new ApiResponse<>(true, response));
     }
