@@ -41,6 +41,9 @@ public class BookingPayload {
         @NotNull
         private Date from_date;
 
+        @NotNull
+        private double price;
+
     }
 
     @Data
@@ -72,6 +75,9 @@ public class BookingPayload {
 
         @NotNull
         private Date from_date;
+
+        @NotNull
+        private double price;
 
     }
 }
