@@ -51,6 +51,9 @@ public class Booking extends Auditing {
     @Column(nullable = false)
     private String description;
 
+    @Column(nullable = false)
+    private double price;
+
     @ManyToOne
     @NonNull
     @JoinColumn(name = "renter_id")

@@ -9,5 +9,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface CarRepository extends JpaRepository<Car, Integer> {
 
-    Page<Car> findAllByNameContains(String search, Pageable paging);
+    Page<Car> findAllByNameContainsAndIsAvailableIsTrue(String search, Pageable paging);
+
+    int countAllByIsAvailableIsTrue();
 }
