@@ -3,6 +3,8 @@ package fpt.capstone.bpcrs.service.impl;
 import fpt.capstone.bpcrs.component.IgnoreNullProperty;
 import fpt.capstone.bpcrs.component.Paging;
 import fpt.capstone.bpcrs.model.Car;
+import fpt.capstone.bpcrs.model.Car_;
+import fpt.capstone.bpcrs.model.specification.CarSpecification;
 import fpt.capstone.bpcrs.repository.CarRepository;
 import fpt.capstone.bpcrs.service.CarService;
 import java.util.List;
@@ -13,7 +15,13 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 
 @Service
 @Slf4j
@@ -21,12 +29,6 @@ public class CarServiceImpl implements CarService {
 
     @Autowired
     private CarRepository carRepository;
-
-    @Override
-    public List<Car> getAllCarPaging(int page, int size, String search) {
-        Page<Car> cars = carRepository.findAllByNameContainsAndIsAvailableIsTrue(search,new Paging(page,size,Sort.unsorted()));
-        return cars.get().collect(Collectors.toList());
-    }
 
     @Override
     public Car createCar(Car newCar) {
@@ -47,8 +49,22 @@ public class CarServiceImpl implements CarService {
     }
 
     @Override
-    public int count() {
-        return carRepository.countAllByIsAvailableIsTrue();
+    public Page<Car> getAllCarsPagingByFilters(int page, int size, String[] models, Integer seat, Double fromPrice, Double toPrice, Integer brandId) {
+        Specification conditon = (Specification) (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get(Car_.IS_AVAILABLE), true);
+        if (models != null) {
+            conditon = conditon.and(CarSpecification.carHasModelName(models));
+        }
+        if (seat != null) {
+            conditon = conditon.and(CarSpecification.carHasSeatNumber(seat));
+        }
+        if (toPrice != null && fromPrice != null) {
+            conditon = conditon.and(CarSpecification.carHasFromPriceTpPrice(fromPrice, toPrice));
+        }
+        if (brandId != null) {
+            conditon = conditon.and(CarSpecification.carHasBrand(brandId));
+        }
+        Page<Car> cars = carRepository.findAll(conditon,new Paging(page,size,Sort.unsorted()));
+        return cars;
     }
 
 }

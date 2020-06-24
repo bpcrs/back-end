@@ -24,6 +24,7 @@ repositories {
 }
 
 dependencies {
+    annotationProcessor('org.hibernate:hibernate-jpamodelgen:5.3.7.Final')
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-websocket'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
@@ -51,6 +52,21 @@ dependencies {
     implementation group: 'org.modelmapper', name: 'modelmapper', version: '2.3.0'
     compile group: 'io.grpc', name: 'grpc-all', version: '1.29.0'
     compile "com.google.protobuf:protobuf-java:3.12.1"
+    compile group: 'javax.persistence', name: 'javax.persistence-api', version: '2.2'
+}
+
+
+tasks.withType(JavaCompile) {
+    options.annotationProcessorGeneratedSourcesDirectory = file("src/generated/java")
+}
+
+
+sourceSets {
+    generated {
+        java {
+            srcDirs = ['src/generated/java']
+        }
+    }
 }
 task protoTask{
     sourceSets {
