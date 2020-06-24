@@ -6,6 +6,7 @@ import fpt.capstone.bpcrs.payload.ApiError;
 import fpt.capstone.bpcrs.payload.ApiResponse;
 import fpt.capstone.bpcrs.payload.CarPayload;
 import fpt.capstone.bpcrs.payload.PagingPayload;
+import fpt.capstone.bpcrs.service.AccountService;
 import fpt.capstone.bpcrs.service.BrandService;
 import fpt.capstone.bpcrs.service.CarService;
 import fpt.capstone.bpcrs.util.ObjectMapperUtils;
@@ -32,6 +33,8 @@ public class CarController {
     private CarService carService;
     @Autowired
     private BrandService brandService;
+    @Autowired
+    private AccountService accountService;
 
     @GetMapping
     public ResponseEntity<?> getCars(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "10") int size, @RequestParam(required = false) String[] models,
@@ -43,6 +46,7 @@ public class CarController {
         Page<Car> cars = carService.getAllCarsPagingByFilters(page, size, models, seat, fromPrice, toPrice, brand);
         List<CarPayload.ResponseGetCar> carList = ObjectMapperUtils.mapAll(cars.toList(), CarPayload.ResponseGetCar.class);
         PagingPayload pagingPayload = PagingPayload.builder().data(carList).count((int) cars.getTotalElements()).build();
+
         return ResponseEntity.ok(new ApiResponse<>(true, pagingPayload));
     }
 
@@ -56,13 +60,13 @@ public class CarController {
         CarPayload.ResponseGetCar response = new CarPayload.ResponseGetCar();
         Car newCar = (Car) new Car().buildObject(request, true);
         newCar.setBrand(brand);
+        newCar.setOwner(accountService.getCurrentUser());
         carService.createCar(newCar).buildObject(response, false);
         return ResponseEntity.ok(new ApiResponse<>(true, response));
     }
 
     @GetMapping("/{id}")
-    @RolesAllowed({"USER", "ADMINISTRATOR"})
-    public ResponseEntity<?> getCar(@PathVariable() int id) {
+    public ResponseEntity<?> getCar(@PathVariable() int id){
         CarPayload.ResponseGetCar response = new CarPayload.ResponseGetCar();
         Car car = carService.getCarById(id);
         if (car != null) {

@@ -1,5 +1,6 @@
 package fpt.capstone.bpcrs.service.impl;
 
+import fpt.capstone.bpcrs.component.UserPrincipal;
 import fpt.capstone.bpcrs.constant.RoleEnum;
 import fpt.capstone.bpcrs.exception.BadRequestException;
 import fpt.capstone.bpcrs.model.Account;
@@ -7,9 +8,13 @@ import fpt.capstone.bpcrs.model.Role;
 import fpt.capstone.bpcrs.repository.AccountRepository;
 import fpt.capstone.bpcrs.repository.RoleRepository;
 import fpt.capstone.bpcrs.service.AccountService;
+
 import java.util.List;
+
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -56,6 +61,13 @@ public class AccountServiceImpl implements AccountService {
         account.setFullName(name);
         account.setImageUrl(imageUrl);
         return accountRepository.save(account);
+    }
+
+    @Override
+    public Account getCurrentUser() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        UserPrincipal userPrincipal = (UserPrincipal) auth.getPrincipal();
+        return getAccountByEmail(userPrincipal.getEmail());
     }
 
     private Account setNewAccount(String email, String fullName, String imageUrl, Role role) {
