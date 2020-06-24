@@ -3,6 +3,7 @@ package fpt.capstone.bpcrs.service.impl;
 import fpt.capstone.bpcrs.component.IgnoreNullProperty;
 import fpt.capstone.bpcrs.component.Paging;
 import fpt.capstone.bpcrs.model.Car;
+import fpt.capstone.bpcrs.model.Car_;
 import fpt.capstone.bpcrs.model.specification.CarSpecification;
 import fpt.capstone.bpcrs.repository.CarRepository;
 import fpt.capstone.bpcrs.service.CarService;
@@ -48,10 +49,10 @@ public class CarServiceImpl implements CarService {
     }
 
     @Override
-    public Page<Car> getAllCarsPagingByFilters(int page, int size, String model, Integer seat, Double fromPrice, Double toPrice, Integer brandId) {
-        Specification conditon = (Specification) (root, query, criteriaBuilder) -> null;
-        if (model != null) {
-            conditon = conditon.and(CarSpecification.carHasModelName(model));
+    public Page<Car> getAllCarsPagingByFilters(int page, int size, String[] models, Integer seat, Double fromPrice, Double toPrice, Integer brandId) {
+        Specification conditon = (Specification) (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get(Car_.IS_AVAILABLE), true);
+        if (models != null) {
+            conditon = conditon.and(CarSpecification.carHasModelName(models));
         }
         if (seat != null) {
             conditon = conditon.and(CarSpecification.carHasSeatNumber(seat));

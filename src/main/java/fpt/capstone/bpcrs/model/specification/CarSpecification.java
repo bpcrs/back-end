@@ -4,10 +4,12 @@ import fpt.capstone.bpcrs.model.Car;
 import fpt.capstone.bpcrs.model.Car_;
 import org.springframework.data.jpa.domain.Specification;
 
+import java.util.List;
+
 public class CarSpecification  {
 
-   public static Specification<Car> carHasModelName(String model) {
-      return (Specification<Car>) (root, query, cb) -> cb.equal(root.get(Car_.MODEL), model);
+   public static Specification<Car> carHasModelName(String[] models) {
+      return (Specification<Car>) (root, query, cb) -> root.get(Car_.MODEL).in(models);
    }
 
    public static Specification<Car> carHasSeatNumber(int number) {
