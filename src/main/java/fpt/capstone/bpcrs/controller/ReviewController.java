@@ -39,7 +39,6 @@ public class ReviewController {
     private AccountService accountService;
 
     @GetMapping
-    @RolesAllowed({"USER", "ADMINISTRATOR"})
     public ResponseEntity<?> getReviews(@RequestParam(defaultValue = "1") int page,
                                         @RequestParam(defaultValue = "10") int size,
                                         @RequestParam int carId) {
@@ -59,6 +58,7 @@ public class ReviewController {
         ReviewPayload.ResponseCreateReview response = new ReviewPayload.ResponseCreateReview();
         Review newReview = (Review) new Review().buildObject(request, true);
         newReview.setCar(car);
+
         newReview.setRenter(accountService.getCurrentUser());
         reviewService.createReview(newReview).buildObject(response, false);
         return ResponseEntity.ok(new ApiResponse<>(true, response));

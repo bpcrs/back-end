@@ -66,7 +66,6 @@ public class CarController {
     }
 
     @GetMapping("/{id}")
-    @RolesAllowed({"USER", "ADMINISTRATOR"})
     public ResponseEntity<?> getCar(@PathVariable() int id){
         CarPayload.ResponseGetCar response = new CarPayload.ResponseGetCar();
         Car car = carService.getCarById(id);

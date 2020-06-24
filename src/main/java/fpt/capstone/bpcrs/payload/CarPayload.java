@@ -2,23 +2,13 @@ package fpt.capstone.bpcrs.payload;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+
+import fpt.capstone.bpcrs.model.Account;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
 public class CarPayload {
-
-//    @Data
-//    @NoArgsConstructor
-//    @AllArgsConstructor
-//    public static class RequestCreateCar {
-//
-//        @Min(1)
-//        private int brandId;
-//    }
-
-//    @EqualsAndHashCode(callSuper = true)
-
 
     @Data
     @NoArgsConstructor
@@ -38,12 +28,11 @@ public class CarPayload {
         @NotNull
         private String plateNum;
         @NotNull
-        private String registrationNum;
-        private int id;
-        @NotNull
         private int brandId;
         @NotNull
+        private int id;
         private String VIN;
+        private AccountPayload.AccountResponse owner;
     }
 
     @Data
