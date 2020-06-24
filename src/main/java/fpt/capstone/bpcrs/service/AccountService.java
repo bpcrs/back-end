@@ -13,4 +13,5 @@ public interface AccountService {
 
   Account setGoogleAccount(String email, String name, String imageUrl);
 
+  Account getCurrentUser();
 }
