@@ -1,5 +1,7 @@
 package fpt.capstone.bpcrs.controller;
 
+import fpt.capstone.bpcrs.component.UserPrincipal;
+import fpt.capstone.bpcrs.model.Account;
 import fpt.capstone.bpcrs.model.Car;
 import fpt.capstone.bpcrs.model.Review;
 import fpt.capstone.bpcrs.payload.ApiError;
@@ -16,6 +18,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -35,7 +39,6 @@ public class ReviewController {
     private AccountService accountService;
 
     @GetMapping
-    @RolesAllowed({"USER", "ADMINISTRATOR"})
     public ResponseEntity<?> getReviews(@RequestParam(defaultValue = "1") int page,
                                         @RequestParam(defaultValue = "10") int size,
                                         @RequestParam int carId) {
@@ -54,6 +57,9 @@ public class ReviewController {
         }
         ReviewPayload.ResponseCreateReview response = new ReviewPayload.ResponseCreateReview();
         Review newReview = (Review) new Review().buildObject(request, true);
+        newReview.setCar(car);
+
+        newReview.setRenter(accountService.getCurrentUser());
         reviewService.createReview(newReview).buildObject(response, false);
         return ResponseEntity.ok(new ApiResponse<>(true, response));
     }
