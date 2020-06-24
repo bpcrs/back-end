@@ -8,26 +8,20 @@ import fpt.capstone.bpcrs.payload.CarPayload;
 import fpt.capstone.bpcrs.payload.PagingPayload;
 import fpt.capstone.bpcrs.service.BrandService;
 import fpt.capstone.bpcrs.service.CarService;
-import fpt.capstone.bpcrs.service.DappService;
 import fpt.capstone.bpcrs.util.ObjectMapperUtils;
 
-import java.util.Collections;
 import java.util.List;
 import javax.annotation.security.RolesAllowed;
 import javax.validation.Valid;
+
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/car")
@@ -40,10 +34,15 @@ public class CarController {
     private BrandService brandService;
 
     @GetMapping
-    public ResponseEntity<?> getCars(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "10") int size, @RequestParam(required = false, defaultValue = "") String search) {
-        List<Car> cars = carService.getAllCarPaging(page, size, search);
-        List<CarPayload.ResponseGetCar> carList = ObjectMapperUtils.mapAll(cars,CarPayload.ResponseGetCar.class);
-        PagingPayload pagingPayload = PagingPayload.builder().data(carList).count(carService.count()).build();
+    public ResponseEntity<?> getCars(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "10") int size, @RequestParam(required = false) String model,
+                                     @RequestParam(required = false) Integer seat,
+                                     @RequestParam(required = false) Double fromPrice,
+                                     @RequestParam(required = false) Double toPrice,
+                                     @RequestParam(required = false) Integer brand
+                                    ) {
+        Page<Car> cars = carService.getAllCarsPagingByFilters(page, size, model, seat, fromPrice, toPrice, brand);
+        List<CarPayload.ResponseGetCar> carList = ObjectMapperUtils.mapAll(cars.toList(), CarPayload.ResponseGetCar.class);
+        PagingPayload pagingPayload = PagingPayload.builder().data(carList).count((int) cars.getTotalElements()).build();
         return ResponseEntity.ok(new ApiResponse<>(true, pagingPayload));
     }
 
@@ -51,8 +50,8 @@ public class CarController {
     @RolesAllowed("USER")
     public ResponseEntity<?> createCar(@Valid @RequestBody CarPayload.ResponseGetCar request) {
         Brand brand = brandService.getBrandById(request.getBrandId());
-        if (brand == null){
-            return new ResponseEntity(new ApiError("Brand with id=" + request.getBrandId() + " not found",""),HttpStatus.BAD_REQUEST);
+        if (brand == null) {
+            return new ResponseEntity(new ApiError("Brand with id=" + request.getBrandId() + " not found", ""), HttpStatus.BAD_REQUEST);
         }
         CarPayload.ResponseGetCar response = new CarPayload.ResponseGetCar();
         Car newCar = (Car) new Car().buildObject(request, true);
@@ -63,21 +62,21 @@ public class CarController {
 
     @GetMapping("/{id}")
     @RolesAllowed({"USER", "ADMINISTRATOR"})
-    public ResponseEntity<?> getCar(@PathVariable() int id){
+    public ResponseEntity<?> getCar(@PathVariable() int id) {
         CarPayload.ResponseGetCar response = new CarPayload.ResponseGetCar();
         Car car = carService.getCarById(id);
-        if (car != null)  {
-            car.buildObject(response,false);
-            return ResponseEntity.ok(new ApiResponse<>(true,response));
+        if (car != null) {
+            car.buildObject(response, false);
+            return ResponseEntity.ok(new ApiResponse<>(true, response));
         }
         return new ResponseEntity(new ApiResponse<>(false, "Car with id=" + id + " not found"), HttpStatus.BAD_REQUEST);
     }
 
     @PutMapping("/{id}")
     @RolesAllowed({"USER", "ADMINISTRATOR"})
-    public ResponseEntity<?> updateCar(@PathVariable() int id, @RequestBody CarPayload.RequestUpdateCar request){
+    public ResponseEntity<?> updateCar(@PathVariable() int id, @RequestBody CarPayload.RequestUpdateCar request) {
         Car car = carService.getCarById(id);
-        if (car == null){
+        if (car == null) {
             return new ResponseEntity(new ApiError("Car with id=" + id + " not found", ""), HttpStatus.BAD_REQUEST);
         }
         CarPayload.RequestUpdateCar response = new CarPayload.RequestUpdateCar();
@@ -86,5 +85,6 @@ public class CarController {
         carService.updateCar(updateCar, id).buildObject(response, false);
         return ResponseEntity.ok(new ApiResponse<>(true, response));
     }
+
 
 }

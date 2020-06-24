@@ -1,10 +1,11 @@
 package fpt.capstone.bpcrs.service;
 
 import fpt.capstone.bpcrs.model.Car;
+import org.springframework.data.domain.Page;
+
 import java.util.List;
 
 public interface CarService {
-    List<Car> getAllCarPaging(int page, int size, String search);
 
     Car createCar(Car newCar);
 
@@ -12,6 +13,5 @@ public interface CarService {
 
     Car updateCar(Car updateCar, int id);
 
-    int count();
-
+    Page<Car> getAllCarsPagingByFilters(int page, int size, String model, Integer seat, Double fromPrice, Double toPrice, Integer brandId);
 }
