@@ -5,19 +5,10 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import fpt.capstone.bpcrs.component.Auditing;
 import io.swagger.annotations.ApiModelProperty;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EntityListeners;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import javax.persistence.*;
 
 @Entity
 @Getter
@@ -45,6 +36,18 @@ public class Account extends Auditing {
 
     @Column(nullable = false)
     private String fullName;
+
+    @Column
+    private String city;
+
+    @Column
+    private String district;
+
+    @Column
+    private String ward;
+
+    @Column
+    private String street;
 
     @ManyToOne(optional = false)
     @ApiModelProperty(hidden = true)

@@ -10,25 +10,20 @@ import fpt.capstone.bpcrs.payload.AccountPayload.AccountResponse;
 import fpt.capstone.bpcrs.payload.ApiResponse;
 import fpt.capstone.bpcrs.service.AccountService;
 import fpt.capstone.bpcrs.util.ObjectMapperUtils;
+
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.List;
 import javax.annotation.security.RolesAllowed;
 import javax.validation.Valid;
+
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/account")
@@ -44,30 +39,39 @@ public class AccountController {
     @Autowired
     private GoogleIdTokenVerifier googleIdTokenVerifier;
 
+    @PutMapping("/address/{id}")
+    @RolesAllowed("USER")
+    private ResponseEntity<?> updateAddress(@Valid @PathVariable("id") int id, @Valid @RequestParam AccountPayload.AccountAddressUpdate request) {
+        Account account = accountService.updateAccountAddress(id, request);
+        AccountPayload.AccountResponse response = ObjectMapperUtils
+                .map(account, AccountPayload.AccountResponse.class);
+        return ResponseEntity.ok(new ApiResponse<>(true, "Update account successful", response));
+    }
+
     @GetMapping
     @RolesAllowed("ADMINISTRATOR")
     public ResponseEntity<?> getAccounts() {
         List<Account> accounts = accountService.getAccounts();
-            if (accounts.isEmpty()) {
-                return new ResponseEntity(new ApiResponse<>(false, "List account is empty"),
-                  HttpStatus.BAD_REQUEST);
-            }
-            List<AccountPayload.AccountResponse> responses = ObjectMapperUtils
+        if (accounts.isEmpty()) {
+            return new ResponseEntity(new ApiResponse<>(false, "List account is empty"),
+                    HttpStatus.BAD_REQUEST);
+        }
+        List<AccountPayload.AccountResponse> responses = ObjectMapperUtils
                 .mapAll(accounts, AccountPayload.AccountResponse.class);
-            for (int i = 0; i < responses.size(); i++) {
-                responses.get(i).setRole(accounts.get(i).getRole().getName());
-            }
-        return ResponseEntity.ok(new ApiResponse<>(true, "Get list account successfull", responses));
+        for (int i = 0; i < responses.size(); i++) {
+            responses.get(i).setRole(accounts.get(i).getRole().getName());
+        }
+        return ResponseEntity.ok(new ApiResponse<>(true, "Get list account successful", responses));
     }
 
     @PatchMapping("/{id}")
     @RolesAllowed("ADMINISTRATOR")
     public ResponseEntity<?> updateAccountStatus(
-        @PathVariable("id") int id, @RequestParam("active") boolean active) {
+            @PathVariable("id") int id, @RequestParam("active") boolean active) {
         try {
             Account account = accountService.updateAccountStatus(id, active);
             AccountPayload.AccountResponse response = ObjectMapperUtils
-                .map(account, AccountPayload.AccountResponse.class);
+                    .map(account, AccountPayload.AccountResponse.class);
             return ResponseEntity.ok(new ApiResponse<>(true, "Account updated", response));
         } catch (BadRequestException ex) {
             return ResponseEntity.badRequest().body(new ApiResponse<>(false, ex.getMessage(), null));
@@ -76,7 +80,7 @@ public class AccountController {
 
     @PostMapping("/google/login")
     public ResponseEntity<?> loginByGoogle(
-        @Valid @RequestBody AccountPayload.GoogleRequestLogin requestLogin) {
+            @Valid @RequestBody AccountPayload.GoogleRequestLogin requestLogin) {
         try {
             String token = requestLogin.getToken();
             if (StringUtils.isEmpty(token)) {
@@ -96,16 +100,16 @@ public class AccountController {
             }
 
             String jwt = tokenProvider
-                .generateToken(AccountResponse.builder()
-                .id(account.getId())
-                .role(account.getRole().getName())
-                .email(account.getEmail())
-                .fullName(account.getFullName())
-                .imageUrl(account.getImageUrl())
-                .build());
+                    .generateToken(AccountResponse.builder()
+                            .id(account.getId())
+                            .role(account.getRole().getName())
+                            .email(account.getEmail())
+                            .fullName(account.getFullName())
+                            .imageUrl(account.getImageUrl())
+                            .build());
             return ResponseEntity.ok(
-                new ApiResponse<>(true, "Logged successfully", jwt));
-        }   catch (BadRequestException | GeneralSecurityException | IOException ex) {
+                    new ApiResponse<>(true, "Logged successfully", jwt));
+        } catch (BadRequestException | GeneralSecurityException | IOException ex) {
             return ResponseEntity.badRequest().body(new ApiResponse<>(false, ex.getMessage(), null));
         }
     }

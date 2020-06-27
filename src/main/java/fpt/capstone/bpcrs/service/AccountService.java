@@ -1,6 +1,8 @@
 package fpt.capstone.bpcrs.service;
 
 import fpt.capstone.bpcrs.model.Account;
+import fpt.capstone.bpcrs.payload.AccountPayload;
+
 import java.util.List;
 
 public interface AccountService {
@@ -14,4 +16,6 @@ public interface AccountService {
   Account setGoogleAccount(String email, String name, String imageUrl);
 
   Account getCurrentUser();
+
+  Account updateAccountAddress(int id, AccountPayload.AccountAddressUpdate request);
 }

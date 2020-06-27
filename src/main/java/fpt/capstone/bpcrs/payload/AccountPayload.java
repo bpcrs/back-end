@@ -44,4 +44,17 @@ public class AccountPayload {
         @NonNull
         private String role;
     }
+
+    @Data
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class AccountAddressUpdate {
+        @NonNull
+        private int id;
+        private String city;
+        private String district;
+        private String ward;
+        private String street;
+    }
 }

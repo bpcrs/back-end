@@ -5,6 +5,7 @@ import fpt.capstone.bpcrs.constant.RoleEnum;
 import fpt.capstone.bpcrs.exception.BadRequestException;
 import fpt.capstone.bpcrs.model.Account;
 import fpt.capstone.bpcrs.model.Role;
+import fpt.capstone.bpcrs.payload.AccountPayload;
 import fpt.capstone.bpcrs.repository.AccountRepository;
 import fpt.capstone.bpcrs.repository.RoleRepository;
 import fpt.capstone.bpcrs.service.AccountService;
@@ -39,11 +40,10 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public Account updateAccountStatus(int id, Boolean active) {
-        if (accountRepository.findById(id).isPresent()) {
+        Account account = accountRepository.findById(id).orElse(null);
+        if (account == null) {
             throw new BadRequestException("Account doesn't existed");
         }
-        Account account = accountRepository.findById(id).get();
-
         account.setActive(active);
         return accountRepository.save(account);
     }
@@ -68,6 +68,20 @@ public class AccountServiceImpl implements AccountService {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         UserPrincipal userPrincipal = (UserPrincipal) auth.getPrincipal();
         return getAccountByEmail(userPrincipal.getEmail());
+    }
+
+    @Override
+    public Account updateAccountAddress(int id, AccountPayload.AccountAddressUpdate request) {
+        Account account = accountRepository.findById(id).orElse(null);
+        if (account != null) {
+            accountRepository.save(Account.builder()
+                    .city(request.getCity())
+                    .district(request.getDistrict())
+                    .ward(request.getWard())
+                    .street(request.getStreet())
+                    .build());
+        }
+        return account;
     }
 
     private Account setNewAccount(String email, String fullName, String imageUrl, Role role) {
