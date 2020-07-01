@@ -10,13 +10,6 @@ import fpt.capstone.bpcrs.payload.AccountPayload.AccountResponse;
 import fpt.capstone.bpcrs.payload.ApiResponse;
 import fpt.capstone.bpcrs.service.AccountService;
 import fpt.capstone.bpcrs.util.ObjectMapperUtils;
-
-import java.io.IOException;
-import java.security.GeneralSecurityException;
-import java.util.List;
-import javax.annotation.security.RolesAllowed;
-import javax.validation.Valid;
-
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -24,6 +17,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
+
+import javax.annotation.security.RolesAllowed;
+import javax.validation.Valid;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.List;
 
 @RestController
 @RequestMapping("/account")

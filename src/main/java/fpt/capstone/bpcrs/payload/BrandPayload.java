@@ -1,10 +1,11 @@
 package fpt.capstone.bpcrs.payload;
 
-import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+
+import javax.validation.constraints.NotNull;
 
 @NoArgsConstructor
 public class BrandPayload {
