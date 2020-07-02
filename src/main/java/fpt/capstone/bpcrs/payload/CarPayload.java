@@ -25,6 +25,8 @@ public class CarPayload {
         @NotNull
         private boolean autoDriver;
         @NotNull
+        private boolean isAvailable;
+        @NotNull
         private String plateNum;
         private int brandId;
         @NotNull

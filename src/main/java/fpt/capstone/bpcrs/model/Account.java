@@ -37,6 +37,8 @@ public class Account extends Auditing {
     @Column(nullable = false)
     private String fullName;
 
+    @Column(nullable = false)
+    private String carLicensePlate;
     @Column
     private String city;
 
