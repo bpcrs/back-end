@@ -3,8 +3,6 @@ package fpt.capstone.bpcrs.service;
 import fpt.capstone.bpcrs.model.Car;
 import org.springframework.data.domain.Page;
 
-import java.util.List;
-
 public interface CarService {
 
     Car createCar(Car newCar);

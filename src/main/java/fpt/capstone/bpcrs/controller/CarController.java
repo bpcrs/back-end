@@ -10,19 +10,17 @@ import fpt.capstone.bpcrs.service.AccountService;
 import fpt.capstone.bpcrs.service.BrandService;
 import fpt.capstone.bpcrs.service.CarService;
 import fpt.capstone.bpcrs.util.ObjectMapperUtils;
-
-import java.util.List;
-import javax.annotation.security.RolesAllowed;
-import javax.validation.Valid;
-
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import javax.annotation.security.RolesAllowed;
+import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequestMapping("/car")

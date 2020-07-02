@@ -1,26 +1,21 @@
 package fpt.capstone.bpcrs.controller;
 
+import fpt.capstone.bpcrs.constant.BookingEnum;
 import fpt.capstone.bpcrs.exception.BadRequestException;
 import fpt.capstone.bpcrs.model.Booking;
 import fpt.capstone.bpcrs.payload.ApiResponse;
 import fpt.capstone.bpcrs.payload.BookingPayload;
 import fpt.capstone.bpcrs.service.BookingService;
 import fpt.capstone.bpcrs.util.ObjectMapperUtils;
-import java.util.List;
-import javax.annotation.security.RolesAllowed;
-import javax.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import javax.annotation.security.RolesAllowed;
+import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequestMapping("/booking")
@@ -85,6 +80,30 @@ public class BookingController {
     private ResponseEntity<?> updateBookingStatus(@PathVariable("id") int id, @Valid @RequestParam String status) {
         try {
             Booking booking = bookingService.updateBookingStatus(id, status);
+            BookingPayload.ResponseCreateBooking response = ObjectMapperUtils.map(booking, BookingPayload.ResponseCreateBooking.class);
+            return ResponseEntity.ok(new ApiResponse<>(true, "Booking status was updated", response));
+        } catch (BadRequestException ex) {
+            return ResponseEntity.badRequest().body(new ApiResponse<>(false, ex.getMessage(), null));
+        }
+    }
+
+    @PutMapping("/return/{id}")
+    @RolesAllowed("USER")
+    private ResponseEntity<?> returnBookingCar(@PathVariable("id") int id) {
+        try {
+            Booking booking = bookingService.updateBookingStatus(id, BookingEnum.RETURN.toString());
+            BookingPayload.ResponseCreateBooking response = ObjectMapperUtils.map(booking, BookingPayload.ResponseCreateBooking.class);
+            return ResponseEntity.ok(new ApiResponse<>(true, "Booking status was updated", response));
+        } catch (BadRequestException ex) {
+            return ResponseEntity.badRequest().body(new ApiResponse<>(false, ex.getMessage(), null));
+        }
+    }
+
+    @PutMapping("/finish/{id}")
+    @RolesAllowed("USER")
+    private ResponseEntity<?> finishBookingCar(@PathVariable("id") int id, int fixingMoney) {
+        try {
+            Booking booking = bookingService.finishBooking(id, fixingMoney);
             BookingPayload.ResponseCreateBooking response = ObjectMapperUtils.map(booking, BookingPayload.ResponseCreateBooking.class);
             return ResponseEntity.ok(new ApiResponse<>(true, "Booking status was updated", response));
         } catch (BadRequestException ex) {

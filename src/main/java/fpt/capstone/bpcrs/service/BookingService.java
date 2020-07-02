@@ -1,6 +1,7 @@
 package fpt.capstone.bpcrs.service;
 
 import fpt.capstone.bpcrs.model.Booking;
+
 import java.util.List;
 
 public interface BookingService {
@@ -14,4 +15,6 @@ public interface BookingService {
     List<Booking> getUserHiringBookingList(int id);
 
     List<Booking> getUserRentingBookingList(int id);
+
+    Booking finishBooking(int id, int money);
 }
