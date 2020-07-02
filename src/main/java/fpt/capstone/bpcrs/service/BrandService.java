@@ -1,6 +1,7 @@
 package fpt.capstone.bpcrs.service;
 
 import fpt.capstone.bpcrs.model.Brand;
+
 import java.util.List;
 
 public interface BrandService {

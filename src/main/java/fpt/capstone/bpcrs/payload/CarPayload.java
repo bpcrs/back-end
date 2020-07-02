@@ -1,11 +1,10 @@
 package fpt.capstone.bpcrs.payload;
 
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
-
-import fpt.capstone.bpcrs.model.Account;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 
 @NoArgsConstructor
 public class CarPayload {

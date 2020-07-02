@@ -1,10 +1,6 @@
 package fpt.capstone.bpcrs.payload;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
+import lombok.*;
 
 public class AccountPayload {
 
@@ -43,5 +39,26 @@ public class AccountPayload {
 
         @NonNull
         private String role;
+
+        private String city;
+
+        private String district;
+
+        private String ward;
+
+        private String street;
+    }
+
+    @Data
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class AccountAddressUpdate {
+        @NonNull
+        private int id;
+        private String city;
+        private String district;
+        private String ward;
+        private String street;
     }
 }
