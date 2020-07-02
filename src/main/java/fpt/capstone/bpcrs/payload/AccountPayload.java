@@ -42,6 +42,9 @@ public class AccountPayload {
         private String imageUrl;
 
         @NonNull
+        private String carLicensePlate;
+
+        @NonNull
         private String role;
     }
 }

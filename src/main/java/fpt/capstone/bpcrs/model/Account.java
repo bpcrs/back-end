@@ -46,6 +46,9 @@ public class Account extends Auditing {
     @Column(nullable = false)
     private String fullName;
 
+    @Column(nullable = false)
+    private String carLicensePlate;
+
     @ManyToOne(optional = false)
     @ApiModelProperty(hidden = true)
     @JoinColumn(name = "role_id")
