@@ -28,7 +28,7 @@ public class ImageController {
     private CarService carService;
 
     @GetMapping
-    @RolesAllowed({"USER", "ADMINISTRATOR"})
+//    @RolesAllowed({"USER", "ADMINISTRATOR"})
     public ResponseEntity<?> getImages(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "10") int size,
                                        @RequestParam int carId) {
         Car car =  carService.getCarById(carId);

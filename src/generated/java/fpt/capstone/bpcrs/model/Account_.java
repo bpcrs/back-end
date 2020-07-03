@@ -12,7 +12,6 @@ public abstract class Account_ extends fpt.capstone.bpcrs.component.Auditing_ {
 	public static volatile SingularAttribute<Account, String> city;
 	public static volatile SingularAttribute<Account, String> street;
 	public static volatile SingularAttribute<Account, String> imageUrl;
-	public static volatile SingularAttribute<Account, String> carLicensePlate;
 	public static volatile SingularAttribute<Account, String> district;
 	public static volatile SingularAttribute<Account, Boolean> active;
 	public static volatile SingularAttribute<Account, String> fullName;
@@ -23,7 +22,6 @@ public abstract class Account_ extends fpt.capstone.bpcrs.component.Auditing_ {
 	public static final String CITY = "city";
 	public static final String STREET = "street";
 	public static final String IMAGE_URL = "imageUrl";
-	public static final String CAR_LICENSE_PLATE = "carLicensePlate";
 	public static final String DISTRICT = "district";
 	public static final String ACTIVE = "active";
 	public static final String FULL_NAME = "fullName";
