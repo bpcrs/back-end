@@ -9,5 +9,5 @@ public interface ImageService {
 
     Image createImage(Image newImage);
 
-    List<Image> createImages(List<Image> newImages);
+    List<Image> createImages(int id, List<String> links);
 }

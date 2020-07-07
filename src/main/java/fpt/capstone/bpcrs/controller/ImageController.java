@@ -41,23 +41,23 @@ public class ImageController {
         return ResponseEntity.ok(new ApiResponse<>(true, imageList));
     }
 
-    @PostMapping
-    @RolesAllowed("USER")
-    public ResponseEntity<?> createImage(@Valid @RequestBody List<ImagePayload.RequestCreateImage> requests) {
-
-        Car car = carService.getCarById(requests.get(0).getCarId());
-        if (car == null) {
-            return new ResponseEntity<>(new ApiError("Car with id = " + requests.get(0).getCarId() + " not found", ""), HttpStatus.BAD_REQUEST);
-        }
-//        List<ImagePayload.ResponseCreateImage> responses = new ArrayList<>();
-        List<Image> newImages = new ArrayList<>();
-        for (ImagePayload.RequestCreateImage request : requests) {
-            Image newImage = (Image) new Image().buildObject(request, true);
-            newImage.setCar(car);
-            newImages.add(newImage);
-        }
-        List<Image> images = imageService.createImages(newImages);
-        List<ImagePayload.ResponseCreateImage> imageList = ObjectMapperUtils.mapAll(images, ImagePayload.ResponseCreateImage.class);
-        return ResponseEntity.ok(new ApiResponse<>(true, imageList));
-    }
+//    @PostMapping
+//    @RolesAllowed("USER")
+//    public ResponseEntity<?> createImage(@RequestParam int carId, @RequestParam List<String> links) {
+//
+//        Car car = carService.getCarById(requests.get(0).getCarId());
+//        if (car == null) {
+//            return new ResponseEntity<>(new ApiError("Car with id = " + requests.get(0).getCarId() + " not found", ""), HttpStatus.BAD_REQUEST);
+//        }
+////        List<ImagePayload.ResponseCreateImage> responses = new ArrayList<>();
+//        List<Image> newImages = new ArrayList<>();
+//        for (ImagePayload.RequestCreateImage request : requests) {
+//            Image newImage = (Image) new Image().buildObject(request, true);
+//            newImage.setCar(car);
+//            newImages.add(newImage);
+//        }
+//        List<Image> images = imageService.createImages(newImages);
+//        List<ImagePayload.ResponseCreateImage> imageList = ObjectMapperUtils.mapAll(images, ImagePayload.ResponseCreateImage.class);
+//        return ResponseEntity.ok(new ApiResponse<>(true, imageList));
+//    }
 }
