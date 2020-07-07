@@ -69,7 +69,6 @@ public class AccountServiceImpl implements AccountService {
         return getAccountByEmail(userPrincipal.getEmail());
     }
 
-
     private Account setNewAccount(String email, String fullName, String imageUrl, Role role) {
         Account account = new Account();
         account.setEmail(email);

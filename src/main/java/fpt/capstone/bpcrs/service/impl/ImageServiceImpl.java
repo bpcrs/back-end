@@ -30,4 +30,9 @@ public class ImageServiceImpl  implements ImageService {
     public Image createImage(Image newImage) {
         return imageRepository.save(newImage);
     }
+
+    @Override
+    public List<Image> createImages(List<Image> newImages) {
+        return  imageRepository.saveAll(newImages);
+    }
 }
