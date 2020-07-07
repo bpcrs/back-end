@@ -38,14 +38,6 @@ public class AccountController {
     @Autowired
     private GoogleIdTokenVerifier googleIdTokenVerifier;
 
-    @PutMapping("/address/{id}")
-    @RolesAllowed("USER")
-    private ResponseEntity<?> updateAddress(@Valid @PathVariable("id") int id, @Valid @RequestParam AccountPayload.AccountAddressUpdate request) {
-        Account account = accountService.updateAccountAddress(id, request);
-        AccountPayload.AccountResponse response = ObjectMapperUtils
-                .map(account, AccountPayload.AccountResponse.class);
-        return ResponseEntity.ok(new ApiResponse<>(true, "Update account successful", response));
-    }
 
     @GetMapping
     @RolesAllowed("ADMINISTRATOR")
@@ -104,7 +96,6 @@ public class AccountController {
                             .email(account.getEmail())
                             .fullName(account.getFullName())
                             .imageUrl(account.getImageUrl())
-
                             .build());
             return ResponseEntity.ok(
                     new ApiResponse<>(true, "Logged successfully", jwt));
