@@ -10,7 +10,6 @@ public abstract class Account_ extends fpt.capstone.bpcrs.component.Auditing_ {
 
 	public static volatile SingularAttribute<Account, Role> role;
 	public static volatile SingularAttribute<Account, String> imageUrl;
-
 	public static volatile SingularAttribute<Account, Boolean> active;
 	public static volatile SingularAttribute<Account, String> fullName;
 	public static volatile SingularAttribute<Account, String> email;
