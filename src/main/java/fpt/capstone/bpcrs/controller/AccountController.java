@@ -104,10 +104,7 @@ public class AccountController {
                             .email(account.getEmail())
                             .fullName(account.getFullName())
                             .imageUrl(account.getImageUrl())
-                            .city(account.getCity())
-                            .district(account.getDistrict())
-                            .ward(account.getWard())
-                            .street(account.getStreet())
+
                             .build());
             return ResponseEntity.ok(
                     new ApiResponse<>(true, "Logged successfully", jwt));

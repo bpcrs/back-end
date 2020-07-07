@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.security.RolesAllowed;
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -31,26 +32,32 @@ public class ImageController {
     @RolesAllowed({"USER", "ADMINISTRATOR"})
     public ResponseEntity<?> getImages(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "10") int size,
                                        @RequestParam int carId) {
-        Car car =  carService.getCarById(carId);
+        Car car = carService.getCarById(carId);
         if (car == null) {
             return new ResponseEntity<>(new ApiError("Car with id = " + carId + " not found", ""), HttpStatus.BAD_REQUEST);
         }
         List<Image> images = imageService.getAllImagePaging(page, size, carId);
-        List<ImagePayload.ResponseCreateImage> imageList = ObjectMapperUtils.mapAll(images,ImagePayload.ResponseCreateImage.class);
+        List<ImagePayload.ResponseCreateImage> imageList = ObjectMapperUtils.mapAll(images, ImagePayload.ResponseCreateImage.class);
         return ResponseEntity.ok(new ApiResponse<>(true, imageList));
     }
 
     @PostMapping
     @RolesAllowed("USER")
-    public ResponseEntity<?> createImage(@Valid @RequestBody ImagePayload.RequestCreateImage request) {
-        Car car =  carService.getCarById(request.getCarId());
+    public ResponseEntity<?> createImage(@Valid @RequestBody List<ImagePayload.RequestCreateImage> requests) {
+
+        Car car = carService.getCarById(requests.get(0).getCarId());
         if (car == null) {
-            return new ResponseEntity<>(new ApiError("Car with id = " + request.getCarId() + " not found", ""), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new ApiError("Car with id = " + requests.get(0).getCarId() + " not found", ""), HttpStatus.BAD_REQUEST);
         }
-        ImagePayload.ResponseCreateImage response = new ImagePayload.ResponseCreateImage();
-        Image newImage = (Image) new Image().buildObject(request, true);
-        newImage.setCar(car);
-        imageService.createImage(newImage).buildObject(response, false);
-        return ResponseEntity.ok(new ApiResponse<>(true, response));
+//        List<ImagePayload.ResponseCreateImage> responses = new ArrayList<>();
+        List<Image> newImages = new ArrayList<>();
+        for (ImagePayload.RequestCreateImage request : requests) {
+            Image newImage = (Image) new Image().buildObject(request, true);
+            newImage.setCar(car);
+            newImages.add(newImage);
+        }
+        List<Image> images = imageService.createImages(newImages);
+        List<ImagePayload.ResponseCreateImage> imageList = ObjectMapperUtils.mapAll(images, ImagePayload.ResponseCreateImage.class);
+        return ResponseEntity.ok(new ApiResponse<>(true, imageList));
     }
 }

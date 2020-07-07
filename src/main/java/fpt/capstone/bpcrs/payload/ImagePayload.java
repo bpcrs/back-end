@@ -28,4 +28,6 @@ public class ImagePayload {
     public static class ResponseCreateImage extends RequestCreateImage{
         private int id;
     }
+
+
 }

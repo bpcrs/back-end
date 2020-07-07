@@ -74,10 +74,6 @@ public class AccountServiceImpl implements AccountService {
         Account account = accountRepository.findById(id).orElse(null);
         if (account != null) {
             accountRepository.save(Account.builder()
-                    .city(request.getCity())
-                    .district(request.getDistrict())
-                    .ward(request.getWard())
-                    .street(request.getStreet())
                     .build());
         }
         return account;
