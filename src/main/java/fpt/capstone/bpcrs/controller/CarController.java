@@ -41,9 +41,8 @@ public class CarController {
                                      @RequestParam(required = false) Integer seat,
                                      @RequestParam(required = false) Double fromPrice,
                                      @RequestParam(required = false) Double toPrice,
-                                     @RequestParam(required = false) Integer brand,
-                                     @RequestParam(required = false) Long fromDate,
-                                     @RequestParam(required = false) Long toDate
+                                     @RequestParam(required = false) Integer brand
+
     ) {
         Page<Car> cars = carService.getAllCarsPagingByFilters(page, size, models, seat, fromPrice, toPrice, brand);
         List<CarPayload.ResponseGetCar> carList = ObjectMapperUtils.mapAll(cars.toList(),
