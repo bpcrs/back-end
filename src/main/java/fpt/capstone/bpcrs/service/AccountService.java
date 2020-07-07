@@ -17,5 +17,4 @@ public interface AccountService {
 
   Account getCurrentUser();
 
-  Account updateAccountAddress(int id, AccountPayload.AccountAddressUpdate request);
 }
