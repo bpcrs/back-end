@@ -23,6 +23,8 @@ public class CarPayload {
         @NotNull
         private String screen;
         @NotNull
+        private String year;
+        @NotNull
         private boolean autoDriver;
         @NotNull
         private boolean isAvailable;
@@ -50,6 +52,7 @@ public class CarPayload {
         private boolean autoDriver;
         private String plateNum;
         private double price;
+        private String year;
     }
 
 }

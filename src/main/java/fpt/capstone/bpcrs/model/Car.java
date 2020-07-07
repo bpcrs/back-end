@@ -33,6 +33,9 @@ public class  Car extends Auditing {
     private String model;
 
     @Column
+    private String year;
+
+    @Column
     private int seat;
 
     @Column(nullable = false, columnDefinition = "TINYINT(1) default 0")
