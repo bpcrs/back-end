@@ -12,8 +12,8 @@ public class CarSpecification {
         return (Specification<Car>) (root, query, cb) -> root.get(Car_.MODEL).in(models);
     }
 
-    public static Specification<Car> carHasSeatNumber(int number) {
-        return (Specification<Car>) (root, query, cb) -> cb.equal(root.get(Car_.SEAT), number);
+    public static Specification<Car> carHasSeatNumber(Integer[] number) {
+        return (Specification<Car>) (root, query, cb) -> root.get(Car_.SEAT).in(Arrays.asList(number));
     }
 
     public static Specification<Car> carHasFromPriceTpPrice(double fromPrice, double toPrice) {
