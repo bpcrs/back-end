@@ -29,10 +29,6 @@ public class  Car extends Auditing {
     private String name;
 
     @Column
-    @NotNull
-    private String model;
-
-    @Column
     private String year;
 
     @Column
@@ -73,6 +69,11 @@ public class  Car extends Auditing {
     @ApiModelProperty(hidden = true)
     @JoinColumn(name = "brand_id")
     private Brand brand;
+
+    @ManyToOne
+    @ApiModelProperty(hidden = true)
+    @JoinColumn(name = "model_id")
+    private Model model;
 
 
     @ApiModelProperty(hidden = true)

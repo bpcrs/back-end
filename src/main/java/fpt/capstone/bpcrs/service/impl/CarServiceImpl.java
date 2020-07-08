@@ -43,19 +43,19 @@ public class CarServiceImpl implements CarService {
     }
 
     @Override
-    public Page<Car> getAllCarsPagingByFilters(int page, int size, String[] models, Integer seat, Double fromPrice, Double toPrice, Integer brandId) {
+    public Page<Car> getAllCarsPagingByFilters(int page, int size, Integer[] modelIds, Integer[] seat, Double fromPrice, Double toPrice, Integer[] brandIds) {
         Specification conditon = (Specification) (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get(Car_.IS_AVAILABLE), true);
-        if (models != null) {
-            conditon = conditon.and(CarSpecification.carHasModelName(models));
+        if (modelIds != null && modelIds.length != 0) {
+            conditon = conditon.and(CarSpecification.carHasModelName(modelIds));
         }
-        if (seat != null) {
+        if (seat != null && seat.length != 0) {
             conditon = conditon.and(CarSpecification.carHasSeatNumber(seat));
         }
         if (toPrice != null && fromPrice != null) {
             conditon = conditon.and(CarSpecification.carHasFromPriceTpPrice(fromPrice, toPrice));
         }
-        if (brandId != null) {
-            conditon = conditon.and(CarSpecification.carHasBrand(brandId));
+        if (brandIds != null && brandIds.length != 0) {
+            conditon = conditon.and(CarSpecification.carHasBrand(brandIds));
         }
         Page<Car> cars = carRepository.findAll(conditon,new Paging(page,size,Sort.unsorted()));
         return cars;
