@@ -1,5 +1,6 @@
 package fpt.capstone.bpcrs.controller;
 
+import fpt.capstone.bpcrs.constant.RoleEnum;
 import fpt.capstone.bpcrs.model.Car;
 import fpt.capstone.bpcrs.model.Review;
 import fpt.capstone.bpcrs.payload.ApiError;
@@ -40,8 +41,9 @@ public class ReviewController {
     }
 
     @PostMapping
-    @RolesAllowed("USER")
+    @RolesAllowed(RoleEnum.RoleType.ADMINISTRATOR)
     public ResponseEntity<?> createReview(@Valid @RequestBody ReviewPayload.RequestCreateReview request) {
+        RoleEnum.USER.toString();
         Car car = carService.getCarById(request.getCarId());
         if (car == null) {
             return new ResponseEntity(new ApiError("Car with id= " + request.getCarId() + " not found", ""),
