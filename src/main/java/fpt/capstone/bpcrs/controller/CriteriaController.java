@@ -1,5 +1,6 @@
 package fpt.capstone.bpcrs.controller;
 
+import fpt.capstone.bpcrs.constant.RoleEnum;
 import fpt.capstone.bpcrs.model.Criteria;
 import fpt.capstone.bpcrs.payload.ApiError;
 import fpt.capstone.bpcrs.payload.ApiResponse;
@@ -25,7 +26,7 @@ public class CriteriaController {
     private CriteriaService criteriaService;
 
     @GetMapping
-    @RolesAllowed({"USER", "ADMINISTRATOR"})
+    @RolesAllowed({RoleEnum.RoleType.USER, RoleEnum.RoleType.ADMINISTRATOR})
     public ResponseEntity<?> getAllCriteria(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "2") int size) {
         List<Criteria> criteriaList = criteriaService.getAllCriteria(page, size);
         if (criteriaList.isEmpty()) {
@@ -36,7 +37,7 @@ public class CriteriaController {
     }
 
     @PostMapping
-    @RolesAllowed({"USER", "ADMINISTRATOR"})
+    @RolesAllowed({RoleEnum.RoleType.USER, RoleEnum.RoleType.ADMINISTRATOR})
     public ResponseEntity<?> createCriteria(@Valid @RequestBody CriteriaPayload.RequestCreateCriteria request) {
         CriteriaPayload.ResposneCreateCriteria response = new CriteriaPayload.ResposneCreateCriteria();
         Criteria criteria = (Criteria) new Criteria().buildObject(request, true);
@@ -45,7 +46,7 @@ public class CriteriaController {
     }
 
     @GetMapping("/{id}")
-    @RolesAllowed({"USER", "ADMINISTRATOR"})
+    @RolesAllowed({RoleEnum.RoleType.USER, RoleEnum.RoleType.ADMINISTRATOR})
     public ResponseEntity<?> getCriteria(@PathVariable() int id) {
         Criteria criteria = criteriaService.getCriteria(id);
         if (criteria != null) {
@@ -56,7 +57,7 @@ public class CriteriaController {
     }
 
     @PutMapping("/{id}")
-    @RolesAllowed({"USER", "ADMINISTRATOR"})
+    @RolesAllowed({RoleEnum.RoleType.USER, RoleEnum.RoleType.ADMINISTRATOR})
     public ResponseEntity<?> updateCriteria(@PathVariable() int id, @RequestBody CriteriaPayload.RequestCreateCriteria request) {
         CriteriaPayload.ResposneCreateCriteria response =  new CriteriaPayload.ResposneCreateCriteria();
         Criteria criteria = (Criteria) new Criteria().buildObject(request, true);

@@ -1,6 +1,7 @@
 package fpt.capstone.bpcrs.controller;
 
 import fpt.capstone.bpcrs.constant.BookingEnum;
+import fpt.capstone.bpcrs.constant.RoleEnum;
 import fpt.capstone.bpcrs.exception.BadRequestException;
 import fpt.capstone.bpcrs.model.Booking;
 import fpt.capstone.bpcrs.payload.ApiResponse;
@@ -26,7 +27,7 @@ public class BookingController {
     BookingService bookingService;
 
     @GetMapping("/renting/{id}")
-    @RolesAllowed({"USER", "ADMINISTRATOR"})
+    @RolesAllowed({RoleEnum.RoleType.USER, RoleEnum.RoleType.ADMINISTRATOR})
     private ResponseEntity<?> getUserRentingBookingList(@PathVariable("id") int id) {
             List<Booking> bookings = bookingService.getUserRentingBookingList(id);
             if (bookings.isEmpty()) {
@@ -39,7 +40,7 @@ public class BookingController {
     }
 
     @GetMapping("/hiring/{id}")
-    @RolesAllowed({"USER", "ADMINISTRATOR"})
+    @RolesAllowed({RoleEnum.RoleType.USER, RoleEnum.RoleType.ADMINISTRATOR})
     private ResponseEntity<?> getUserHiringBookingList(@PathVariable("id") int id) {
             List<Booking> bookings = bookingService.getUserHiringBookingList(id);
             if (bookings.isEmpty()) {
@@ -51,7 +52,7 @@ public class BookingController {
     }
 
     @GetMapping("/{id}")
-    @RolesAllowed({"USER", "ADMINISTRATOR"})
+    @RolesAllowed({RoleEnum.RoleType.USER, RoleEnum.RoleType.ADMINISTRATOR})
     private ResponseEntity<?> getBooking(@PathVariable("id") int id) {
         try {
             Booking booking = bookingService.getBookingInformation(id);
@@ -63,7 +64,7 @@ public class BookingController {
     }
 
     @PostMapping
-    @RolesAllowed("USER")
+    @RolesAllowed(RoleEnum.RoleType.USER)
     private ResponseEntity<?> createBooking( @Valid @RequestBody BookingPayload.RequestCreateBooking request) {
         try {
             BookingPayload.ResponseCreateBooking response = new BookingPayload.ResponseCreateBooking();
@@ -76,7 +77,7 @@ public class BookingController {
     }
 
     @PutMapping("/{id}")
-    @RolesAllowed("ADMINISTRATOR")
+    @RolesAllowed({RoleEnum.RoleType.USER, RoleEnum.RoleType.ADMINISTRATOR})
     private ResponseEntity<?> updateBookingStatus(@PathVariable("id") int id, @Valid @RequestParam String status) {
         try {
             Booking booking = bookingService.updateBookingStatus(id, status);
@@ -88,7 +89,7 @@ public class BookingController {
     }
 
     @PutMapping("/return/{id}")
-    @RolesAllowed("USER")
+    @RolesAllowed(RoleEnum.RoleType.USER)
     private ResponseEntity<?> returnBookingCar(@PathVariable("id") int id) {
         try {
             Booking booking = bookingService.updateBookingStatus(id, BookingEnum.RETURN.toString());
@@ -100,7 +101,7 @@ public class BookingController {
     }
 
     @PutMapping("/finish/{id}")
-    @RolesAllowed("USER")
+    @RolesAllowed(RoleEnum.RoleType.USER)
     private ResponseEntity<?> finishBookingCar(@PathVariable("id") int id, int fixingMoney) {
         try {
             Booking booking = bookingService.finishBooking(id, fixingMoney);
