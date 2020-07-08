@@ -30,18 +30,9 @@ public class ImageServiceImpl  implements ImageService {
         Page<Image> images = imageRepository.findAllByCar_Id(carId, new Paging(page, size, Sort.unsorted()));
         return images.get().collect(Collectors.toList());
     }
-
+  
     @Override
-    public Image createImage(Image newImage) {
-        return imageRepository.save(newImage);
-    }
-
-    @Override
-    public List<Image> createImages(int id , List<String> links) {
-        List<Image> images = new ArrayList<>();
-        for (String link : links) {
-            images.add(new Image(link, carRepository.getOne(id)));
-        }
+    public List<Image> createImages(List<Image> images) {
         return  imageRepository.saveAll(images);
     }
 }
