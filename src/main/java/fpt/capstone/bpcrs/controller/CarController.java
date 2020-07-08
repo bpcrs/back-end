@@ -37,11 +37,11 @@ public class CarController {
     @GetMapping
     public ResponseEntity<?> getCars(@RequestParam(defaultValue = "1") int page,
                                      @RequestParam(defaultValue = "10") int size,
-                                     @RequestParam(required = false) String[] models,
-                                     @RequestParam(required = false) Integer seat,
+                                     @RequestParam(required = false) Integer[] models,
+                                     @RequestParam(required = false) Integer[] seat,
                                      @RequestParam(required = false) Double fromPrice,
                                      @RequestParam(required = false) Double toPrice,
-                                     @RequestParam(required = false) Integer brand
+                                     @RequestParam(required = false) Integer[] brand
 
     ) {
         Page<Car> cars = carService.getAllCarsPagingByFilters(page, size, models, seat, fromPrice, toPrice, brand);

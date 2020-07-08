@@ -40,6 +40,7 @@ public class ImageController {
         return ResponseEntity.ok(new ApiResponse<>(true, imageList));
     }
 
+
     @PostMapping
     @RolesAllowed("USER")
     public ResponseEntity<?> createImage(@Valid @RequestBody ImagePayload.RequestCreateImage request) {
