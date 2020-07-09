@@ -54,7 +54,6 @@ public class CarController {
                 CarPayload.ResponseGetCar.class);
         PagingPayload pagingPayload =
                 PagingPayload.builder().data(carList).count((int) cars.getTotalElements()).build();
-
         return ResponseEntity.ok(new ApiResponse<>(true, pagingPayload));
     }
 

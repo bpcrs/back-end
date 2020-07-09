@@ -69,6 +69,7 @@ public class BookingController {
         try {
             BookingPayload.ResponseCreateBooking response = new BookingPayload.ResponseCreateBooking();
             Booking booking = (Booking) new Booking().buildObject(request, true);
+            booking.setStatus(BookingEnum.REQUEST.toString());
                     bookingService.createBooking(booking).buildObject(response, false);
             return ResponseEntity.ok(new ApiResponse<>(true, "Booking was created", response));
         } catch (BadRequestException ex) {

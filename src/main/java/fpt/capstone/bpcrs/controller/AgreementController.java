@@ -34,7 +34,7 @@ public class AgreementController {
     private BookingService bookingService;
 
     @PostMapping
-    @RolesAllowed(RoleEnum.RoleType.USER)
+    @RolesAllowed(RoleEnum.RoleType.ADMINISTRATOR)
     public ResponseEntity<?> createAgreement( @Valid @RequestBody AgreementPayload.RequestCreateAgreement request) {
         Booking booking = bookingService.getBookingInformation(request.getBookingId());
         if (booking == null) {
