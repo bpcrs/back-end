@@ -1,8 +1,10 @@
 package fpt.capstone.bpcrs.controller;
 
+import fpt.capstone.bpcrs.constant.RoleEnum;
 import fpt.capstone.bpcrs.model.Agreement;
 import fpt.capstone.bpcrs.model.Booking;
 import fpt.capstone.bpcrs.model.Criteria;
+import fpt.capstone.bpcrs.model.Role;
 import fpt.capstone.bpcrs.payload.AgreementPayload;
 import fpt.capstone.bpcrs.payload.ApiError;
 import fpt.capstone.bpcrs.payload.ApiResponse;
@@ -32,7 +34,7 @@ public class AgreementController {
     private BookingService bookingService;
 
     @PostMapping
-    @RolesAllowed("ADMINISTRATOR")
+    @RolesAllowed(RoleEnum.RoleType.USER)
     public ResponseEntity<?> createAgreement( @Valid @RequestBody AgreementPayload.RequestCreateAgreement request) {
         Booking booking = bookingService.getBookingInformation(request.getBookingId());
         if (booking == null) {
@@ -51,7 +53,7 @@ public class AgreementController {
     }
 
     @GetMapping("/get/{id}")
-    @RolesAllowed({"USER", "ADMINISTRATOR"})
+    @RolesAllowed({RoleEnum.RoleType.USER, RoleEnum.RoleType.ADMINISTRATOR})
     public ResponseEntity<?> getAgreementsByBookingId(@PathVariable int id) {
         List<Agreement> agreements = agreementService.getListAgreementByBookingID(id);
         if (agreements.isEmpty()) {
@@ -62,7 +64,7 @@ public class AgreementController {
     }
 
     @GetMapping()
-    @RolesAllowed({"USER", "ADMINISTRATOR"})
+    @RolesAllowed({RoleEnum.RoleType.USER, RoleEnum.RoleType.ADMINISTRATOR})
     public ResponseEntity<?> getAgreementById(@RequestParam int id) {
         Agreement agreement = agreementService.getAgreementById(id);
         if (agreement == null) {
@@ -73,7 +75,7 @@ public class AgreementController {
     }
 
     @PutMapping("/{id}")
-    @RolesAllowed("USER")
+    @RolesAllowed(RoleEnum.RoleType.USER)
     public ResponseEntity<?> updateAgreement(@PathVariable() int id, @RequestBody AgreementPayload.RequestCreateAgreement request) {
         boolean isExisted = agreementService.getAgreementById(id) != null;
         if (!isExisted) {

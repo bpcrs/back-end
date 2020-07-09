@@ -15,13 +15,15 @@ public class CarPayload {
         @NotNull
         private String name;
         @NotNull
-        private String model;
+        private int modelId;
         @Min(1)
         private int seat;
         @NotNull
         private String sound;
         @NotNull
         private String screen;
+        @NotNull
+        private String year;
         @NotNull
         private boolean autoDriver;
         @NotNull
@@ -41,7 +43,7 @@ public class CarPayload {
     @NoArgsConstructor
     public static class RequestUpdateCar{
         private String name;
-        private String model;
+        private int modelId;
         @Min(1)
         private int seat;
         private boolean isAvailable;
@@ -50,6 +52,7 @@ public class CarPayload {
         private boolean autoDriver;
         private String plateNum;
         private double price;
+        private String year;
     }
 
 }

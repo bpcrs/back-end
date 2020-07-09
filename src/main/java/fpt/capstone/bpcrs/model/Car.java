@@ -29,8 +29,7 @@ public class  Car extends Auditing {
     private String name;
 
     @Column
-    @NotNull
-    private String model;
+    private String year;
 
     @Column
     private int seat;
@@ -71,6 +70,10 @@ public class  Car extends Auditing {
     @JoinColumn(name = "brand_id")
     private Brand brand;
 
+    @ManyToOne
+    @ApiModelProperty(hidden = true)
+    @JoinColumn(name = "model_id")
+    private Model model;
 
     @ApiModelProperty(hidden = true)
     @OneToMany(mappedBy = "car", cascade = CascadeType.ALL, fetch = FetchType.LAZY)

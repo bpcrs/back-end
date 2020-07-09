@@ -7,28 +7,22 @@ import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
-import java.util.List;
 
 @NoArgsConstructor
-public class ImagePayload {
+public class ModelPayload {
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class RequestCreateImage{
-        @Min(1)
-        private int carId;
-
+    public static class RequestCreateModel {
         @NotNull
-        private List<String> link;
+        private String name;
     }
 
+    @EqualsAndHashCode(callSuper = true)
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class ResponseCreateImage {
+    public static class ResponseCreateModel extends ModelPayload.RequestCreateModel {
         private int id;
-        private String link;
     }
-
-
 }
