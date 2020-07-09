@@ -1,23 +1,23 @@
 package fpt.capstone.bpcrs.constant;
 
 public enum RoleEnum {
+
     ADMINISTRATOR("ADMINISTRATOR"),
     USER("USER");
 
-    private final String text;
-
-    /**
-     * @param text
-     */
-    RoleEnum(final String text) {
-        this.text = text;
+    public class RoleType {
+        public static final String ADMINISTRATOR = "ADMINISTRATOR";
+        public static final String USER = "USER";
     }
 
-    /* (non-Javadoc)
-     * @see java.lang.Enum#toString()
-     */
+    private final String label;
+
+    RoleEnum(final String label) {
+        this.label = label;
+    }
+
     @Override
     public String toString() {
-        return text;
+        return this.label;
     }
 }

@@ -1,5 +1,6 @@
 package fpt.capstone.bpcrs.controller;
 
+import fpt.capstone.bpcrs.constant.RoleEnum;
 import fpt.capstone.bpcrs.model.Brand;
 import fpt.capstone.bpcrs.model.Car;
 import fpt.capstone.bpcrs.model.Model;
@@ -58,7 +59,7 @@ public class CarController {
     }
 
     @PostMapping
-    @RolesAllowed("USER")
+    @RolesAllowed(RoleEnum.RoleType.USER)
     public ResponseEntity<?> createCar(@Valid @RequestBody CarPayload.ResponseGetCar request) {
         Brand brand = brandService.getBrandById(request.getBrandId());
         Model model = modelService.getModelById(request.getModelId());
@@ -91,7 +92,7 @@ public class CarController {
     }
 
     @PutMapping("/{id}")
-    @RolesAllowed({"USER", "ADMINISTRATOR"})
+    @RolesAllowed({RoleEnum.RoleType.USER, RoleEnum.RoleType.ADMINISTRATOR})
     public ResponseEntity<?> updateCar(@PathVariable() int id, @RequestBody CarPayload.RequestUpdateCar request) {
         Car car = carService.getCarById(id);
         if (car == null) {

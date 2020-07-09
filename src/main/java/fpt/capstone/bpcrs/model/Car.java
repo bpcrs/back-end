@@ -75,7 +75,6 @@ public class  Car extends Auditing {
     @JoinColumn(name = "model_id")
     private Model model;
 
-
     @ApiModelProperty(hidden = true)
     @OneToMany(mappedBy = "car", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Booking> car;
