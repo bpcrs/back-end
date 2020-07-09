@@ -23,7 +23,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @Import(springfox.bean.validators.configuration.BeanValidatorPluginsConfiguration.class)
 public class SpringFoxConfig {
 
-  @Value("${dapp.host}")
+  @Value("${app.host}")
   private String hostName;
 
   @Bean

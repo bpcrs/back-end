@@ -8,6 +8,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.Date;
 import java.util.List;
 
@@ -25,19 +26,24 @@ import java.util.List;
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "ordinal")
 public class Booking extends Auditing {
 
-    @Column(nullable = false)
-    private Date from_date;
+    @Column
+    @NotNull
+    private String from_date;
 
-    @Column(nullable = false)
-    private Date to_date;
+    @Column
+    @NotNull
+    private String to_date;
 
-    @Column(nullable = false)
+    @Column
+    @NotNull
     private String destination;
 
-    @Column(nullable = false)
+    @Column
+    @NotNull
     private String status;
 
-    @Column(nullable = false)
+    @Column
+    @NotNull
     private String description;
 
     @Column
@@ -47,28 +53,19 @@ public class Booking extends Auditing {
     private int fixingPrice;
 
     @ManyToOne
-    @NonNull
     @JoinColumn(name = "renter_id")
     @ApiModelProperty(hidden = true)
     private Account renter;
 
     @ManyToOne
-    @NonNull
     @JoinColumn(name = "lessor_id")
     @ApiModelProperty(hidden = true)
     private Account lessor;
 
     @ManyToOne
-    @NonNull
     @JoinColumn(name = "car_id")
     @ApiModelProperty(hidden = true)
     private Car car;
-
-//    public Booking buildBooking() {
-//        return Booking.builder().car(car).lessor(lessor)
-//                .renter(renter).description(description).status(status)
-//                .destination(destination).from_date(from_date).to_date(to_date).build();
-//    }
 
     @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @ApiModelProperty(hidden = true)

@@ -3,10 +3,15 @@ package fpt.capstone.bpcrs.controller;
 import fpt.capstone.bpcrs.constant.BookingEnum;
 import fpt.capstone.bpcrs.constant.RoleEnum;
 import fpt.capstone.bpcrs.exception.BadRequestException;
+import fpt.capstone.bpcrs.model.Account;
 import fpt.capstone.bpcrs.model.Booking;
+import fpt.capstone.bpcrs.model.Car;
+import fpt.capstone.bpcrs.payload.ApiError;
 import fpt.capstone.bpcrs.payload.ApiResponse;
 import fpt.capstone.bpcrs.payload.BookingPayload;
+import fpt.capstone.bpcrs.service.AccountService;
 import fpt.capstone.bpcrs.service.BookingService;
+import fpt.capstone.bpcrs.service.CarService;
 import fpt.capstone.bpcrs.util.ObjectMapperUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,17 +29,23 @@ import java.util.List;
 public class BookingController {
 
     @Autowired
-    BookingService bookingService;
+    private BookingService bookingService;
+
+    @Autowired
+    private CarService carService;
+
+    @Autowired
+    private AccountService accountService;
 
     @GetMapping("/renting/{id}")
     @RolesAllowed({RoleEnum.RoleType.USER, RoleEnum.RoleType.ADMINISTRATOR})
     private ResponseEntity<?> getUserRentingBookingList(@PathVariable("id") int id) {
-            List<Booking> bookings = bookingService.getUserRentingBookingList(id);
-            if (bookings.isEmpty()) {
-                return new ResponseEntity(new ApiResponse<>(false, "Dont have any user rent with id = " + id), HttpStatus.BAD_REQUEST);
-            }
-            List<BookingPayload.ResponseCreateBooking> responses = ObjectMapperUtils.mapAll(bookings, BookingPayload.ResponseCreateBooking.class);
-            return ResponseEntity.ok(new ApiResponse<>(true, "Get list booking successful", responses));
+        List<Booking> bookings = bookingService.getUserRentingBookingList(id);
+        if (bookings.isEmpty()) {
+            return new ResponseEntity(new ApiResponse<>(false, "Dont have any user rent with id = " + id), HttpStatus.BAD_REQUEST);
+        }
+        List<BookingPayload.ResponseCreateBooking> responses = ObjectMapperUtils.mapAll(bookings, BookingPayload.ResponseCreateBooking.class);
+        return ResponseEntity.ok(new ApiResponse<>(true, "Get list booking successful", responses));
 
 
     }
@@ -42,20 +53,21 @@ public class BookingController {
     @GetMapping("/hiring/{id}")
     @RolesAllowed({RoleEnum.RoleType.USER, RoleEnum.RoleType.ADMINISTRATOR})
     private ResponseEntity<?> getUserHiringBookingList(@PathVariable("id") int id) {
-            List<Booking> bookings = bookingService.getUserHiringBookingList(id);
-            if (bookings.isEmpty()) {
-                return new ResponseEntity(new ApiResponse<>(false, "Dont have any booking with id " + id), HttpStatus.BAD_REQUEST);
-            }
-            List<BookingPayload.ResponseCreateBooking> responseList = ObjectMapperUtils.mapAll(bookings, BookingPayload.ResponseCreateBooking.class);
-            return ResponseEntity.ok(new ApiResponse<>(true, "Get list booking successful", responseList));
+        List<Booking> bookings = bookingService.getUserHiringBookingList(id);
+        if (bookings.isEmpty()) {
+            return new ResponseEntity(new ApiResponse<>(false, "Dont have any booking with id " + id), HttpStatus.BAD_REQUEST);
+        }
+        List<BookingPayload.ResponseCreateBooking> responseList = ObjectMapperUtils.mapAll(bookings, BookingPayload.ResponseCreateBooking.class);
+        return ResponseEntity.ok(new ApiResponse<>(true, "Get list booking successful", responseList));
 
     }
 
     @GetMapping("/{id}")
     @RolesAllowed({RoleEnum.RoleType.USER, RoleEnum.RoleType.ADMINISTRATOR})
-    private ResponseEntity<?> getBooking(@PathVariable("id") int id) {
+    public ResponseEntity<?> getBooking(@PathVariable int id) {
         try {
             Booking booking = bookingService.getBookingInformation(id);
+            System.out.println("Booking info" + booking);
             BookingPayload.ResponseCreateBooking response = ObjectMapperUtils.map(booking, BookingPayload.ResponseCreateBooking.class);
             return ResponseEntity.ok(new ApiResponse<>(true, "Get list booking successful", response));
         } catch (BadRequestException ex) {
@@ -65,16 +77,23 @@ public class BookingController {
 
     @PostMapping
     @RolesAllowed(RoleEnum.RoleType.USER)
-    private ResponseEntity<?> createBooking( @Valid @RequestBody BookingPayload.RequestCreateBooking request) {
-        try {
-            BookingPayload.ResponseCreateBooking response = new BookingPayload.ResponseCreateBooking();
-            Booking booking = (Booking) new Booking().buildObject(request, true);
-            booking.setStatus(BookingEnum.REQUEST.toString());
-                    bookingService.createBooking(booking).buildObject(response, false);
-            return ResponseEntity.ok(new ApiResponse<>(true, "Booking was created", response));
-        } catch (BadRequestException ex) {
-            return ResponseEntity.badRequest().body(new ApiResponse<>(false, ex.getMessage(), null));
-        }
+    public ResponseEntity<?> createBooking(@Valid @RequestBody BookingPayload.RequestCreateBooking request) {
+        Car car = carService.getCarById(request.getCarId());
+        Account lessor = accountService.getAccountById(request.getLessorId());
+//        Account renter = accountService.getAccountById(request.getRenterId());
+        System.out.println("Car id " + request.getCarId());
+        System.out.println(car.toString());
+        BookingPayload.ResponseCreateBooking response = new BookingPayload.ResponseCreateBooking();
+        Booking booking = (Booking) new Booking().buildObject(request, true);
+        booking.setCar(car);
+        booking.setLessor(car.getOwner());
+        booking.setRenter(accountService.getCurrentUser());
+        booking.setStatus(BookingEnum.REQUEST.toString());
+//        booking.setRenter(accountService.getCurrentUser());
+        System.out.println(booking.toString());
+//            booking.setStatus(BookingEnum.REQUEST.toString());
+        bookingService.createBooking(booking).buildObject(response, false);
+        return ResponseEntity.ok(new ApiResponse<>(true, response));
     }
 
     @PutMapping("/{id}")

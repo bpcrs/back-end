@@ -41,4 +41,5 @@ public class Account extends Auditing {
     @ApiModelProperty(hidden = true)
     @JoinColumn(name = "role_id")
     private Role role;
+
 }
