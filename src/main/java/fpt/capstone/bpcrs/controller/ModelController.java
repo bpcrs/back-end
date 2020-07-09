@@ -1,5 +1,6 @@
 package fpt.capstone.bpcrs.controller;
 
+import fpt.capstone.bpcrs.constant.RoleEnum;
 import fpt.capstone.bpcrs.model.Model;
 import fpt.capstone.bpcrs.payload.ApiResponse;
 import fpt.capstone.bpcrs.payload.ModelPayload;
@@ -22,9 +23,7 @@ public class ModelController {
     @Autowired
     private ModelService modelService;
 
-
     @GetMapping
-    @RolesAllowed({"USER", "ADMINISTRATOR"})
     public ResponseEntity<?> getModels() {
         List<Model> models = modelService.getAll();
         List<ModelPayload.ResponseCreateModel> modelList = ObjectMapperUtils.mapAll(models, ModelPayload.ResponseCreateModel.class);
@@ -32,7 +31,7 @@ public class ModelController {
     }
 
     @PostMapping
-    @RolesAllowed("ADMINISTRATOR")
+    @RolesAllowed(RoleEnum.RoleType.ADMINISTRATOR)
     public ResponseEntity<?> createModel(@Valid @RequestBody ModelPayload.RequestCreateModel request) {
         ModelPayload.ResponseCreateModel response = new ModelPayload.ResponseCreateModel();
         Model newModel = (Model) new Model().buildObject(request, true);

@@ -1,5 +1,6 @@
 package fpt.capstone.bpcrs.controller;
 
+import fpt.capstone.bpcrs.constant.RoleEnum;
 import fpt.capstone.bpcrs.model.Car;
 import fpt.capstone.bpcrs.model.Image;
 import fpt.capstone.bpcrs.payload.ApiError;
@@ -42,7 +43,7 @@ public class ImageController {
 
 
     @PostMapping
-    @RolesAllowed("USER")
+    @RolesAllowed(RoleEnum.RoleType.USER)
     public ResponseEntity<?> createImage(@Valid @RequestBody ImagePayload.RequestCreateImage request) {
 
         Car car = carService.getCarById(request.getCarId());

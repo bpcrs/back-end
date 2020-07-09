@@ -1,5 +1,6 @@
 package fpt.capstone.bpcrs.controller;
 
+import fpt.capstone.bpcrs.constant.RoleEnum;
 import fpt.capstone.bpcrs.model.Brand;
 import fpt.capstone.bpcrs.payload.ApiResponse;
 import fpt.capstone.bpcrs.payload.BrandPayload;
@@ -21,13 +22,9 @@ import java.util.List;
 public class BrandController {
 
     @Autowired
-    private CarService carService;
-
-    @Autowired
     private BrandService brandService;
 
     @GetMapping
-    @RolesAllowed({"USER", "ADMINISTRATOR"})
     public ResponseEntity<?> getBrands(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "10") int size) {
         List<Brand> brands = brandService.getAllBrand(page, size);
         List<BrandPayload.ResponseCreateBrand> brandList = ObjectMapperUtils.mapAll(brands,BrandPayload.ResponseCreateBrand.class);
@@ -35,7 +32,7 @@ public class BrandController {
     }
 
     @PostMapping
-    @RolesAllowed("ADMINISTRATOR")
+    @RolesAllowed(RoleEnum.RoleType.ADMINISTRATOR)
     public ResponseEntity<?> createBrand(@Valid @RequestBody BrandPayload.RequestCreateBrand request) {
         BrandPayload.ResponseCreateBrand response = new BrandPayload.ResponseCreateBrand();
         Brand newBrand = (Brand) new Brand().buildObject(request, true);
