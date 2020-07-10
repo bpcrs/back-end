@@ -53,6 +53,9 @@ dependencies {
     compile group: 'io.grpc', name: 'grpc-all', version: '1.29.0'
     compile "com.google.protobuf:protobuf-java:3.12.1"
     compile group: 'javax.persistence', name: 'javax.persistence-api', version: '2.2'
+    compile group: 'org.web3j', name: 'core', version: '4.6.1'
+    compile "com.squareup.okhttp3:okhttp:4.3.1"
+
 }
 
 

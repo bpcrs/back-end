@@ -6,6 +6,8 @@ import fpt.capstone.bpcrs.model.Booking;
 import fpt.capstone.bpcrs.payload.ApiResponse;
 import fpt.capstone.bpcrs.payload.BookingPayload;
 import fpt.capstone.bpcrs.service.BookingService;
+import fpt.capstone.bpcrs.service.DappService;
+import fpt.capstone.bpcrs.service.EtherumService;
 import fpt.capstone.bpcrs.util.ObjectMapperUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,17 +25,22 @@ import java.util.List;
 public class BookingController {
 
     @Autowired
-    BookingService bookingService;
+    private BookingService bookingService;
+
+//    @Autowired
+//    private EtherumService etherumService;
 
     @GetMapping("/renting/{id}")
     @RolesAllowed({"USER", "ADMINISTRATOR"})
     private ResponseEntity<?> getUserRentingBookingList(@PathVariable("id") int id) {
-            List<Booking> bookings = bookingService.getUserRentingBookingList(id);
-            if (bookings.isEmpty()) {
-                return new ResponseEntity(new ApiResponse<>(false, "Dont have any user rent with id = " + id), HttpStatus.BAD_REQUEST);
-            }
-            List<BookingPayload.ResponseCreateBooking> responses = ObjectMapperUtils.mapAll(bookings, BookingPayload.ResponseCreateBooking.class);
-            return ResponseEntity.ok(new ApiResponse<>(true, "Get list booking successful", responses));
+        List<Booking> bookings = bookingService.getUserRentingBookingList(id);
+        if (bookings.isEmpty()) {
+            return new ResponseEntity(new ApiResponse<>(false, "Dont have any user rent with id = " + id),
+                    HttpStatus.BAD_REQUEST);
+        }
+        List<BookingPayload.ResponseCreateBooking> responses = ObjectMapperUtils.mapAll(bookings,
+                BookingPayload.ResponseCreateBooking.class);
+        return ResponseEntity.ok(new ApiResponse<>(true, "Get list booking successful", responses));
 
 
     }
@@ -41,12 +48,14 @@ public class BookingController {
     @GetMapping("/hiring/{id}")
     @RolesAllowed({"USER", "ADMINISTRATOR"})
     private ResponseEntity<?> getUserHiringBookingList(@PathVariable("id") int id) {
-            List<Booking> bookings = bookingService.getUserHiringBookingList(id);
-            if (bookings.isEmpty()) {
-                return new ResponseEntity(new ApiResponse<>(false, "Dont have any booking with id " + id), HttpStatus.BAD_REQUEST);
-            }
-            List<BookingPayload.ResponseCreateBooking> responseList = ObjectMapperUtils.mapAll(bookings, BookingPayload.ResponseCreateBooking.class);
-            return ResponseEntity.ok(new ApiResponse<>(true, "Get list booking successful", responseList));
+        List<Booking> bookings = bookingService.getUserHiringBookingList(id);
+        if (bookings.isEmpty()) {
+            return new ResponseEntity(new ApiResponse<>(false, "Dont have any booking with id " + id),
+                    HttpStatus.BAD_REQUEST);
+        }
+        List<BookingPayload.ResponseCreateBooking> responseList = ObjectMapperUtils.mapAll(bookings,
+                BookingPayload.ResponseCreateBooking.class);
+        return ResponseEntity.ok(new ApiResponse<>(true, "Get list booking successful", responseList));
 
     }
 
@@ -55,7 +64,8 @@ public class BookingController {
     private ResponseEntity<?> getBooking(@PathVariable("id") int id) {
         try {
             Booking booking = bookingService.getBookingInformation(id);
-            BookingPayload.ResponseCreateBooking response = ObjectMapperUtils.map(booking, BookingPayload.ResponseCreateBooking.class);
+            BookingPayload.ResponseCreateBooking response = ObjectMapperUtils.map(booking,
+                    BookingPayload.ResponseCreateBooking.class);
             return ResponseEntity.ok(new ApiResponse<>(true, "Get list booking successful", response));
         } catch (BadRequestException ex) {
             return ResponseEntity.badRequest().body(new ApiResponse<>(false, ex.getMessage(), null));
@@ -64,11 +74,11 @@ public class BookingController {
 
     @PostMapping
     @RolesAllowed("USER")
-    private ResponseEntity<?> createBooking( @Valid @RequestBody BookingPayload.RequestCreateBooking request) {
+    private ResponseEntity<?> createBooking(@Valid @RequestBody BookingPayload.RequestCreateBooking request) {
         try {
             BookingPayload.ResponseCreateBooking response = new BookingPayload.ResponseCreateBooking();
             Booking booking = (Booking) new Booking().buildObject(request, true);
-                    bookingService.createBooking(booking).buildObject(response, false);
+            bookingService.createBooking(booking).buildObject(response, false);
             return ResponseEntity.ok(new ApiResponse<>(true, "Booking was created", response));
         } catch (BadRequestException ex) {
             return ResponseEntity.badRequest().body(new ApiResponse<>(false, ex.getMessage(), null));
@@ -80,7 +90,8 @@ public class BookingController {
     private ResponseEntity<?> updateBookingStatus(@PathVariable("id") int id, @Valid @RequestParam String status) {
         try {
             Booking booking = bookingService.updateBookingStatus(id, status);
-            BookingPayload.ResponseCreateBooking response = ObjectMapperUtils.map(booking, BookingPayload.ResponseCreateBooking.class);
+            BookingPayload.ResponseCreateBooking response = ObjectMapperUtils.map(booking,
+                    BookingPayload.ResponseCreateBooking.class);
             return ResponseEntity.ok(new ApiResponse<>(true, "Booking status was updated", response));
         } catch (BadRequestException ex) {
             return ResponseEntity.badRequest().body(new ApiResponse<>(false, ex.getMessage(), null));
@@ -92,7 +103,8 @@ public class BookingController {
     private ResponseEntity<?> returnBookingCar(@PathVariable("id") int id) {
         try {
             Booking booking = bookingService.updateBookingStatus(id, BookingEnum.RETURN.toString());
-            BookingPayload.ResponseCreateBooking response = ObjectMapperUtils.map(booking, BookingPayload.ResponseCreateBooking.class);
+            BookingPayload.ResponseCreateBooking response = ObjectMapperUtils.map(booking,
+                    BookingPayload.ResponseCreateBooking.class);
             return ResponseEntity.ok(new ApiResponse<>(true, "Booking status was updated", response));
         } catch (BadRequestException ex) {
             return ResponseEntity.badRequest().body(new ApiResponse<>(false, ex.getMessage(), null));
@@ -104,10 +116,24 @@ public class BookingController {
     private ResponseEntity<?> finishBookingCar(@PathVariable("id") int id, int fixingMoney) {
         try {
             Booking booking = bookingService.finishBooking(id, fixingMoney);
-            BookingPayload.ResponseCreateBooking response = ObjectMapperUtils.map(booking, BookingPayload.ResponseCreateBooking.class);
+            BookingPayload.ResponseCreateBooking response = ObjectMapperUtils.map(booking,
+                    BookingPayload.ResponseCreateBooking.class);
             return ResponseEntity.ok(new ApiResponse<>(true, "Booking status was updated", response));
         } catch (BadRequestException ex) {
             return ResponseEntity.badRequest().body(new ApiResponse<>(false, ex.getMessage(), null));
         }
+    }
+
+    @GetMapping("/test/eth")
+    private ResponseEntity<?> testClient() {
+        try {
+            EtherumService etherumService = new EtherumService();
+            System.out.println(etherumService);
+            etherumService.test();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.badRequest().body(new ApiResponse<>(false, e.getMessage(), null));
+        }
+        return ResponseEntity.ok().body(new ApiResponse(true, "", null));
     }
 }
