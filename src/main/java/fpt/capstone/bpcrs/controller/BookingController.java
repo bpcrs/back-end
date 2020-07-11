@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.security.RolesAllowed;
 import javax.validation.Valid;
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -80,18 +81,21 @@ public class BookingController {
     public ResponseEntity<?> createBooking(@Valid @RequestBody BookingPayload.RequestCreateBooking request) {
         Car car = carService.getCarById(request.getCarId());
         Account lessor = accountService.getAccountById(request.getLessorId());
-//        Account renter = accountService.getAccountById(request.getRenterId());
-        System.out.println("Car id " + request.getCarId());
-        System.out.println(car.toString());
+        Account renter = accountService.getAccountById(request.getRenterId());
+//        System.out.println("Car id ne " + request.getCarId());
+//        System.out.println("Car info " + car.getName());
+
         BookingPayload.ResponseCreateBooking response = new BookingPayload.ResponseCreateBooking();
-        Booking booking = (Booking) new Booking().buildObject(request, true);
-        booking.setCar(car);
-        booking.setLessor(car.getOwner());
-        booking.setRenter(accountService.getCurrentUser());
-        booking.setStatus(BookingEnum.REQUEST.toString());
-//        booking.setRenter(accountService.getCurrentUser());
-        System.out.println(booking.toString());
-//            booking.setStatus(BookingEnum.REQUEST.toString());
+//        Booking booking =  ( Booking ) new Booking().buildObject( request , true);
+//        booking.setCar(car);
+//        booking.setLessor(lessor);
+//        booking.setRenter(renter);
+        Booking booking = Booking.builder().car(car).lessor(lessor).renter(renter)
+                .from_date(request.getFromDate()).to_date(request.getFromDate())
+                .description(request.getDescription()).destination(request.getDestination())
+                .status(request.getStatus()).build();
+//        booking.setStatus(BookingEnum.REQUEST.toString());
+
         bookingService.createBooking(booking).buildObject(response, false);
         return ResponseEntity.ok(new ApiResponse<>(true, response));
     }
@@ -120,15 +124,15 @@ public class BookingController {
         }
     }
 
-    @PutMapping("/finish/{id}")
-    @RolesAllowed(RoleEnum.RoleType.USER)
-    private ResponseEntity<?> finishBookingCar(@PathVariable("id") int id, int fixingMoney) {
-        try {
-            Booking booking = bookingService.finishBooking(id, fixingMoney);
-            BookingPayload.ResponseCreateBooking response = ObjectMapperUtils.map(booking, BookingPayload.ResponseCreateBooking.class);
-            return ResponseEntity.ok(new ApiResponse<>(true, "Booking status was updated", response));
-        } catch (BadRequestException ex) {
-            return ResponseEntity.badRequest().body(new ApiResponse<>(false, ex.getMessage(), null));
-        }
-    }
+//    @PutMapping("/finish/{id}")
+//    @RolesAllowed(RoleEnum.RoleType.USER)
+//    private ResponseEntity<?> finishBookingCar(@PathVariable("id") int id, int fixingMoney) {
+//        try {
+//            Booking booking = bookingService.finishBooking(id, fixingMoney);
+//            BookingPayload.ResponseCreateBooking response = ObjectMapperUtils.map(booking, BookingPayload.ResponseCreateBooking.class);
+//            return ResponseEntity.ok(new ApiResponse<>(true, "Booking status was updated", response));
+//        } catch (BadRequestException ex) {
+//            return ResponseEntity.badRequest().body(new ApiResponse<>(false, ex.getMessage(), null));
+//        }
+//    }
 }

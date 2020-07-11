@@ -34,10 +34,10 @@ public class BookingPayload {
         private String destination;
 
         @NotNull
-        private String to_date;
+        private Date toDate;
 
         @NotNull
-        private String from_date;
+        private Date fromDate;
 
     }
 
@@ -69,10 +69,10 @@ public class BookingPayload {
         private String destination;
 
         @NotNull
-        private String to_date;
+        private Date toDate;
 
         @NotNull
-        private String from_date;
+        private Date fromDate;
 
     }
 }

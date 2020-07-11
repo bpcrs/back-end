@@ -24,9 +24,9 @@ public class CriteriaServiceImpl implements CriteriaService {
     private CriteriaRepository criteriaRepository;
 
     @Override
-    public List<Criteria> getAllCriteria(int page, int size) {
-        Page<Criteria> criterias = criteriaRepository.findAll(new Paging(page, size, Sort.unsorted()));
-        return criterias.get().collect(Collectors.toList());
+    public List<Criteria> getAllCriteria() {
+
+        return criteriaRepository.findAll();
     }
 
     @Override

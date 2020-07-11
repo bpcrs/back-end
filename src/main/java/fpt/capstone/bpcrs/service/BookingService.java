@@ -16,5 +16,5 @@ public interface BookingService {
 
     List<Booking> getUserRentingBookingList(int id);
 
-    Booking finishBooking(int id, int money);
+//    Booking finishBooking(int id, int money);
 }

@@ -53,17 +53,17 @@ public class BookingServiceImpl implements BookingService {
         return bookingRepository.findAllByRenter_Id(id);
     }
 
-    @Override
-    public Booking finishBooking(int id, int money) {
-        Booking booking = bookingRepository.findById(id).orElse(null);
-        if (booking != null) {
-            booking.setStatus(BookingEnum.DONE.toString());
-            if (money != 0) {
-                booking.setFixingPrice(money);
-            }
-            bookingRepository.save(booking);
-        }
-        return booking;
-    }
+//    @Override
+//    public Booking finishBooking(int id, int money) {
+//        Booking booking = bookingRepository.findById(id).orElse(null);
+//        if (booking != null) {
+//            booking.setStatus(BookingEnum.DONE.toString());
+//            if (money != 0) {
+//                booking.setFixingPrice(money);
+//            }
+//            bookingRepository.save(booking);
+//        }
+//        return booking;
+//    }
 
 }

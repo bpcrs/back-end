@@ -9,7 +9,7 @@ import javax.persistence.metamodel.StaticMetamodel;
 @StaticMetamodel(Criteria.class)
 public abstract class Criteria_ extends fpt.capstone.bpcrs.component.Auditing_ {
 
-	public static volatile SingularAttribute<Criteria, Float> unit;
+	public static volatile SingularAttribute<Criteria, String> unit;
 	public static volatile SingularAttribute<Criteria, String> name;
 	public static volatile CollectionAttribute<Criteria, Agreement> agreements;
 

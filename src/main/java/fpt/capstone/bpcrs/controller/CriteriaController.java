@@ -27,8 +27,9 @@ public class CriteriaController {
 
     @GetMapping
     @RolesAllowed({RoleEnum.RoleType.USER, RoleEnum.RoleType.ADMINISTRATOR})
-    public ResponseEntity<?> getAllCriteria(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "2") int size) {
-        List<Criteria> criteriaList = criteriaService.getAllCriteria(page, size);
+    public ResponseEntity<?> getAllCriteria() {
+        List<Criteria> criteriaList = criteriaService.getAllCriteria();
+//        System.out.println(criteriaList.toString());
         if (criteriaList.isEmpty()) {
             return new ResponseEntity(new ApiResponse<>(false, "Dont have any criteria"), HttpStatus.BAD_REQUEST);
         }

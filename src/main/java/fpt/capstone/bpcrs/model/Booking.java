@@ -28,11 +28,11 @@ public class Booking extends Auditing {
 
     @Column
     @NotNull
-    private String from_date;
+    private Date from_date;
 
     @Column
     @NotNull
-    private String to_date;
+    private Date to_date;
 
     @Column
     @NotNull
@@ -45,12 +45,6 @@ public class Booking extends Auditing {
     @Column
     @NotNull
     private String description;
-
-    @Column
-    private int rentPrice;
-
-    @Column
-    private int fixingPrice;
 
     @ManyToOne
     @JoinColumn(name = "renter_id")
