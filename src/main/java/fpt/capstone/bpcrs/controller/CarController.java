@@ -15,6 +15,7 @@ import fpt.capstone.bpcrs.service.ModelService;
 import fpt.capstone.bpcrs.util.ObjectMapperUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -59,7 +60,7 @@ public class CarController {
     }
 
     @PostMapping
-    @RolesAllowed(RoleEnum.RoleType.USER)
+//    @RolesAllowed(RoleEnum.RoleType.USER)
     public ResponseEntity<?> createCar(@Valid @RequestBody CarPayload.ResponseGetCar request) {
         Brand brand = brandService.getBrandById(request.getBrandId());
         Model model = modelService.getModelById(request.getModelId());
@@ -67,7 +68,7 @@ public class CarController {
             return new ResponseEntity(new ApiError("Brand with id=" + request.getBrandId() + " not found", ""),
                     HttpStatus.BAD_REQUEST);
         }
-        if(model == null){
+        if (model == null) {
             return new ResponseEntity<>(new ApiError("Model  with id=" + request.getModelId() + " not found", ""),
                     HttpStatus.BAD_REQUEST);
         }
@@ -75,7 +76,15 @@ public class CarController {
         Car newCar = (Car) new Car().buildObject(request, true);
         newCar.setBrand(brand);
         newCar.setModel(model);
-        newCar.setOwner(accountService.getCurrentUser());
+//        newCar.setOwner(accountService.getCurrentUser());
+        try {
+            if (!carService.checkCarVin(newCar)) {
+                throw new JSONException("VIN car is not valid!");
+            }
+        } catch (JSONException e) {
+            return new ResponseEntity<>(new ApiError(e.toString(), "Car cannot created!"),
+                    HttpStatus.BAD_REQUEST);
+        }
         carService.createCar(newCar).buildObject(response, false);
         return ResponseEntity.ok(new ApiResponse<>(true, response));
     }
