@@ -78,14 +78,15 @@ public class CarController {
         newCar.setBrand(brand);
         newCar.setModel(model);
         newCar.setOwner(accountService.getCurrentUser());
-        try {
-            if (!carService.checkCarVin(newCar)) {
-                throw new JSONException("VIN car is not valid!");
-            }
-        } catch (JSONException | ParseException e) {
-            return new ResponseEntity<>(new ApiError(e.toString(), "Car cannot created!"),
-                    HttpStatus.BAD_REQUEST);
-        }
+        //check car VIN API (limit 25/month)
+//        try {
+//            if (!carService.checkCarVin(newCar)) {
+//                throw new JSONException("VIN car is not valid!");
+//            }
+//        } catch (JSONException | ParseException e) {
+//            return new ResponseEntity<>(new ApiError(e.toString(), "Car cannot created!"),
+//                    HttpStatus.BAD_REQUEST);
+//        }
         carService.createCar(newCar).buildObject(response, false);
         return ResponseEntity.ok(new ApiResponse<>(true, response));
     }
