@@ -75,4 +75,14 @@ public class BookingPayload {
         private Date fromDate;
 
     }
+
+    @Data
+    @NoArgsConstructor
+    public static class RequestStatisticCarDamage {
+        private boolean isDamage;
+
+        private String damageDescription;
+
+        private int fixPrice;
+    }
 }
