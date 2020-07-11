@@ -8,7 +8,6 @@ import fpt.capstone.bpcrs.model.specification.CarSpecification;
 import fpt.capstone.bpcrs.repository.CarRepository;
 import fpt.capstone.bpcrs.service.CarService;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.tomcat.util.json.ParseException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.configurationprocessor.json.JSONException;
@@ -20,7 +19,7 @@ import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.Optional;
 
 @Service
@@ -36,11 +35,11 @@ public class CarServiceImpl implements CarService {
     }
 
     @Override
-    public boolean checkCarVin(Car car) throws JSONException, ParseException {
+    public boolean checkCarVin(Car car) throws JSONException {
         final String uri = "http://api.carmd.com/v3.0/decode?vin=" + car.getVIN();
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
-        headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
         headers.add("authorization", "Basic ZDYxYzBlYTgtYjk3YS00ZDBkLTkxMzEtNzQ5MDc2MDFhNzZi");
         headers.add("partner-token", "54cf08a2145e4c618303d7f77db7fb1f");
         HttpEntity<String> entity = new HttpEntity<>("parameters", headers);
