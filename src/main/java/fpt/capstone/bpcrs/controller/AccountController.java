@@ -3,6 +3,7 @@ package fpt.capstone.bpcrs.controller;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import fpt.capstone.bpcrs.component.JwtTokenProvider;
+import fpt.capstone.bpcrs.constant.RoleEnum;
 import fpt.capstone.bpcrs.exception.BadRequestException;
 import fpt.capstone.bpcrs.model.Account;
 import fpt.capstone.bpcrs.payload.AccountPayload;
@@ -40,7 +41,7 @@ public class AccountController {
 
 
     @GetMapping
-    @RolesAllowed("ADMINISTRATOR")
+    @RolesAllowed(RoleEnum.RoleType.ADMINISTRATOR)
     public ResponseEntity<?> getAccounts() {
         List<Account> accounts = accountService.getAccounts();
         if (accounts.isEmpty()) {
@@ -56,7 +57,7 @@ public class AccountController {
     }
 
     @PatchMapping("/{id}")
-    @RolesAllowed("ADMINISTRATOR")
+    @RolesAllowed(RoleEnum.RoleType.ADMINISTRATOR)
     public ResponseEntity<?> updateAccountStatus(
             @PathVariable("id") int id, @RequestParam("active") boolean active) {
         try {

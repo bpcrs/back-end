@@ -14,6 +14,7 @@ import fpt.capstone.bpcrs.service.CarService;
 import fpt.capstone.bpcrs.service.ModelService;
 import fpt.capstone.bpcrs.util.ObjectMapperUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.tomcat.util.json.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.data.domain.Page;
@@ -60,7 +61,7 @@ public class CarController {
     }
 
     @PostMapping
-//    @RolesAllowed(RoleEnum.RoleType.USER)
+    @RolesAllowed(RoleEnum.RoleType.USER)
     public ResponseEntity<?> createCar(@Valid @RequestBody CarPayload.ResponseGetCar request) {
         Brand brand = brandService.getBrandById(request.getBrandId());
         Model model = modelService.getModelById(request.getModelId());
@@ -76,12 +77,12 @@ public class CarController {
         Car newCar = (Car) new Car().buildObject(request, true);
         newCar.setBrand(brand);
         newCar.setModel(model);
-//        newCar.setOwner(accountService.getCurrentUser());
+        newCar.setOwner(accountService.getCurrentUser());
         try {
             if (!carService.checkCarVin(newCar)) {
                 throw new JSONException("VIN car is not valid!");
             }
-        } catch (JSONException e) {
+        } catch (JSONException | ParseException e) {
             return new ResponseEntity<>(new ApiError(e.toString(), "Car cannot created!"),
                     HttpStatus.BAD_REQUEST);
         }
