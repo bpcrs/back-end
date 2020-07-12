@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface CriteriaService {
 
-    List<Criteria> getAllCriteria(int page, int size);
+    List<Criteria> getAllCriteria();
 
     Criteria createCriteria(Criteria criteria);
 

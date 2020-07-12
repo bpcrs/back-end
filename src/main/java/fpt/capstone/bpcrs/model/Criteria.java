@@ -31,7 +31,7 @@ public class Criteria extends Auditing {
 
     @Column
     @NotNull
-    private float unit;
+    private String unit;
 
 
     @OneToMany(mappedBy = "criteria", cascade = CascadeType.ALL, fetch = FetchType.LAZY)

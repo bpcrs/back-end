@@ -5,16 +5,18 @@ import fpt.capstone.bpcrs.model.Booking;
 import fpt.capstone.bpcrs.payload.BookingPayload;
 import fpt.capstone.bpcrs.repository.BookingRepository;
 import fpt.capstone.bpcrs.service.BookingService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@Slf4j
 public class BookingServiceImpl implements BookingService {
 
     @Autowired
-    BookingRepository bookingRepository;
+    private BookingRepository bookingRepository;
 
     @Override
     public Booking createBooking(Booking request) {
@@ -52,18 +54,18 @@ public class BookingServiceImpl implements BookingService {
         return bookingRepository.findAllByRenter_Id(id);
     }
 
-    @Override
-    public Booking finishBooking(int id, int money) {
-        Booking booking = bookingRepository.findById(id).orElse(null);
-        if (booking != null) {
-            booking.setStatus(BookingEnum.DONE.toString());
-            if (money != 0) {
-                booking.setFixingPrice(money);
-            }
-            bookingRepository.save(booking);
-        }
-        return booking;
-    }
+//    @Override
+//    public Booking finishBooking(int id, int money) {
+//        Booking booking = bookingRepository.findById(id).orElse(null);
+//        if (booking != null) {
+//            booking.setStatus(BookingEnum.DONE.toString());
+//            if (money != 0) {
+//                booking.setFixingPrice(money);
+//            }
+//            bookingRepository.save(booking);
+//        }
+//        return booking;
+//    }
 
     @Override
     public Booking statisticCarDamage(int id, BookingPayload.RequestStatisticCarDamage request) {

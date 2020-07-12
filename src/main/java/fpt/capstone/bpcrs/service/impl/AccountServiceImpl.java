@@ -69,6 +69,11 @@ public class AccountServiceImpl implements AccountService {
         return getAccountByEmail(userPrincipal.getEmail());
     }
 
+    @Override
+    public Account getAccountById(int id) {
+        return accountRepository.findById(id).orElse(null);
+    }
+
     private Account setNewAccount(String email, String fullName, String imageUrl, Role role) {
         Account account = new Account();
         account.setEmail(email);

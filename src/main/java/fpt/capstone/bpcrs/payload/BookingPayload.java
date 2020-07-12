@@ -2,6 +2,7 @@ package fpt.capstone.bpcrs.payload;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.Min;
@@ -10,14 +11,10 @@ import java.util.Date;
 
 @NoArgsConstructor
 public class BookingPayload {
-    public interface Request_CreateBooking_Validate {
-    }
 
     @Data
     @NoArgsConstructor
-    @AllArgsConstructor
     public static class RequestCreateBooking {
-
         @Min(1)
         private int carId;
 
@@ -37,20 +34,20 @@ public class BookingPayload {
         private String destination;
 
         @NotNull
-        private Date to_date;
+        private Date toDate;
 
         @NotNull
-        private Date from_date;
-
-        @NotNull
-        private double price;
+        private Date fromDate;
 
     }
 
+
     @Data
     @NoArgsConstructor
-    public static class ResponseCreateBooking {
+    @AllArgsConstructor
+    public static class ResponseCreateBooking  {
 
+        @NotNull
         private int id;
 
         @Min(1)
@@ -72,13 +69,10 @@ public class BookingPayload {
         private String destination;
 
         @NotNull
-        private Date to_date;
+        private Date toDate;
 
         @NotNull
-        private Date from_date;
-
-        @NotNull
-        private double price;
+        private Date fromDate;
 
     }
 

@@ -18,7 +18,7 @@ public class CriteriaPayload {
         private String name;
 
         @NotNull
-        private float unit;
+        private String unit;
     }
 
     @Data
@@ -30,6 +30,6 @@ public class CriteriaPayload {
         private String name;
 
         @NotNull
-        private float unit;
+        private String unit;
     }
 }

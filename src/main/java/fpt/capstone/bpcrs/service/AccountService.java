@@ -17,4 +17,6 @@ public interface AccountService {
 
   Account getCurrentUser();
 
+  Account getAccountById(int id);
+
 }

@@ -8,6 +8,7 @@ import fpt.capstone.bpcrs.exception.BadRequestException;
 import fpt.capstone.bpcrs.model.Account;
 import fpt.capstone.bpcrs.payload.AccountPayload;
 import fpt.capstone.bpcrs.payload.AccountPayload.AccountResponse;
+import fpt.capstone.bpcrs.payload.ApiError;
 import fpt.capstone.bpcrs.payload.ApiResponse;
 import fpt.capstone.bpcrs.service.AccountService;
 import fpt.capstone.bpcrs.util.ObjectMapperUtils;
@@ -103,5 +104,16 @@ public class AccountController {
         } catch (BadRequestException | GeneralSecurityException | IOException ex) {
             return ResponseEntity.badRequest().body(new ApiResponse<>(false, ex.getMessage(), null));
         }
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getAccountById(@PathVariable int id) {
+        AccountPayload.AccountResponse response = new AccountPayload.AccountResponse();
+        Account account = accountService.getAccountById(id);
+        if (account == null) {
+            return new ResponseEntity<>(new ApiError("Account with id= " + id + "not found", " "), HttpStatus.BAD_REQUEST);
+        }
+        account.buildObject(response, false);
+        return ResponseEntity.ok(new ApiResponse<>(true, response));
     }
 }
