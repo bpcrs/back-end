@@ -51,8 +51,6 @@ public class BookingController {
         }
         List<BookingPayload.ResponseCreateBooking> responses = ObjectMapperUtils.mapAll(bookings, BookingPayload.ResponseCreateBooking.class);
         return ResponseEntity.ok(new ApiResponse<>(true, "Get list booking successful", responses));
-
-
     }
 
     @GetMapping("/hiring/{id}")
@@ -88,19 +86,20 @@ public class BookingController {
         Account renter = accountService.getAccountById(request.getRenterId());
 
         BookingPayload.ResponseCreateBooking response = new BookingPayload.ResponseCreateBooking();
+
         Booking booking = Booking.builder().car(car).lessor(lessor).renter(renter)
                 .from_date(request.getFromDate()).to_date(request.getToDate())
                 .description(request.getDescription()).destination(request.getDestination())
                 .status(request.getStatus()).build();
-
-
         bookingService.createBooking(booking).buildObject(response, false);
         agreementService.createAgreementListRequest(response.getId());
         return ResponseEntity.ok(new ApiResponse<>(true, response));
+
+
     }
 
     @PutMapping("/{id}")
-    @RolesAllowed({RoleEnum.RoleType.USER, RoleEnum.RoleType.ADMINISTRATOR})
+    @RolesAllowed(RoleEnum.RoleType.ADMINISTRATOR)
     private ResponseEntity<?> updateBookingStatus(@PathVariable("id") int id, @Valid @RequestParam String status) {
         try {
             Booking booking = bookingService.updateBookingStatus(id, status);
@@ -134,4 +133,40 @@ public class BookingController {
 //            return ResponseEntity.badRequest().body(new ApiResponse<>(false, ex.getMessage(), null));
 //        }
 //    }
+    @PutMapping("/paid/{id}")
+    @RolesAllowed(RoleEnum.RoleType.USER)
+    private ResponseEntity<?> returnMoney(@PathVariable("id") int id) {
+        try {
+            Booking booking = bookingService.updateBookingStatus(id, BookingEnum.PAID.toString());
+            BookingPayload.ResponseCreateBooking response = ObjectMapperUtils.map(booking, BookingPayload.ResponseCreateBooking.class);
+            return ResponseEntity.ok(new ApiResponse<>(true, "Booking status was updated", response));
+        } catch (BadRequestException ex) {
+            return ResponseEntity.badRequest().body(new ApiResponse<>(false, ex.getMessage(), null));
+        }
+    }
+
+    @PutMapping("/checking/{id}")
+    @RolesAllowed(RoleEnum.RoleType.USER)
+    private ResponseEntity<?> checkCar(@PathVariable("id") int id, @Valid @RequestBody BookingPayload.RequestStatisticCarDamage request) {
+        try {
+            Booking booking = bookingService.statisticCarDamage(id, request);
+            BookingPayload.ResponseCreateBooking response = ObjectMapperUtils.map(booking, BookingPayload.ResponseCreateBooking.class);
+            return ResponseEntity.ok(new ApiResponse<>(true, "Car is checked", response));
+        } catch (BadRequestException ex) {
+            return ResponseEntity.badRequest().body(new ApiResponse<>(false, ex.getMessage(), null));
+        }
+    }
+
+
+    @PutMapping("/finish/{id}")
+    @RolesAllowed(RoleEnum.RoleType.USER)
+    private ResponseEntity<?> finishBookingCar(@PathVariable("id") int id, int fixingMoney) {
+        try {
+            Booking booking = bookingService.finishBooking(id, fixingMoney);
+            BookingPayload.ResponseCreateBooking response = ObjectMapperUtils.map(booking, BookingPayload.ResponseCreateBooking.class);
+            return ResponseEntity.ok(new ApiResponse<>(true, "Booking status was updated", response));
+        } catch (BadRequestException ex) {
+            return ResponseEntity.badRequest().body(new ApiResponse<>(false, ex.getMessage(), null));
+        }
+    }
 }

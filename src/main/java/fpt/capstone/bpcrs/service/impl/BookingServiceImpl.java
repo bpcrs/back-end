@@ -2,6 +2,7 @@ package fpt.capstone.bpcrs.service.impl;
 
 import fpt.capstone.bpcrs.constant.BookingEnum;
 import fpt.capstone.bpcrs.model.Booking;
+import fpt.capstone.bpcrs.payload.BookingPayload;
 import fpt.capstone.bpcrs.repository.BookingRepository;
 import fpt.capstone.bpcrs.service.BookingService;
 import lombok.extern.slf4j.Slf4j;
@@ -53,17 +54,30 @@ public class BookingServiceImpl implements BookingService {
         return bookingRepository.findAllByRenter_Id(id);
     }
 
-//    @Override
-//    public Booking finishBooking(int id, int money) {
-//        Booking booking = bookingRepository.findById(id).orElse(null);
-//        if (booking != null) {
-//            booking.setStatus(BookingEnum.DONE.toString());
-//            if (money != 0) {
+    @Override
+    public Booking finishBooking(int id, int money) {
+        Booking booking = bookingRepository.findById(id).orElse(null);
+        if (booking != null) {
+            booking.setStatus(BookingEnum.DONE.toString());
+            if (money != 0) {
 //                booking.setFixingPrice(money);
-//            }
-//            bookingRepository.save(booking);
-//        }
-//        return booking;
-//    }
+            }
+            bookingRepository.save(booking);
+        }
+        return booking;
+    }
+
+    @Override
+    public Booking statisticCarDamage(int id, BookingPayload.RequestStatisticCarDamage request) {
+        Booking booking = bookingRepository.findById(id).orElse(null);
+        if (booking != null) {
+            if (request.isDamage()) {
+//                booking.setFixingPrice(booking.getRentPrice() - request.getFixPrice());
+                booking.setDescription(request.getDamageDescription());
+                bookingRepository.save(booking);
+            }
+        }
+        return booking;
+    }
 
 }

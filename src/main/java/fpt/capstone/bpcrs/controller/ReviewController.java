@@ -41,7 +41,7 @@ public class ReviewController {
     }
 
     @PostMapping
-    @RolesAllowed(RoleEnum.RoleType.ADMINISTRATOR)
+    @RolesAllowed(RoleEnum.RoleType.USER)
     public ResponseEntity<?> createReview(@Valid @RequestBody ReviewPayload.RequestCreateReview request) {
         RoleEnum.USER.toString();
         Car car = carService.getCarById(request.getCarId());
