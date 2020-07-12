@@ -2,7 +2,7 @@ plugins {
     id 'org.springframework.boot' version '2.3.0.RELEASE'
     id 'io.spring.dependency-management' version '1.0.9.RELEASE'
     id 'java'
-    id "com.google.protobuf" version "0.8.8"
+//    id "com.google.protobuf" version "0.8.8"
 }
 
 group = 'fpt.capstone'
@@ -34,10 +34,10 @@ dependencies {
     compileOnly 'org.projectlombok:lombok'
     runtimeOnly 'mysql:mysql-connector-java'
     annotationProcessor 'org.projectlombok:lombok'
-    testImplementation('org.springframework.boot:spring-boot-starter-test') {
-        exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
-    }
-    testImplementation 'org.springframework.security:spring-security-test'
+//    testImplementation('org.springframework.boot:spring-boot-starter-test') {
+//        exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+//    }
+//    testImplementation 'org.springframework.security:spring-security-test'
     implementation group: 'com.google.api-client', name: 'google-api-client', version: '1.30.4'
     implementation group: 'com.google.oauth-client', name: 'google-oauth-client-jetty', version: '1.23.0'
     implementation group: 'io.jsonwebtoken', name: 'jjwt', version: '0.9.0'
@@ -50,57 +50,9 @@ dependencies {
     implementation group: 'io.springfox', name: 'springfox-swagger-ui', version: '2.9.2'
     implementation group: 'io.springfox', name: 'springfox-bean-validators', version: '2.9.2'
     implementation group: 'org.modelmapper', name: 'modelmapper', version: '2.3.0'
-    compile group: 'io.grpc', name: 'grpc-all', version: '1.29.0'
-    compile "com.google.protobuf:protobuf-java:3.12.1"
+//    compile group: 'io.grpc', name: 'grpc-all', version: '1.29.0'
     compile group: 'javax.persistence', name: 'javax.persistence-api', version: '2.2'
     compile group: 'org.web3j', name: 'core', version: '4.6.1'
     compile "com.squareup.okhttp3:okhttp:4.3.1"
 
 }
-
-
-tasks.withType(JavaCompile) {
-    options.annotationProcessorGeneratedSourcesDirectory = file("src/generated/java")
-}
-
-
-sourceSets {
-    generated {
-        java {
-            srcDirs = ['src/generated/java']
-        }
-    }
-}
-task protoTask{
-    sourceSets {
-        main {
-            java {
-                srcDirs 'build/generated/source/proto/main/grpc'
-                srcDirs 'build/generated/source/proto/main/java'
-            }
-        }
-    }
-    protobuf {
-        protoc {
-            // The version of protoc must match protobuf-java. If you don't depend on
-            // protobuf-java directly, you will be transitively depending on the
-            // protobuf-java version that grpc depends on.
-            artifact = "com.google.protobuf:protoc:3.12.0"
-        }
-        plugins {
-            grpc {
-                artifact = 'io.grpc:protoc-gen-grpc-java:1.29.0'
-            }
-        }
-        generateProtoTasks {
-            all()*.plugins {
-                grpc {}
-            }
-        }
-        generatedFilesBaseDir = "$projectDir/src/main/java/generated"
-    }
-}
-
-//test {
-//    useJUnitPlatform()
-//}

@@ -6,7 +6,6 @@ import fpt.capstone.bpcrs.model.Booking;
 import fpt.capstone.bpcrs.payload.ApiResponse;
 import fpt.capstone.bpcrs.payload.BookingPayload;
 import fpt.capstone.bpcrs.service.BookingService;
-import fpt.capstone.bpcrs.service.DappService;
 import fpt.capstone.bpcrs.service.EtherumService;
 import fpt.capstone.bpcrs.util.ObjectMapperUtils;
 import lombok.extern.slf4j.Slf4j;
