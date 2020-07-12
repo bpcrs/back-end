@@ -14,7 +14,9 @@ import fpt.capstone.bpcrs.service.CarService;
 import fpt.capstone.bpcrs.service.ModelService;
 import fpt.capstone.bpcrs.util.ObjectMapperUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.tomcat.util.json.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -66,7 +68,7 @@ public class CarController {
             return new ResponseEntity(new ApiError("Brand with id=" + request.getBrandId() + " not found", ""),
                     HttpStatus.BAD_REQUEST);
         }
-        if(model == null){
+        if (model == null) {
             return new ResponseEntity<>(new ApiError("Model  with id=" + request.getModelId() + " not found", ""),
                     HttpStatus.BAD_REQUEST);
         }
@@ -75,6 +77,15 @@ public class CarController {
         newCar.setBrand(brand);
         newCar.setModel(model);
         newCar.setOwner(accountService.getCurrentUser());
+        //check car VIN API (limit 25/month)
+//        try {
+//            if (!carService.checkCarVin(newCar)) {
+//                throw new JSONException("VIN car is not valid!");
+//            }
+//        } catch (JSONException | ParseException e) {
+//            return new ResponseEntity<>(new ApiError(e.toString(), "Car cannot created!"),
+//                    HttpStatus.BAD_REQUEST);
+//        }
         carService.createCar(newCar).buildObject(response, false);
         return ResponseEntity.ok(new ApiResponse<>(true, response));
     }

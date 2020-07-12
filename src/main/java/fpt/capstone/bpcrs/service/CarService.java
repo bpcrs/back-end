@@ -1,9 +1,13 @@
 package fpt.capstone.bpcrs.service;
 
 import fpt.capstone.bpcrs.model.Car;
+import org.apache.tomcat.util.json.ParseException;
+import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.data.domain.Page;
 
 public interface CarService {
+
+    boolean checkCarVin(Car car) throws JSONException, ParseException;
 
     Car createCar(Car newCar);
 

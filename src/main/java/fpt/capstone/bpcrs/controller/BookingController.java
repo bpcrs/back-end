@@ -1,6 +1,7 @@
 package fpt.capstone.bpcrs.controller;
 
 import fpt.capstone.bpcrs.constant.BookingEnum;
+import fpt.capstone.bpcrs.constant.RoleEnum;
 import fpt.capstone.bpcrs.exception.BadRequestException;
 import fpt.capstone.bpcrs.model.Account;
 import fpt.capstone.bpcrs.model.Booking;
@@ -38,7 +39,7 @@ public class BookingController {
     private AccountService accountService;
 
     @GetMapping("/renting/{id}")
-    @RolesAllowed({"USER", "ADMINISTRATOR"})
+    @RolesAllowed({RoleEnum.RoleType.USER, RoleEnum.RoleType.ADMINISTRATOR})
     private ResponseEntity<?> getUserRentingBookingList(@PathVariable("id") int id) {
         List<Booking> bookings = bookingService.getUserRentingBookingList(id);
         if (bookings.isEmpty()) {
@@ -49,7 +50,7 @@ public class BookingController {
     }
 
     @GetMapping("/hiring/{id}")
-    @RolesAllowed({"USER", "ADMINISTRATOR"})
+    @RolesAllowed({RoleEnum.RoleType.USER, RoleEnum.RoleType.ADMINISTRATOR})
     private ResponseEntity<?> getUserHiringBookingList(@PathVariable("id") int id) {
         List<Booking> bookings = bookingService.getUserHiringBookingList(id);
         if (bookings.isEmpty()) {
@@ -63,7 +64,6 @@ public class BookingController {
     @GetMapping("/{id}")
     @RolesAllowed({RoleEnum.RoleType.USER, RoleEnum.RoleType.ADMINISTRATOR})
     public ResponseEntity<?> getBooking(@PathVariable int id) {
-
         try {
             Booking booking = bookingService.getBookingInformation(id);
             System.out.println("Booking info" + booking);
@@ -80,27 +80,20 @@ public class BookingController {
         Car car = carService.getCarById(request.getCarId());
         Account lessor = accountService.getAccountById(request.getLessorId());
         Account renter = accountService.getAccountById(request.getRenterId());
-//        System.out.println("Car id ne " + request.getCarId());
-//        System.out.println("Car info " + car.getName());
-
         BookingPayload.ResponseCreateBooking response = new BookingPayload.ResponseCreateBooking();
-//        Booking booking =  ( Booking ) new Booking().buildObject( request , true);
-//        booking.setCar(car);
-//        booking.setLessor(lessor);
-//        booking.setRenter(renter);
+
         Booking booking = Booking.builder().car(car).lessor(lessor).renter(renter)
                 .from_date(request.getFromDate()).to_date(request.getFromDate())
                 .description(request.getDescription()).destination(request.getDestination())
                 .status(request.getStatus()).build();
-//        booking.setStatus(BookingEnum.REQUEST.toString());
-
         bookingService.createBooking(booking).buildObject(response, false);
         return ResponseEntity.ok(new ApiResponse<>(true, response));
+
 
     }
 
     @PutMapping("/{id}")
-    @RolesAllowed("ADMINISTRATOR")
+    @RolesAllowed(RoleEnum.RoleType.ADMINISTRATOR)
     private ResponseEntity<?> updateBookingStatus(@PathVariable("id") int id, @Valid @RequestParam String status) {
         try {
             Booking booking = bookingService.updateBookingStatus(id, status);
@@ -112,7 +105,7 @@ public class BookingController {
     }
 
     @PutMapping("/return/{id}")
-    @RolesAllowed("USER")
+    @RolesAllowed(RoleEnum.RoleType.USER)
     private ResponseEntity<?> returnBookingCar(@PathVariable("id") int id) {
         try {
             Booking booking = bookingService.updateBookingStatus(id, BookingEnum.RETURN.toString());
@@ -135,7 +128,7 @@ public class BookingController {
 //        }
 //    }
     @PutMapping("/paid/{id}")
-    @RolesAllowed("USER")
+    @RolesAllowed(RoleEnum.RoleType.USER)
     private ResponseEntity<?> returnMoney(@PathVariable("id") int id) {
         try {
             Booking booking = bookingService.updateBookingStatus(id, BookingEnum.PAID.toString());
@@ -147,7 +140,7 @@ public class BookingController {
     }
 
     @PutMapping("/checking/{id}")
-    @RolesAllowed("USER")
+    @RolesAllowed(RoleEnum.RoleType.USER)
     private ResponseEntity<?> checkCar(@PathVariable("id") int id, @Valid @RequestBody BookingPayload.RequestStatisticCarDamage request) {
         try {
             Booking booking = bookingService.statisticCarDamage(id, request);
@@ -158,5 +151,16 @@ public class BookingController {
         }
     }
 
-  
+
+    @PutMapping("/finish/{id}")
+    @RolesAllowed(RoleEnum.RoleType.USER)
+    private ResponseEntity<?> finishBookingCar(@PathVariable("id") int id, int fixingMoney) {
+        try {
+            Booking booking = bookingService.finishBooking(id, fixingMoney);
+            BookingPayload.ResponseCreateBooking response = ObjectMapperUtils.map(booking, BookingPayload.ResponseCreateBooking.class);
+            return ResponseEntity.ok(new ApiResponse<>(true, "Booking status was updated", response));
+        } catch (BadRequestException ex) {
+            return ResponseEntity.badRequest().body(new ApiResponse<>(false, ex.getMessage(), null));
+        }
+    }
 }
