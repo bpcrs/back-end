@@ -1,5 +1,6 @@
 package fpt.capstone.bpcrs.controller;
 
+import fpt.capstone.bpcrs.constant.BookingEnum;
 import fpt.capstone.bpcrs.constant.RoleEnum;
 import fpt.capstone.bpcrs.model.Agreement;
 import fpt.capstone.bpcrs.model.Booking;
@@ -8,6 +9,7 @@ import fpt.capstone.bpcrs.model.Role;
 import fpt.capstone.bpcrs.payload.AgreementPayload;
 import fpt.capstone.bpcrs.payload.ApiError;
 import fpt.capstone.bpcrs.payload.ApiResponse;
+import fpt.capstone.bpcrs.payload.BookingPayload;
 import fpt.capstone.bpcrs.service.AgreementService;
 import fpt.capstone.bpcrs.service.BookingService;
 import fpt.capstone.bpcrs.service.CriteriaService;
@@ -20,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.security.RolesAllowed;
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -34,22 +37,22 @@ public class AgreementController {
     private BookingService bookingService;
 
     @PostMapping
-    @RolesAllowed(RoleEnum.RoleType.ADMINISTRATOR)
-    public ResponseEntity<?> createAgreement( @Valid @RequestBody AgreementPayload.RequestCreateAgreement request) {
-        Booking booking = bookingService.getBookingInformation(request.getBookingId());
+    @RolesAllowed(RoleEnum.RoleType.USER)
+    public ResponseEntity<?> createAgreementList(@PathVariable int bookingId) {
+        Booking booking = bookingService.getBookingInformation(bookingId);
         if (booking == null) {
-            return new ResponseEntity(new ApiError("Booking with id = " + request.getBookingId() + " not found", ""), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity(new ApiError("Booking with id = " + bookingId + " not found", ""), HttpStatus.BAD_REQUEST);
         }
-        Criteria criteria = criteriaService.getCriteria(request.getCriteriaId());
-        if (criteria == null) {
-            return new ResponseEntity(new ApiError("Criteria with id = " + request.getCriteriaId() + " not found", ""), HttpStatus.BAD_REQUEST);
+        List<Agreement> agreements = new ArrayList<>();
+        List<Criteria> criteriaList = criteriaService.getAllCriteria();
+        for (Criteria criteria : criteriaList) {
+            Agreement agreement = Agreement.builder().booking(booking).criteria(criteria)
+                    .isApproved(false).value(30).build();
+            agreements.add(agreement);
         }
-        AgreementPayload.ResponseCreateAgreement response = new AgreementPayload.ResponseCreateAgreement();
-        Agreement agreement = (Agreement) new Agreement().buildObject(request, true);
-        agreement.setBooking(booking);
-        agreement.setCriteria(criteria);
-        agreementService.createAgreement(agreement).buildObject(response, false);
-        return ResponseEntity.ok(new ApiResponse<>(true, response));
+        List<Agreement> agreementList = agreementService.createAgreementList(agreements);
+        List<AgreementPayload.ResponseCreateAgreement> responses = ObjectMapperUtils.mapAll(agreementList, AgreementPayload.ResponseCreateAgreement.class);
+        return ResponseEntity.ok(new ApiResponse<>(true, responses));
     }
 
     @GetMapping("/get/{id}")
@@ -76,15 +79,18 @@ public class AgreementController {
 
     @PutMapping("/{id}")
     @RolesAllowed(RoleEnum.RoleType.USER)
-    public ResponseEntity<?> updateAgreement(@PathVariable() int id, @RequestBody AgreementPayload.RequestCreateAgreement request) {
-        boolean isExisted = agreementService.getAgreementById(id) != null;
-        if (!isExisted) {
-            return new ResponseEntity(new ApiError("Agreement with id = " + id + " not found", ""), HttpStatus.BAD_REQUEST);
+    public ResponseEntity<?> updateAgreement(@PathVariable int bookingId ,@RequestBody List<AgreementPayload.RequestCreateAgreement> request) {
+        Booking booking = bookingService.getBookingInformation(bookingId);
+        List<Agreement> agreements = new ArrayList<>();
+        for (AgreementPayload.RequestCreateAgreement agreement : request) {
+        Criteria criteria = criteriaService.getCriteria(agreement.getCriteriaId());
+            Agreement agre = Agreement.builder().booking(booking).criteria(criteria).isApproved(agreement.isApproved())
+                    .value(agreement.getValue()).build();
+            agreements.add(agre);
         }
+        List<Agreement> agreementList = agreementService.updateAgreement(agreements);
+        List<AgreementPayload.ResponseCreateAgreement> responses = ObjectMapperUtils.mapAll(agreementList, AgreementPayload.ResponseCreateAgreement.class);
 
-        AgreementPayload.ResponseCreateAgreement response = new AgreementPayload.ResponseCreateAgreement();
-        Agreement update = (Agreement) new Agreement().buildObject(request, true);
-        agreementService.updateAgreement(id, update).buildObject(response, false);
-        return ResponseEntity.ok(new ApiResponse<>(true, response));
+        return ResponseEntity.ok(new ApiResponse<>(true, responses));
     }
 }

@@ -10,6 +10,7 @@ import fpt.capstone.bpcrs.payload.ApiError;
 import fpt.capstone.bpcrs.payload.ApiResponse;
 import fpt.capstone.bpcrs.payload.BookingPayload;
 import fpt.capstone.bpcrs.service.AccountService;
+import fpt.capstone.bpcrs.service.AgreementService;
 import fpt.capstone.bpcrs.service.BookingService;
 import fpt.capstone.bpcrs.service.CarService;
 import fpt.capstone.bpcrs.util.ObjectMapperUtils;
@@ -37,6 +38,9 @@ public class BookingController {
 
     @Autowired
     private AccountService accountService;
+
+    @Autowired
+    private AgreementService agreementService;
 
     @GetMapping("/renting/{id}")
     @RolesAllowed({RoleEnum.RoleType.USER, RoleEnum.RoleType.ADMINISTRATOR})
@@ -82,21 +86,16 @@ public class BookingController {
         Car car = carService.getCarById(request.getCarId());
         Account lessor = accountService.getAccountById(request.getLessorId());
         Account renter = accountService.getAccountById(request.getRenterId());
-//        System.out.println("Car id ne " + request.getCarId());
-//        System.out.println("Car info " + car.getName());
 
         BookingPayload.ResponseCreateBooking response = new BookingPayload.ResponseCreateBooking();
-//        Booking booking =  ( Booking ) new Booking().buildObject( request , true);
-//        booking.setCar(car);
-//        booking.setLessor(lessor);
-//        booking.setRenter(renter);
         Booking booking = Booking.builder().car(car).lessor(lessor).renter(renter)
-                .from_date(request.getFromDate()).to_date(request.getFromDate())
+                .from_date(request.getFromDate()).to_date(request.getToDate())
                 .description(request.getDescription()).destination(request.getDestination())
                 .status(request.getStatus()).build();
-//        booking.setStatus(BookingEnum.REQUEST.toString());
+
 
         bookingService.createBooking(booking).buildObject(response, false);
+        agreementService.createAgreementListRequest(response.getId());
         return ResponseEntity.ok(new ApiResponse<>(true, response));
     }
 

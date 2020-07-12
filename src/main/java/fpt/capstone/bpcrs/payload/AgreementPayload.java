@@ -23,11 +23,7 @@ public class AgreementPayload {
         private int criteriaId;
 
         @NotNull
-        private String value;
-
-        @NotNull
-        private String status;
-
+        private double value;
 
         private boolean isApproved;
     }
@@ -48,11 +44,7 @@ public class AgreementPayload {
         private int criteriaId;
 
         @NotNull
-        private String value;
-
-        @NotNull
-        private String status;
-
+        private double value;
 
         private boolean isApproved;
     }

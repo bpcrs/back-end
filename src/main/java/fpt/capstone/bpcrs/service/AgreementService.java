@@ -7,11 +7,13 @@ import java.util.List;
 public interface AgreementService {
     Agreement createAgreement(Agreement agreement);
 
+    List<Agreement> createAgreementList(List<Agreement> agreements);
+
     List<Agreement> getListAgreementByBookingID(int bookingId);
 
     Agreement getAgreementById(int id);
 
-    Agreement updateAgreement(int id, Agreement agreement);
+    List<Agreement> updateAgreement(List<Agreement> agreements);
 
-    List<Agreement> getListAgreementByCriteriaID(int bookingId, int page, int size);
+    List<Agreement> createAgreementListRequest(int bookingId);
 }
