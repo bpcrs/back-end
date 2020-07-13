@@ -2,8 +2,13 @@ package fpt.capstone.bpcrs.service.impl;
 
 import fpt.capstone.bpcrs.component.IgnoreNullProperty;
 import fpt.capstone.bpcrs.component.Paging;
+import fpt.capstone.bpcrs.constant.BookingEnum;
 import fpt.capstone.bpcrs.model.Agreement;
+import fpt.capstone.bpcrs.model.Booking;
+import fpt.capstone.bpcrs.model.Criteria;
 import fpt.capstone.bpcrs.repository.AgreementRepository;
+import fpt.capstone.bpcrs.repository.BookingRepository;
+import fpt.capstone.bpcrs.repository.CriteriaRepository;
 import fpt.capstone.bpcrs.service.AgreementService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -12,6 +17,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -23,11 +29,21 @@ public class AgreementServiceImpl implements AgreementService {
     @Autowired
     private AgreementRepository agreementRepository;
 
+    @Autowired
+    private CriteriaRepository criteriaRepository;
+
+    @Autowired
+    private BookingRepository bookingRepository;
+
     @Override
     public Agreement createAgreement(Agreement agreement) {
         return agreementRepository.save(agreement);
     }
 
+    @Override
+    public List<Agreement> createAgreementList(List<Agreement> agreements) {
+        return agreementRepository.saveAll(agreements);
+    }
 
 
     @Override
@@ -46,15 +62,27 @@ public class AgreementServiceImpl implements AgreementService {
 
 
     @Override
-    public Agreement updateAgreement(int id, Agreement agreement) {
-        Agreement existed = agreementRepository.getOne(id);
-        BeanUtils.copyProperties(agreement, existed, IgnoreNullProperty.getNullPropertyNames(agreement));
-        return agreementRepository.save(existed);
+    public List<Agreement> updateAgreement(List<Agreement> agreements) {
+        List<Agreement> agreementList = new ArrayList<>();
+        for (Agreement agreement : agreements) {
+            Agreement updateAgreement = agreementRepository.getOne(agreement.getId());
+            BeanUtils.copyProperties(agreement, updateAgreement, IgnoreNullProperty.getNullPropertyNames(agreement));
+            agreementList.add(updateAgreement);
+        }
+        return agreementRepository.saveAll(agreementList);
     }
 
     @Override
-    public List<Agreement> getListAgreementByCriteriaID(int criteriaId, int page, int size) {
-        Page<Agreement> agreements = agreementRepository.findAllByCriteria_Id(criteriaId, new Paging(page, size, Sort.unsorted()));
-        return agreements.get().collect(Collectors.toList());
+    public List<Agreement> createAgreementListRequest(int bookingId) {
+        Booking booking = bookingRepository.getOne(bookingId);
+        List<Criteria> criteriaList = criteriaRepository.findAll();
+        List<Agreement> agreements = new ArrayList<>();
+        for (Criteria criteria : criteriaList) {
+            Agreement agreement = Agreement.builder().booking(booking).criteria(criteria)
+                    .value(30).isApproved(false).build();
+            agreements.add(agreement);
+        }
+
+        return agreementRepository.saveAll(agreements);
     }
 }
