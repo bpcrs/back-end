@@ -14,6 +14,9 @@ public class AgreementPayload {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class RequestCreateAgreement {
+
+        private String name;
+
         @Min(1)
         @NotNull
         private int bookingId;
@@ -34,6 +37,8 @@ public class AgreementPayload {
     @NoArgsConstructor
     public static class ResponseCreateAgreement{
         private int id;
+
+        private  String name;
 
         @Min(1)
         @NotNull

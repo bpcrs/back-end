@@ -92,7 +92,7 @@ public class BookingController {
                 .description(request.getDescription()).destination(request.getDestination())
                 .status(request.getStatus()).build();
         bookingService.createBooking(booking).buildObject(response, false);
-        agreementService.createAgreementListRequest(response.getId());
+//        agreementService.createAgreementListRequest(response.getId());
         return ResponseEntity.ok(new ApiResponse<>(true, response));
 
 

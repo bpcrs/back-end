@@ -38,17 +38,19 @@ public class AgreementController {
 
     @PostMapping
     @RolesAllowed(RoleEnum.RoleType.USER)
-    public ResponseEntity<?> createAgreementList(@PathVariable int bookingId) {
-        Booking booking = bookingService.getBookingInformation(bookingId);
-        if (booking == null) {
-            return new ResponseEntity(new ApiError("Booking with id = " + bookingId + " not found", ""), HttpStatus.BAD_REQUEST);
-        }
+    public ResponseEntity<?> createAgreementList(@Valid @RequestBody List<AgreementPayload.RequestCreateAgreement> requests) {
+//        Booking booking = bookingService.getBookingInformation(requests[1]);
+//        if (booking == null) {
+//            return new ResponseEntity(new ApiError("Booking with id = " + bookingId + " not found", ""), HttpStatus.BAD_REQUEST);
+//        }
         List<Agreement> agreements = new ArrayList<>();
-        List<Criteria> criteriaList = criteriaService.getAllCriteria();
-        for (Criteria criteria : criteriaList) {
-            Agreement agreement = Agreement.builder().booking(booking).criteria(criteria)
-                    .isApproved(false).value(30).build();
-            agreements.add(agreement);
+//        List<Criteria> criteriaList = criteriaService.getAllCriteria();
+        for (AgreementPayload.RequestCreateAgreement agreement : requests) {
+            Booking booking = bookingService.getBookingInformation(agreement.getBookingId());
+            Criteria criteria = criteriaService.getCriteria(agreement.getCriteriaId());
+            Agreement newAgreement = Agreement.builder().booking(booking).criteria(criteria)
+                    .isApproved(agreement.isApproved()).value(agreement.getValue()).name(agreement.getName()).build();
+            agreements.add(newAgreement);
         }
         List<Agreement> agreementList = agreementService.createAgreementList(agreements);
         List<AgreementPayload.ResponseCreateAgreement> responses = ObjectMapperUtils.mapAll(agreementList, AgreementPayload.ResponseCreateAgreement.class);
@@ -79,10 +81,10 @@ public class AgreementController {
 
     @PutMapping("/{id}")
     @RolesAllowed(RoleEnum.RoleType.USER)
-    public ResponseEntity<?> updateAgreement(@PathVariable int bookingId ,@RequestBody List<AgreementPayload.RequestCreateAgreement> request) {
+    public ResponseEntity<?> updateAgreement(@PathVariable int bookingId ,@RequestBody List<AgreementPayload.ResponseCreateAgreement> request) {
         Booking booking = bookingService.getBookingInformation(bookingId);
         List<Agreement> agreements = new ArrayList<>();
-        for (AgreementPayload.RequestCreateAgreement agreement : request) {
+        for (AgreementPayload.ResponseCreateAgreement agreement : request) {
         Criteria criteria = criteriaService.getCriteria(agreement.getCriteriaId());
             Agreement agre = Agreement.builder().booking(booking).criteria(criteria).isApproved(agreement.isApproved())
                     .value(agreement.getValue()).build();

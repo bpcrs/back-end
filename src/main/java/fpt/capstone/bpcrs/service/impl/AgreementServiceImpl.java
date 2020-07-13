@@ -63,8 +63,13 @@ public class AgreementServiceImpl implements AgreementService {
 
     @Override
     public List<Agreement> updateAgreement(List<Agreement> agreements) {
-
-        return agreementRepository.saveAll(agreements);
+        List<Agreement> agreementList = new ArrayList<>();
+        for (Agreement agreement : agreements) {
+            Agreement updateAgreement = agreementRepository.getOne(agreement.getId());
+            BeanUtils.copyProperties(agreement, updateAgreement, IgnoreNullProperty.getNullPropertyNames(agreement));
+            agreementList.add(updateAgreement);
+        }
+        return agreementRepository.saveAll(agreementList);
     }
 
     @Override
