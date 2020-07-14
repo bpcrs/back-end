@@ -20,4 +20,6 @@ public interface BookingService {
     Booking finishBooking(int id, int money);
 
     Booking statisticCarDamage(int id, BookingPayload.RequestStatisticCarDamage request);
+
+
 }
