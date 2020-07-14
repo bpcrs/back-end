@@ -67,15 +67,16 @@ public class BookingController {
 
     @GetMapping("/{id}")
     @RolesAllowed({RoleEnum.RoleType.USER, RoleEnum.RoleType.ADMINISTRATOR})
-    public ResponseEntity<?> getBooking(@PathVariable int id) {
-        try {
+    public ResponseEntity<?> getBooking(@PathVariable() int id) {
+            BookingPayload.ResponseCreateBooking response = new BookingPayload.ResponseCreateBooking();
             Booking booking = bookingService.getBookingInformation(id);
-            System.out.println("Booking info" + booking);
-            BookingPayload.ResponseCreateBooking response = ObjectMapperUtils.map(booking, BookingPayload.ResponseCreateBooking.class);
-            return ResponseEntity.ok(new ApiResponse<>(true, "Get list booking successful", response));
-        } catch (BadRequestException ex) {
-            return ResponseEntity.badRequest().body(new ApiResponse<>(false, ex.getMessage(), null));
-        }
+            if (booking != null) {
+                booking.buildObject(response, false);
+            return ResponseEntity.ok(new ApiResponse<>(true, response));
+            }
+//            System.out.println("Booking info" + booking);
+            return ResponseEntity.badRequest().body(new ApiResponse<>(false, "Booking with id = " + id + " not found", HttpStatus.BAD_REQUEST));
+
     }
 
     @PostMapping
