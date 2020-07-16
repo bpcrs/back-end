@@ -35,7 +35,7 @@ public class BpcrsApplication extends SpringBootServletInitializer {
         Role admin = new Role(RoleEnum.ADMINISTRATOR.name(), true, null);
         roleRepository.save(admin);
         roleRepository.save(new Role(RoleEnum.USER.name(), true, null));
-        accountRepository.save(Account.builder().email(SA_MAIL).fullName("ADMIN").role(admin).imageUrl("default").build());
+        accountRepository.save(Account.builder().email(SA_MAIL).fullName("ADMIN").role(admin).active(true).imageUrl("default").build());
       }
     };
   }
