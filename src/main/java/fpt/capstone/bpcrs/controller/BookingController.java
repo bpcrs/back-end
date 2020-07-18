@@ -170,4 +170,5 @@ public class BookingController {
             return ResponseEntity.badRequest().body(new ApiResponse<>(false, ex.getMessage(), null));
         }
     }
+    
 }
