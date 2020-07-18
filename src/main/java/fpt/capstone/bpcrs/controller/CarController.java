@@ -17,6 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.util.json.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.configurationprocessor.json.JSONException;
+import org.springframework.context.annotation.Role;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,6 +26,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.security.RolesAllowed;
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -99,6 +101,18 @@ public class CarController {
             return ResponseEntity.ok(new ApiResponse<>(true, response));
         }
         return new ResponseEntity(new ApiResponse<>(false, "Car with id=" + id + " not found"), HttpStatus.BAD_REQUEST);
+    }
+
+    @GetMapping("/owner/{id}")
+    @RolesAllowed({RoleEnum.RoleType.USER, RoleEnum.RoleType.ADMINISTRATOR})
+    public ResponseEntity<?> getCarsByOwner(@PathVariable() int id) {
+        List<Car> cars = carService.getAllCarsByOwnerId(id);
+        if (cars.isEmpty()) {
+            return new ResponseEntity(new ApiError("User dont have any car", ""), HttpStatus.BAD_REQUEST);
+        }
+        List<CarPayload.ResponseGetCar> responses = ObjectMapperUtils.mapAll(cars, CarPayload.ResponseGetCar.class);
+//        cars.b
+        return ResponseEntity.ok(new ApiResponse<>(true, responses));
     }
 
     @PutMapping("/{id}")

@@ -5,6 +5,8 @@ import org.apache.tomcat.util.json.ParseException;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.data.domain.Page;
 
+import java.util.List;
+
 public interface CarService {
 
     boolean checkCarVin(Car car) throws JSONException, ParseException;
@@ -16,4 +18,6 @@ public interface CarService {
     Car updateCar(Car updateCar, int id);
 
     Page<Car> getAllCarsPagingByFilters(int page, int size, Integer[] modelId, Integer[] seat, Double fromPrice, Double toPrice, Integer[] brandId);
+
+    List<Car> getAllCarsByOwnerId(int ownerId);
 }

@@ -19,7 +19,9 @@ import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -78,6 +80,14 @@ public class CarServiceImpl implements CarService {
         }
         Page<Car> cars = carRepository.findAll(conditon, new Paging(page, size, Sort.unsorted()));
         return cars;
+    }
+
+    @Override
+    public List<Car> getAllCarsByOwnerId(int ownerId) {
+//        List<Car> cars = new ArrayList<>();
+        List<Car> carList = carRepository.findAllByOwner_Id(ownerId);
+//        cars = BeanUtils.copyProperties();
+        return carRepository.saveAll(carList);
     }
 
 }
