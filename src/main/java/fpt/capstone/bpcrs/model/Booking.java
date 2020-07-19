@@ -44,7 +44,7 @@ public class Booking extends Auditing {
 
     @Column
     @NotNull
-    private String description;
+    private String location;
 
     @ManyToOne
     @JoinColumn(name = "renter_id")

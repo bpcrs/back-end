@@ -90,7 +90,7 @@ public class BookingController {
 
         Booking booking = Booking.builder().car(car).lessor(lessor).renter(renter)
                 .from_date(request.getFromDate()).to_date(request.getToDate())
-                .description(request.getDescription()).destination(request.getDestination())
+                .location(request.getLocation()).destination(request.getDestination())
                 .status(request.getStatus()).build();
         bookingService.createBooking(booking).buildObject(response, false);
 //        agreementService.createAgreementListRequest(response.getId());
