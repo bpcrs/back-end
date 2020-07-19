@@ -77,14 +77,15 @@ public class AgreementController {
     @PostMapping
     @RolesAllowed(RoleEnum.RoleType.USER)
     public ResponseEntity<?> createAgreement(@Valid @RequestBody AgreementPayload.RequestCreateAgreement request) {
+
         Booking booking = bookingService.getBookingInformation(request.getBookingId());
-        Criteria criteria = criteriaService.getCriteria(request.getCriteriaId());
+        Criteria criteria = criteriaService.findCriteriaByName(request.getCriteriaName());
         if (booking == null) {
             return new ResponseEntity(new ApiResponse<>(false, "Dont have any Booking with bookingId " + request.getBookingId()),
                     HttpStatus.BAD_REQUEST);
         }
         if (criteria == null) {
-            return new ResponseEntity(new ApiResponse<>(false, "Dont have any Criteria with criteriaId " + request.getCriteriaId()),
+            return new ResponseEntity(new ApiResponse<>(false, "Dont have any Criteria with criteria name " + request.getCriteriaName()),
                     HttpStatus.BAD_REQUEST);
         }
 

@@ -26,10 +26,6 @@ public class Agreement extends Auditing {
 
     @Column
     @NotNull
-    private  String name;
-
-    @Column
-    @NotNull
     private double value;
 
     @Column(nullable = false, columnDefinition = "TINYINT(1) default 0")

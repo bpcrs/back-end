@@ -47,7 +47,11 @@ public class CriteriaServiceImpl implements CriteriaService {
         return criteria.orElse(null);
     }
 
-
+    @Override
+    public Criteria findCriteriaByName(String name) {
+        Optional<Criteria> criteria = criteriaRepository.findByName(name);
+        return criteria.orElse(null);
+    }
 
 
 }

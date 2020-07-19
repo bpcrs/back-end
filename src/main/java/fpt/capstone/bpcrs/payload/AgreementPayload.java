@@ -15,15 +15,12 @@ public class AgreementPayload {
     @AllArgsConstructor
     public static class RequestCreateAgreement {
 
-        private String name;
-
         @Min(1)
         @NotNull
         private int bookingId;
 
-        @Min(1)
         @NotNull
-        private int criteriaId;
+        private String criteriaName;
 
         @NotNull
         private double value;
@@ -37,8 +34,6 @@ public class AgreementPayload {
     @NoArgsConstructor
     public static class ResponseCreateAgreement{
         private int id;
-
-        private  String name;
 
         @Min(1)
         @NotNull

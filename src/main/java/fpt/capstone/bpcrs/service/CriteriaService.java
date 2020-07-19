@@ -13,4 +13,6 @@ public interface CriteriaService {
     Criteria updateCriteria(Criteria criteria, int id);
 
     Criteria getCriteria(int id);
+
+    Criteria findCriteriaByName(String name);
 }
