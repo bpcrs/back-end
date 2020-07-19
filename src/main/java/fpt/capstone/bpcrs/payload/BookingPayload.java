@@ -25,7 +25,7 @@ public class BookingPayload {
         private int renterId;
 
         @NotNull
-        private String description;
+        private String location;
 
         @NotNull
         private String status;
@@ -58,7 +58,7 @@ public class BookingPayload {
         private AccountPayload.AccountResponse renter;
 
         @NotNull
-        private String description;
+        private String location;
 
         @NotNull
         private String status;
