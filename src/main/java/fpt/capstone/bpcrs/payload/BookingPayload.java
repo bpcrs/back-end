@@ -50,14 +50,12 @@ public class BookingPayload {
         @NotNull
         private int id;
 
-        @Min(1)
-        private int carId;
 
-        @Min(1)
-        private int lessorId;
+        private CarPayload.ResponseGetCar car;
 
-        @Min(1)
-        private int renterId;
+        private AccountPayload.AccountResponse lessor;
+
+        private AccountPayload.AccountResponse renter;
 
         @NotNull
         private String description;
