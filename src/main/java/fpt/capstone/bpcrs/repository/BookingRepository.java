@@ -11,9 +11,9 @@ import java.util.List;
 public interface BookingRepository extends JpaRepository<Booking, Integer> {
     List<Booking> findAllByRenter_Id(Integer id);
 
-    Page<Booking> findAllByLessor_IdAndStatus(int ownerId, String status, Pageable paging);
+    Page<Booking> findAllByRenter_Id(int ownerId, Pageable paging);
 
-    Page<Booking> findAllByCar_IdAndStatus(int carId, BookingEnum status, Pageable paging);
+    Page<Booking> findAllByCar_Id(int carId, Pageable paging);
 
 //    Page<Booking> findAllByRenter_Id(int ownerId, Pageable paging);
 
