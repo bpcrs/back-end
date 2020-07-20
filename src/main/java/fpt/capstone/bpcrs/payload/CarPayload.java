@@ -37,6 +37,7 @@ public class CarPayload {
         private AccountPayload.AccountResponse owner;
         @NotNull
         private double price;
+        private String status;
     }
 
     @Data
@@ -53,6 +54,7 @@ public class CarPayload {
         private String plateNum;
         private double price;
         private String year;
+        private String status;
     }
 
 }
