@@ -2,6 +2,7 @@ package fpt.capstone.bpcrs.service;
 
 import fpt.capstone.bpcrs.model.Booking;
 import fpt.capstone.bpcrs.payload.BookingPayload;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
@@ -21,5 +22,5 @@ public interface BookingService {
 
     Booking statisticCarDamage(int id, BookingPayload.RequestStatisticCarDamage request);
 
-
+    Page<Booking> getAllBookingsRequestByOwner(int ownerId, int page, int size);
 }

@@ -9,6 +9,7 @@ import fpt.capstone.bpcrs.model.Car;
 import fpt.capstone.bpcrs.payload.ApiError;
 import fpt.capstone.bpcrs.payload.ApiResponse;
 import fpt.capstone.bpcrs.payload.BookingPayload;
+import fpt.capstone.bpcrs.payload.PagingPayload;
 import fpt.capstone.bpcrs.service.AccountService;
 import fpt.capstone.bpcrs.service.AgreementService;
 import fpt.capstone.bpcrs.service.BookingService;
@@ -16,6 +17,7 @@ import fpt.capstone.bpcrs.service.CarService;
 import fpt.capstone.bpcrs.util.ObjectMapperUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -44,7 +46,7 @@ public class BookingController {
 
     @GetMapping("/renting/{id}")
     @RolesAllowed({RoleEnum.RoleType.USER, RoleEnum.RoleType.ADMINISTRATOR})
-    private ResponseEntity<?> getUserRentingBookingList(@PathVariable("id") int id) {
+    public ResponseEntity<?> getUserRentingBookingList(@PathVariable("id") int id) {
         List<Booking> bookings = bookingService.getUserRentingBookingList(id);
         if (bookings.isEmpty()) {
             return new ResponseEntity(new ApiResponse<>(false, "Dont have any user rent with id = " + id), HttpStatus.BAD_REQUEST);
@@ -55,7 +57,7 @@ public class BookingController {
 
     @GetMapping("/hiring/{id}")
     @RolesAllowed({RoleEnum.RoleType.USER, RoleEnum.RoleType.ADMINISTRATOR})
-    private ResponseEntity<?> getUserHiringBookingList(@PathVariable("id") int id) {
+    public ResponseEntity<?> getUserHiringBookingList(@PathVariable("id") int id) {
         List<Booking> bookings = bookingService.getUserHiringBookingList(id);
         if (bookings.isEmpty()) {
             return new ResponseEntity(new ApiResponse<>(false, "Dont have any booking with id " + id), HttpStatus.BAD_REQUEST);
@@ -101,7 +103,7 @@ public class BookingController {
 
     @PutMapping("/{id}")
     @RolesAllowed(RoleEnum.RoleType.ADMINISTRATOR)
-    private ResponseEntity<?> updateBookingStatus(@PathVariable("id") int id, @Valid @RequestParam String status) {
+    public ResponseEntity<?> updateBookingStatus(@PathVariable("id") int id, @Valid @RequestParam String status) {
         try {
             Booking booking = bookingService.updateBookingStatus(id, status);
             BookingPayload.ResponseCreateBooking response = ObjectMapperUtils.map(booking, BookingPayload.ResponseCreateBooking.class);
@@ -113,7 +115,7 @@ public class BookingController {
 
     @PutMapping("/return/{id}")
     @RolesAllowed(RoleEnum.RoleType.USER)
-    private ResponseEntity<?> returnBookingCar(@PathVariable("id") int id) {
+    public ResponseEntity<?> returnBookingCar(@PathVariable("id") int id) {
         try {
             Booking booking = bookingService.updateBookingStatus(id, BookingEnum.RETURN.toString());
             BookingPayload.ResponseCreateBooking response = ObjectMapperUtils.map(booking, BookingPayload.ResponseCreateBooking.class);
@@ -136,7 +138,7 @@ public class BookingController {
 //    }
     @PutMapping("/paid/{id}")
     @RolesAllowed(RoleEnum.RoleType.USER)
-    private ResponseEntity<?> returnMoney(@PathVariable("id") int id) {
+    public ResponseEntity<?> returnMoney(@PathVariable("id") int id) {
         try {
             Booking booking = bookingService.updateBookingStatus(id, BookingEnum.PAID.toString());
             BookingPayload.ResponseCreateBooking response = ObjectMapperUtils.map(booking, BookingPayload.ResponseCreateBooking.class);
@@ -148,7 +150,7 @@ public class BookingController {
 
     @PutMapping("/checking/{id}")
     @RolesAllowed(RoleEnum.RoleType.USER)
-    private ResponseEntity<?> checkCar(@PathVariable("id") int id, @Valid @RequestBody BookingPayload.RequestStatisticCarDamage request) {
+    public ResponseEntity<?> checkCar(@PathVariable("id") int id, @Valid @RequestBody BookingPayload.RequestStatisticCarDamage request) {
         try {
             Booking booking = bookingService.statisticCarDamage(id, request);
             BookingPayload.ResponseCreateBooking response = ObjectMapperUtils.map(booking, BookingPayload.ResponseCreateBooking.class);
@@ -161,7 +163,7 @@ public class BookingController {
 
     @PutMapping("/finish/{id}")
     @RolesAllowed(RoleEnum.RoleType.USER)
-    private ResponseEntity<?> finishBookingCar(@PathVariable("id") int id, int fixingMoney) {
+    public ResponseEntity<?> finishBookingCar(@PathVariable("id") int id, int fixingMoney) {
         try {
             Booking booking = bookingService.finishBooking(id, fixingMoney);
             BookingPayload.ResponseCreateBooking response = ObjectMapperUtils.map(booking, BookingPayload.ResponseCreateBooking.class);
@@ -169,6 +171,20 @@ public class BookingController {
         } catch (BadRequestException ex) {
             return ResponseEntity.badRequest().body(new ApiResponse<>(false, ex.getMessage(), null));
         }
+    }
+
+    @GetMapping("/requests/{id}")
+    @RolesAllowed({RoleEnum.RoleType.USER, RoleEnum.RoleType.ADMINISTRATOR})
+    public ResponseEntity<?> getAllBookingRequestByOwner(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @PathVariable() int id) {
+        Page<Booking> bookings = bookingService.getAllBookingsRequestByOwner(id, page, size);
+        List<BookingPayload.ResponseCreateBooking> responses = ObjectMapperUtils.mapAll(bookings.toList(),
+                BookingPayload.ResponseCreateBooking.class);
+        PagingPayload pagingPayload =
+                PagingPayload.builder().data(responses).count((int) bookings.getTotalElements()).build();
+        return ResponseEntity.ok(new ApiResponse<>(true, pagingPayload));
     }
     
 }
