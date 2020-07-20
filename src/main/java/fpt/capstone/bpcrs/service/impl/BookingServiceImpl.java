@@ -27,8 +27,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public Booking updateBookingStatus(int id, String status) {
-        Booking booking = bookingRepository.getOne(id);
+    public Booking updateBookingStatus(Booking booking, BookingEnum status) {
         booking.setStatus(status);
         return bookingRepository.save(booking);
     }
@@ -52,7 +51,7 @@ public class BookingServiceImpl implements BookingService {
     public Booking finishBooking(int id, int money) {
         Booking booking = bookingRepository.findById(id).orElse(null);
         if (booking != null) {
-            booking.setStatus(BookingEnum.DONE.toString());
+//            booking.setStatus(BookingEnum.DONE.toString());
             if (money != 0) {
 //                booking.setFixingPrice(money);
             }
@@ -76,10 +75,19 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public Page<Booking> getAllBookingsRequestByCar(int carId, int page, int size) {
-        Page<Booking> bookings = bookingRepository.findAllByCar_IdAndStatus(carId, BookingEnum.REQUEST.toString(),
+        Page<Booking> bookings = bookingRepository.findAllByCar_IdAndStatus(carId, BookingEnum.REQUEST,
                 new Paging(page, size, Sort.unsorted()));
 //        System.out.println("Booking " + bookings.getSize());
         return bookings;
+    }
+
+    @Override
+    public boolean checkStatusBookingBySM(BookingEnum currentStatus, BookingEnum nextStatus) {
+        switch (currentStatus) {
+            case REQUEST:
+                return nextStatus == BookingEnum.CONFIRM || nextStatus == BookingEnum.DENY;
+        }
+        return false;
     }
 
 }
