@@ -1,5 +1,6 @@
 package fpt.capstone.bpcrs.service.impl;
 
+import fpt.capstone.bpcrs.component.Paging;
 import fpt.capstone.bpcrs.constant.BookingEnum;
 import fpt.capstone.bpcrs.model.Booking;
 import fpt.capstone.bpcrs.payload.BookingPayload;
@@ -7,6 +8,8 @@ import fpt.capstone.bpcrs.repository.BookingRepository;
 import fpt.capstone.bpcrs.service.BookingService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -69,6 +72,14 @@ public class BookingServiceImpl implements BookingService {
             }
         }
         return booking;
+    }
+
+    @Override
+    public Page<Booking> getAllBookingsRequestByOwner(int ownerId, int page, int size) {
+        Page<Booking> bookings = bookingRepository.findAllByLessor_IdAndStatus(ownerId, BookingEnum.REQUEST.toString(),
+                new Paging(page, size, Sort.unsorted()));
+//        System.out.println("Booking " + bookings.getSize());
+        return bookings;
     }
 
 }
