@@ -1,5 +1,6 @@
 package fpt.capstone.bpcrs.model;
 
+import fpt.capstone.bpcrs.constant.BookingEnum;
 import java.util.Date;
 import javax.annotation.Generated;
 import javax.persistence.metamodel.ListAttribute;
@@ -18,7 +19,7 @@ public abstract class Booking_ extends fpt.capstone.bpcrs.component.Auditing_ {
 	public static volatile SingularAttribute<Booking, String> location;
 	public static volatile SingularAttribute<Booking, Account> lessor;
 	public static volatile SingularAttribute<Booking, Account> renter;
-	public static volatile SingularAttribute<Booking, String> status;
+	public static volatile SingularAttribute<Booking, BookingEnum> status;
 
 	public static final String FROM_DATE = "from_date";
 	public static final String TO_DATE = "to_date";

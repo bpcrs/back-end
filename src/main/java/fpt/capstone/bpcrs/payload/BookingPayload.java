@@ -1,5 +1,6 @@
 package fpt.capstone.bpcrs.payload;
 
+import fpt.capstone.bpcrs.constant.BookingEnum;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -28,7 +29,7 @@ public class BookingPayload {
         private String location;
 
         @NotNull
-        private String status;
+        private BookingEnum status;
 
         @NotNull
         private String destination;

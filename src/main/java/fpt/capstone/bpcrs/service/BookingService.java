@@ -1,5 +1,6 @@
 package fpt.capstone.bpcrs.service;
 
+import fpt.capstone.bpcrs.constant.BookingEnum;
 import fpt.capstone.bpcrs.model.Booking;
 import fpt.capstone.bpcrs.payload.BookingPayload;
 import org.springframework.data.domain.Page;
@@ -10,7 +11,7 @@ public interface BookingService {
 
     Booking createBooking(Booking booking);
 
-    Booking updateBookingStatus(int id, String status);
+    Booking updateBookingStatus(Booking  booking, BookingEnum status);
 
     Booking getBookingInformation(int id);
 
@@ -23,4 +24,6 @@ public interface BookingService {
     Booking statisticCarDamage(int id, BookingPayload.RequestStatisticCarDamage request);
 
     Page<Booking> getAllBookingsRequestByCar(int ownerId, int page, int size);
+
+    boolean checkStatusBookingBySM (BookingEnum currentStatus, BookingEnum nextStatus);
 }
