@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+import java.time.LocalDateTime;
 
 @NoArgsConstructor
 public class CarPayload {
@@ -38,6 +39,7 @@ public class CarPayload {
         @NotNull
         private double price;
         private String status;
+        private LocalDateTime createdDate;
     }
 
     @Data

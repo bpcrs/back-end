@@ -129,5 +129,15 @@ public class CarController {
         return ResponseEntity.ok(new ApiResponse<>(true, response));
     }
 
-
+    @GetMapping("/admin")
+//    @RolesAllowed({RoleEnum.RoleType.ADMINISTRATOR})
+    public ResponseEntity<?> getCar(){
+//        CarPayload.ResponseGetCar response = new CarPayload.ResponseGetCar();
+        List<Car> cars = carService.getAllCars();
+        if (cars.isEmpty()) {
+            return new ResponseEntity(new ApiError("User dont have any car", ""), HttpStatus.BAD_REQUEST);
+        }
+        List<CarPayload.ResponseGetCar> responses = ObjectMapperUtils.mapAll(cars, CarPayload.ResponseGetCar.class);
+        return ResponseEntity.ok(new ApiResponse<>(true, responses));
+    }
 }
