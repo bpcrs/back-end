@@ -13,7 +13,7 @@ public interface BookingRepository extends JpaRepository<Booking, Integer> {
 
     Page<Booking> findAllByRenter_Id(int ownerId, Pageable paging);
 
-    Page<Booking> findAllByCar_Id(int carId, Pageable paging);
+    Page<Booking> findAllByCar_IdAndStatus(int carId, BookingEnum status , Pageable paging);
 
 //    Page<Booking> findAllByRenter_Id(int ownerId, Pageable paging);
 
