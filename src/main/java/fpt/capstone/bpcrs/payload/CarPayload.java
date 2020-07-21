@@ -1,5 +1,7 @@
 package fpt.capstone.bpcrs.payload;
 
+import fpt.capstone.bpcrs.constant.CarEnum;
+import fpt.capstone.bpcrs.model.Car;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -37,7 +39,7 @@ public class CarPayload {
         private AccountPayload.AccountResponse owner;
         @NotNull
         private double price;
-        private String status;
+        private CarEnum status;
     }
 
     @Data
@@ -54,7 +56,7 @@ public class CarPayload {
         private String plateNum;
         private double price;
         private String year;
-        private String status;
+        private CarEnum status;
     }
 
 }
