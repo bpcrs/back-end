@@ -3,15 +3,14 @@ package fpt.capstone.bpcrs.service;
 import fpt.capstone.bpcrs.constant.BookingEnum;
 import fpt.capstone.bpcrs.constant.CarEnum;
 import fpt.capstone.bpcrs.model.Car;
-import org.apache.tomcat.util.json.ParseException;
-import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.data.domain.Page;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 public interface CarService {
 
-    boolean checkCarVin(Car car) throws JSONException, ParseException;
+//    boolean checkCarVin(Car car) throws JSONException, ParseException;
 
     Car createCar(Car newCar);
 

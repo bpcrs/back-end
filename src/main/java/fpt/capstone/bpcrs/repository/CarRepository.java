@@ -8,7 +8,6 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface CarRepository extends JpaRepository<Car, Integer>,
-        JpaSpecificationExecutor<Car> {
+public interface CarRepository extends JpaRepository<Car, Integer>,  JpaSpecificationExecutor<Car> {
     List<Car> findAllByOwner_Id(int ownerId);
 }
