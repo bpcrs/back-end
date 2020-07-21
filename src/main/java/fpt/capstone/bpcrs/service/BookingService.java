@@ -23,7 +23,9 @@ public interface BookingService {
 
     Booking statisticCarDamage(int id, BookingPayload.RequestStatisticCarDamage request);
 
-    Page<Booking> getAllBookingsRequestByCar(int ownerId, int page, int size);
+    Page<Booking> getAllBookingsRequestByCar(int carId, BookingEnum status, int page, int size);
+
+    Page<Booking> getAllBookingRequestsByRenter(int renterId, int page, int size);
 
     boolean checkStatusBookingBySM (BookingEnum currentStatus, BookingEnum nextStatus);
 }

@@ -74,7 +74,6 @@ public class BookingController {
             booking.buildObject(response, false);
             return ResponseEntity.ok(new ApiResponse<>(true, response));
         }
-//            System.out.println("Booking info" + booking);
         return ResponseEntity.badRequest().body(new ApiResponse<>(false, "Booking with id = " + id + " not found", HttpStatus.BAD_REQUEST));
 
     }
@@ -93,10 +92,7 @@ public class BookingController {
                 .location(request.getLocation()).destination(request.getDestination())
                 .status(BookingEnum.REQUEST).build();
         bookingService.createBooking(booking).buildObject(response, false);
-//        agreementService.createAgreementListRequest(response.getId());
         return ResponseEntity.ok(new ApiResponse<>(true, response));
-
-
     }
 
     @PutMapping("/{id}")
@@ -186,8 +182,23 @@ public class BookingController {
     public ResponseEntity<?> getAllBookingRequestByCar(
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "10") int size,
+            @PathVariable() int id,
+            @Valid @RequestParam BookingEnum status) {
+        Page<Booking> bookings = bookingService.getAllBookingsRequestByCar(id, status, page, size);
+        List<BookingPayload.ResponseCreateBooking> responses = ObjectMapperUtils.mapAll(bookings.toList(),
+                BookingPayload.ResponseCreateBooking.class);
+        PagingPayload pagingPayload =
+                PagingPayload.builder().data(responses).count((int) bookings.getTotalElements()).build();
+        return ResponseEntity.ok(new ApiResponse<>(true, pagingPayload));
+    }
+
+    @GetMapping("/renter/{id}")
+    @RolesAllowed({RoleEnum.RoleType.USER, RoleEnum.RoleType.ADMINISTRATOR})
+    public ResponseEntity<?> getAllBookingRequestsByRenter(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int size,
             @PathVariable() int id) {
-        Page<Booking> bookings = bookingService.getAllBookingsRequestByCar(id, page, size);
+        Page<Booking> bookings = bookingService.getAllBookingRequestsByRenter(id, page, size);
         List<BookingPayload.ResponseCreateBooking> responses = ObjectMapperUtils.mapAll(bookings.toList(),
                 BookingPayload.ResponseCreateBooking.class);
         PagingPayload pagingPayload =
