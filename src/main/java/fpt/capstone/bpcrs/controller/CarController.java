@@ -1,5 +1,6 @@
 package fpt.capstone.bpcrs.controller;
 
+import fpt.capstone.bpcrs.constant.CarEnum;
 import fpt.capstone.bpcrs.constant.RoleEnum;
 import fpt.capstone.bpcrs.model.Brand;
 import fpt.capstone.bpcrs.model.Car;
@@ -79,6 +80,7 @@ public class CarController {
         newCar.setBrand(brand);
         newCar.setModel(model);
         newCar.setOwner(accountService.getCurrentUser());
+        newCar.setStatus(CarEnum.UNAVAILABLE);
         //check car VIN API (limit 25/month)
 //        try {
 //            if (!carService.checkCarVin(newCar)) {
@@ -129,5 +131,18 @@ public class CarController {
         return ResponseEntity.ok(new ApiResponse<>(true, response));
     }
 
-
+    @PutMapping("/status/{id}")
+    @RolesAllowed({RoleEnum.RoleType.USER, RoleEnum.RoleType.ADMINISTRATOR})
+    public ResponseEntity<?> updateStatus(@PathVariable() int id, @Valid @RequestParam CarEnum status) {
+        Car car = carService.getCarById(id);
+        if (car == null) {
+            return new ResponseEntity(new ApiError("Car with id=" + id + " not found", ""), HttpStatus.BAD_REQUEST);
+        }
+        if (!carService.checkStatusCarBySM(car.getStatus(), status)) {
+            return new ResponseEntity(new ApiError("Next status is not available " + status, ""), HttpStatus.BAD_REQUEST);
+        }
+        Car updateCar = carService.updateCarStatus(car, status);
+        CarPayload.ResponseGetCar response = ObjectMapperUtils.map(updateCar, CarPayload.ResponseGetCar.class);
+        return ResponseEntity.ok(new ApiResponse<>(true, response));
+    }
 }

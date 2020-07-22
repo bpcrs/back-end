@@ -2,6 +2,7 @@ package fpt.capstone.bpcrs.service.impl;
 
 import fpt.capstone.bpcrs.component.IgnoreNullProperty;
 import fpt.capstone.bpcrs.component.Paging;
+import fpt.capstone.bpcrs.constant.CarEnum;
 import fpt.capstone.bpcrs.model.Car;
 import fpt.capstone.bpcrs.model.Car_;
 import fpt.capstone.bpcrs.model.specification.CarSpecification;
@@ -81,6 +82,21 @@ public class CarServiceImpl implements CarService {
     public List<Car> getAllCarsByOwnerId(int ownerId) {
         List<Car> carList = carRepository.findAllByOwner_Id(ownerId);
         return carRepository.saveAll(carList);
+    }
+
+    @Override
+    public Car updateCarStatus(Car car, CarEnum status) {
+        car.setStatus(status);
+        return carRepository.save(car);
+    }
+
+    @Override
+    public boolean checkStatusCarBySM(CarEnum currentStatus, CarEnum nextStatus) {
+        switch (currentStatus) {
+            case UNAVAILABLE:
+                return nextStatus == CarEnum.AVAILABLE;
+        }
+        return false;
     }
 
 }

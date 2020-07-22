@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import fpt.capstone.bpcrs.component.Auditing;
+import fpt.capstone.bpcrs.constant.CarEnum;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 
@@ -62,7 +63,8 @@ public class  Car extends Auditing {
 
     @Column
     @NotNull
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private CarEnum status;
 
     @ManyToOne
     @JoinColumn(name = "owner_id")

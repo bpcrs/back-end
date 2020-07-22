@@ -25,7 +25,7 @@ public interface BookingService {
 
     Page<Booking> getAllBookingsRequestByCar(int carId, BookingEnum status, int page, int size);
 
-    Page<Booking> getAllBookingRequestsByRenter(int renterId, int page, int size);
+    Page<Booking> getAllBookingRequestsByRenter(int renterId, BookingEnum status, int page, int size);
 
     boolean checkStatusBookingBySM (BookingEnum currentStatus, BookingEnum nextStatus);
 }
