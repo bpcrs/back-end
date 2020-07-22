@@ -197,8 +197,9 @@ public class BookingController {
     public ResponseEntity<?> getAllBookingRequestsByRenter(
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "10") int size,
-            @PathVariable() int id) {
-        Page<Booking> bookings = bookingService.getAllBookingRequestsByRenter(id, page, size);
+            @PathVariable() int id,
+            @Valid @RequestParam BookingEnum status) {
+        Page<Booking> bookings = bookingService.getAllBookingRequestsByRenter(id, status, page, size);
         List<BookingPayload.ResponseCreateBooking> responses = ObjectMapperUtils.mapAll(bookings.toList(),
                 BookingPayload.ResponseCreateBooking.class);
         PagingPayload pagingPayload =

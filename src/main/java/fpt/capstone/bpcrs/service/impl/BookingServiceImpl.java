@@ -81,8 +81,8 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public Page<Booking> getAllBookingRequestsByRenter(int renterId, int page, int size) {
-        Page<Booking> bookings = bookingRepository.findAllByRenter_Id(renterId,
+    public Page<Booking> getAllBookingRequestsByRenter(int renterId, BookingEnum status, int page, int size) {
+        Page<Booking> bookings = bookingRepository.findAllByRenter_IdAndStatus(renterId, status,
                 new Paging(page, size, Sort.unsorted()));
         return bookings;
     }
