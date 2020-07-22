@@ -81,8 +81,8 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public Page<Booking> getAllBookingRequestsByRenter(int renterId, int page, int size) {
-        Page<Booking> bookings = bookingRepository.findAllByRenter_Id(renterId,
+    public Page<Booking> getAllBookingRequestsByRenter(int renterId, BookingEnum status, int page, int size) {
+        Page<Booking> bookings = bookingRepository.findAllByRenter_IdAndStatus(renterId, status,
                 new Paging(page, size, Sort.unsorted()));
         return bookings;
     }
@@ -91,7 +91,11 @@ public class BookingServiceImpl implements BookingService {
     public boolean checkStatusBookingBySM(BookingEnum currentStatus, BookingEnum nextStatus) {
         switch (currentStatus) {
             case REQUEST:
-                return nextStatus == BookingEnum.CONFIRM || nextStatus == BookingEnum.DENY;
+                return nextStatus == BookingEnum.PENDING || nextStatus == BookingEnum.DENY;
+            case PENDING:
+                return  nextStatus == BookingEnum.CANCEL || nextStatus == BookingEnum.CONFIRM;
+            case CONFIRM:
+                return nextStatus == BookingEnum.CANCEL || nextStatus == BookingEnum.DONE;
         }
         return false;
     }

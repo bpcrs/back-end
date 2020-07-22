@@ -1,5 +1,6 @@
 package fpt.capstone.bpcrs.controller;
 
+import fpt.capstone.bpcrs.constant.CarEnum;
 import fpt.capstone.bpcrs.constant.RoleEnum;
 import fpt.capstone.bpcrs.model.Brand;
 import fpt.capstone.bpcrs.model.Car;
@@ -79,6 +80,7 @@ public class CarController {
         newCar.setBrand(brand);
         newCar.setModel(model);
         newCar.setOwner(accountService.getCurrentUser());
+        newCar.setStatus(CarEnum.UNAVAILABLE);
         //check car VIN API (limit 25/month)
 //        try {
 //            if (!carService.checkCarVin(newCar)) {
@@ -129,11 +131,12 @@ public class CarController {
         return ResponseEntity.ok(new ApiResponse<>(true, response));
     }
 
+
     @GetMapping("/admin")
 //    @RolesAllowed({RoleEnum.RoleType.ADMINISTRATOR})
     public ResponseEntity<?> getCar(@RequestParam(defaultValue = "1") int page,
                                     @RequestParam(defaultValue = "10") int size
-                                    ){
+                                    ) {
         Page<Car> cars = carService.getAllCars(page, size);
         List<CarPayload.ResponseGetCar> carList = ObjectMapperUtils.mapAll(cars.toList(),
                 CarPayload.ResponseGetCar.class);
@@ -146,5 +149,20 @@ public class CarController {
 //        }
 //        List<CarPayload.ResponseGetCar> responses = ObjectMapperUtils.mapAll(cars, CarPayload.ResponseGetCar.class);
 //        return ResponseEntity.ok(new ApiResponse<>(true, responses));
+    }
+    @PutMapping("/status/{id}")
+    @RolesAllowed({RoleEnum.RoleType.USER, RoleEnum.RoleType.ADMINISTRATOR})
+    public ResponseEntity<?> updateStatus(@PathVariable() int id, @Valid @RequestParam CarEnum status) {
+        Car car = carService.getCarById(id);
+        if (car == null) {
+            return new ResponseEntity(new ApiError("Car with id=" + id + " not found", ""), HttpStatus.BAD_REQUEST);
+        }
+        if (!carService.checkStatusCarBySM(car.getStatus(), status)) {
+            return new ResponseEntity(new ApiError("Next status is not available " + status, ""), HttpStatus.BAD_REQUEST);
+        }
+        Car updateCar = carService.updateCarStatus(car, status);
+        CarPayload.ResponseGetCar response = ObjectMapperUtils.map(updateCar, CarPayload.ResponseGetCar.class);
+        return ResponseEntity.ok(new ApiResponse<>(true, response));
+
     }
 }

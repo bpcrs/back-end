@@ -29,7 +29,8 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public List<Account> getAccounts() {
-        return accountRepository.findAll();
+        Role role = roleRepository.findByName(RoleEnum.USER.toString());
+        return accountRepository.getAllByRole_Id(role.getId());
     }
 
     @Override

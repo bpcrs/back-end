@@ -1,5 +1,7 @@
 package fpt.capstone.bpcrs.service;
 
+import fpt.capstone.bpcrs.constant.BookingEnum;
+import fpt.capstone.bpcrs.constant.CarEnum;
 import fpt.capstone.bpcrs.model.Car;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
@@ -20,5 +22,11 @@ public interface CarService {
 
     List<Car> getAllCarsByOwnerId(int ownerId);
 
+
     Page<Car> getAllCars(int page, int size);
+
+    Car updateCarStatus(Car car, CarEnum status);
+
+    boolean checkStatusCarBySM (CarEnum currentStatus, CarEnum nextStatus);
+
 }

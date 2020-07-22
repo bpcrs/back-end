@@ -1,5 +1,6 @@
 package fpt.capstone.bpcrs.model;
 
+import fpt.capstone.bpcrs.constant.CarEnum;
 import javax.annotation.Generated;
 import javax.persistence.metamodel.ListAttribute;
 import javax.persistence.metamodel.SingularAttribute;
@@ -24,7 +25,7 @@ public abstract class Car_ extends fpt.capstone.bpcrs.component.Auditing_ {
 	public static volatile SingularAttribute<Car, String> VIN;
 	public static volatile SingularAttribute<Car, Model> model;
 	public static volatile SingularAttribute<Car, Brand> brand;
-	public static volatile SingularAttribute<Car, String> status;
+	public static volatile SingularAttribute<Car, CarEnum> status;
 
 	public static final String OWNER = "owner";
 	public static final String IS_AVAILABLE = "isAvailable";
