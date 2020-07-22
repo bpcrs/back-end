@@ -91,7 +91,11 @@ public class BookingServiceImpl implements BookingService {
     public boolean checkStatusBookingBySM(BookingEnum currentStatus, BookingEnum nextStatus) {
         switch (currentStatus) {
             case REQUEST:
-                return nextStatus == BookingEnum.CONFIRM || nextStatus == BookingEnum.DENY;
+                return nextStatus == BookingEnum.PENDING || nextStatus == BookingEnum.DENY;
+            case PENDING:
+                return  nextStatus == BookingEnum.CANCEL || nextStatus == BookingEnum.CONFIRM;
+            case CONFIRM:
+                return nextStatus == BookingEnum.CANCEL || nextStatus == BookingEnum.DONE;
         }
         return false;
     }
