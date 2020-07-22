@@ -20,5 +20,5 @@ public interface CarService {
 
     List<Car> getAllCarsByOwnerId(int ownerId);
 
-    List<Car> getAllCars();
+    Page<Car> getAllCars(int page, int size);
 }

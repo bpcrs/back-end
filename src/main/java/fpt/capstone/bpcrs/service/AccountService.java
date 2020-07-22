@@ -2,6 +2,7 @@ package fpt.capstone.bpcrs.service;
 
 import fpt.capstone.bpcrs.model.Account;
 import fpt.capstone.bpcrs.payload.AccountPayload;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
@@ -19,4 +20,5 @@ public interface AccountService {
 
   Account getAccountById(int id);
 
+//  Page<Account> getAllAccountUser(int page, int size);
 }
