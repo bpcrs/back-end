@@ -51,8 +51,14 @@ public class CarController {
                                      @RequestParam(required = false) Integer[] brand
 
     ) {
+        List<Car> responses = new ArrayList<>();
         Page<Car> cars = carService.getAllCarsPagingByFilters(page, size, models, seat, fromPrice, toPrice, brand);
-        List<CarPayload.ResponseGetCar> carList = ObjectMapperUtils.mapAll(cars.toList(),
+        for (Car car : cars) {
+            CarPayload.ResponseGetCar response = new CarPayload.ResponseGetCar();
+            car.buildObject(response, false);
+            responses.add(car);
+        }
+        List<CarPayload.ResponseGetCar> carList = ObjectMapperUtils.mapAll(responses,
                 CarPayload.ResponseGetCar.class);
         PagingPayload pagingPayload =
                 PagingPayload.builder().data(carList).count((int) cars.getTotalElements()).build();
