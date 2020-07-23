@@ -48,6 +48,11 @@ public class Booking extends Auditing {
     @NotNull
     private String location;
 
+    @Column
+    @NotNull
+    private double totalPrice;
+
+
     @ManyToOne
     @JoinColumn(name = "renter_id")
     @ApiModelProperty(hidden = true)

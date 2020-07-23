@@ -13,6 +13,7 @@ public abstract class Booking_ extends fpt.capstone.bpcrs.component.Auditing_ {
 
 	public static volatile SingularAttribute<Booking, Date> from_date;
 	public static volatile SingularAttribute<Booking, Date> to_date;
+	public static volatile SingularAttribute<Booking, Double> totalPrice;
 	public static volatile SingularAttribute<Booking, Car> car;
 	public static volatile SingularAttribute<Booking, String> destination;
 	public static volatile ListAttribute<Booking, Agreement> agreements;
@@ -23,6 +24,7 @@ public abstract class Booking_ extends fpt.capstone.bpcrs.component.Auditing_ {
 
 	public static final String FROM_DATE = "from_date";
 	public static final String TO_DATE = "to_date";
+	public static final String TOTAL_PRICE = "totalPrice";
 	public static final String CAR = "car";
 	public static final String DESTINATION = "destination";
 	public static final String AGREEMENTS = "agreements";

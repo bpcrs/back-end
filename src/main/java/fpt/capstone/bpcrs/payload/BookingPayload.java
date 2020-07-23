@@ -40,6 +40,9 @@ public class BookingPayload {
         @NotNull
         private Date fromDate;
 
+        @NotNull
+        private double totalPrice;
+
     }
 
 
@@ -72,6 +75,9 @@ public class BookingPayload {
 
         @NotNull
         private Date fromDate;
+
+        @NotNull
+        private double totalPrice;
 
     }
 
