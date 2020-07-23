@@ -90,7 +90,7 @@ public class BookingController {
         Booking booking = Booking.builder().car(car).lessor(lessor).renter(renter)
                 .from_date(request.getFromDate()).to_date(request.getToDate())
                 .location(request.getLocation()).destination(request.getDestination())
-                .status(BookingEnum.REQUEST).build();
+                .status(BookingEnum.REQUEST).totalPrice(request.getTotalPrice()).build();
         bookingService.createBooking(booking).buildObject(response, false);
         return ResponseEntity.ok(new ApiResponse<>(true, response));
     }
