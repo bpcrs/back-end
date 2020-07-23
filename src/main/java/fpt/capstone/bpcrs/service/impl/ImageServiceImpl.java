@@ -26,9 +26,9 @@ public class ImageServiceImpl  implements ImageService {
     private CarRepository carRepository;
 
     @Override
-    public List<Image> getAllImagePaging(int page, int size, int carId) {
+    public Page<Image> getAllImagePaging(int page, int size, int carId) {
         Page<Image> images = imageRepository.findAllByCar_Id(carId, new Paging(page, size, Sort.unsorted()));
-        return images.get().collect(Collectors.toList());
+        return images;
     }
   
     @Override
