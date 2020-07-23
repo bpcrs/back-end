@@ -128,6 +128,25 @@ public class CarController {
         return ResponseEntity.ok(new ApiResponse<>(true, response));
     }
 
+
+    @GetMapping("/admin")
+//    @RolesAllowed({RoleEnum.RoleType.ADMINISTRATOR})
+    public ResponseEntity<?> getCar(@RequestParam(defaultValue = "1") int page,
+                                    @RequestParam(defaultValue = "10") int size
+                                    ) {
+        Page<Car> cars = carService.getAllCars(page, size);
+        List<CarPayload.ResponseGetCar> carList = ObjectMapperUtils.mapAll(cars.toList(),
+                CarPayload.ResponseGetCar.class);
+        PagingPayload pagingPayload =
+                PagingPayload.builder().data(carList).count((int) cars.getTotalElements()).build();
+        return ResponseEntity.ok(new ApiResponse<>(true, pagingPayload));
+//        CarPayload.ResponseGetCar response = new CarPayload.ResponseGetCar();
+//        if (cars.isEmpty()) {
+//            return new ResponseEntity(new ApiError("User dont have any car", ""), HttpStatus.BAD_REQUEST);
+//        }
+//        List<CarPayload.ResponseGetCar> responses = ObjectMapperUtils.mapAll(cars, CarPayload.ResponseGetCar.class);
+//        return ResponseEntity.ok(new ApiResponse<>(true, responses));
+    }
     @PutMapping("/status/{id}")
     @RolesAllowed({RoleEnum.RoleType.USER, RoleEnum.RoleType.ADMINISTRATOR})
     public ResponseEntity<?> updateStatus(@PathVariable() int id, @Valid @RequestParam CarEnum status) {
@@ -141,6 +160,7 @@ public class CarController {
         Car updateCar = carService.updateCarStatus(car, status);
         CarPayload.ResponseGetCar response = ObjectMapperUtils.map(updateCar, CarPayload.ResponseGetCar.class);
         return ResponseEntity.ok(new ApiResponse<>(true, response));
+
     }
 
     @GetMapping("/available")

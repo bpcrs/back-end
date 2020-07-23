@@ -22,9 +22,13 @@ public interface CarService {
 
     List<Car> getAllCarsByOwnerId(int ownerId);
 
+
+    Page<Car> getAllCars(int page, int size);
+
     Car updateCarStatus(Car car, CarEnum status);
 
     boolean checkStatusCarBySM (CarEnum currentStatus, CarEnum nextStatus);
 
     Page<Car> getAllCarsByAvailable(boolean isAvailable, int page, int size);
+
 }

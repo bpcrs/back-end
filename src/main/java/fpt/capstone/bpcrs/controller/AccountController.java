@@ -49,11 +49,11 @@ public class AccountController {
             return new ResponseEntity(new ApiResponse<>(false, "List account is empty"),
                     HttpStatus.BAD_REQUEST);
         }
-        List<AccountPayload.AccountResponse> responses = ObjectMapperUtils
-                .mapAll(accounts, AccountPayload.AccountResponse.class);
-        for (int i = 0; i < responses.size(); i++) {
-            responses.get(i).setRole(accounts.get(i).getRole().getName());
-        }
+        List<AccountPayload.AccountResponseChecking> responses = ObjectMapperUtils
+                .mapAll(accounts, AccountPayload.AccountResponseChecking.class);
+//        for (int i = 0; i < responses.size(); i++) {
+//            responses.get(i).setRole(accounts.get(i).getRole().getName());
+//        }
         return ResponseEntity.ok(new ApiResponse<>(true, "Get list account successful", responses));
     }
 

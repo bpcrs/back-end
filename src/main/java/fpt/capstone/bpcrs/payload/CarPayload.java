@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @NoArgsConstructor
@@ -42,6 +43,8 @@ public class CarPayload {
         private AccountPayload.AccountResponse owner;
         @NotNull
         private double price;
+        private LocalDateTime createdDate;
+
         private CarEnum status;
         private List<ImagePayload.ResponseCreateImage> images;
     }
@@ -71,7 +74,7 @@ public class CarPayload {
         @NotNull
         private int id;
         private String VIN;
-        private AccountPayload.AccountResponse owner;
+        private int ownerId;
         @NotNull
         private double price;
         private CarEnum status;

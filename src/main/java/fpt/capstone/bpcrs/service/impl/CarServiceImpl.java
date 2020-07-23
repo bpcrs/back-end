@@ -85,6 +85,11 @@ public class CarServiceImpl implements CarService {
     }
 
     @Override
+    public Page<Car> getAllCars(int page, int size) {
+        Page<Car> cars = carRepository.findAll(new Paging(page, size, Sort.unsorted()));
+        return cars;
+    }
+
     public Car updateCarStatus(Car car, CarEnum status) {
         car.setStatus(status);
         return carRepository.save(car);
