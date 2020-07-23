@@ -6,11 +6,13 @@ import fpt.capstone.bpcrs.model.Image;
 import fpt.capstone.bpcrs.payload.ApiError;
 import fpt.capstone.bpcrs.payload.ApiResponse;
 import fpt.capstone.bpcrs.payload.ImagePayload;
+import fpt.capstone.bpcrs.payload.PagingPayload;
 import fpt.capstone.bpcrs.service.CarService;
 import fpt.capstone.bpcrs.service.ImageService;
 import fpt.capstone.bpcrs.util.ObjectMapperUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -36,9 +38,11 @@ public class ImageController {
         if (car == null) {
             return new ResponseEntity<>(new ApiError("Car with id = " + carId + " not found", ""), HttpStatus.BAD_REQUEST);
         }
-        List<Image> images = imageService.getAllImagePaging(page, size, carId);
-        List<ImagePayload.ResponseCreateImage> imageList = ObjectMapperUtils.mapAll(images, ImagePayload.ResponseCreateImage.class);
-        return ResponseEntity.ok(new ApiResponse<>(true, imageList));
+        Page<Image> images = imageService.getAllImagePaging(page, size, carId);
+        List<ImagePayload.ResponseCreateImage> imageList = ObjectMapperUtils.mapAll(images.toList(), ImagePayload.ResponseCreateImage.class);
+        PagingPayload pagingPayload =
+                PagingPayload.builder().data(imageList).count((int) images.getTotalElements()).build();
+        return ResponseEntity.ok(new ApiResponse<>(true, pagingPayload));
     }
 
 
