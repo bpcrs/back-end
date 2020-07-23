@@ -2,6 +2,8 @@ package fpt.capstone.bpcrs.payload;
 
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 public class AccountPayload {
 
     @Data
@@ -50,6 +52,31 @@ public class AccountPayload {
         private String ward;
 
         private String street;
+
+    }
+
+    @Data
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class AccountResponseChecking {
+        @NonNull
+        private int id;
+
+        @NonNull
+        private String email;
+
+        @NonNull
+        private String fullName;
+
+        @NonNull
+        private String imageUrl;
+
+        @NonNull
+        private boolean active;
+
+        @NonNull
+        private LocalDateTime createdDate;
     }
 
     @Data

@@ -74,7 +74,7 @@ public class CarPayload {
         @NotNull
         private int id;
         private String VIN;
-        private AccountPayload.AccountResponse owner;
+        private int ownerId;
         @NotNull
         private double price;
         private CarEnum status;
