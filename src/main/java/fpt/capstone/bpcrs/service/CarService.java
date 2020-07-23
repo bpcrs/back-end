@@ -25,4 +25,6 @@ public interface CarService {
     Car updateCarStatus(Car car, CarEnum status);
 
     boolean checkStatusCarBySM (CarEnum currentStatus, CarEnum nextStatus);
+
+    Page<Car> getAllCarsByAvailable(boolean isAvailable, int page, int size);
 }

@@ -1,11 +1,12 @@
 package fpt.capstone.bpcrs.service;
 
 import fpt.capstone.bpcrs.model.Image;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
 public interface ImageService {
-    List<Image> getAllImagePaging(int page, int size, int carId);
+    Page<Image> getAllImagePaging(int page, int size, int carId);
 
     List<Image> createImages(List<Image> images);
 }

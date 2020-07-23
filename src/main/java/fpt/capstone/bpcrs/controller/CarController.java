@@ -4,15 +4,10 @@ import fpt.capstone.bpcrs.constant.CarEnum;
 import fpt.capstone.bpcrs.constant.RoleEnum;
 import fpt.capstone.bpcrs.model.Brand;
 import fpt.capstone.bpcrs.model.Car;
+import fpt.capstone.bpcrs.model.Image;
 import fpt.capstone.bpcrs.model.Model;
-import fpt.capstone.bpcrs.payload.ApiError;
-import fpt.capstone.bpcrs.payload.ApiResponse;
-import fpt.capstone.bpcrs.payload.CarPayload;
-import fpt.capstone.bpcrs.payload.PagingPayload;
-import fpt.capstone.bpcrs.service.AccountService;
-import fpt.capstone.bpcrs.service.BrandService;
-import fpt.capstone.bpcrs.service.CarService;
-import fpt.capstone.bpcrs.service.ModelService;
+import fpt.capstone.bpcrs.payload.*;
+import fpt.capstone.bpcrs.service.*;
 import fpt.capstone.bpcrs.util.ObjectMapperUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.util.json.ParseException;
@@ -43,6 +38,8 @@ public class CarController {
     private ModelService modelService;
     @Autowired
     private AccountService accountService;
+    @Autowired
+    private ImageService imageService;
 
     @GetMapping
     public ResponseEntity<?> getCars(@RequestParam(defaultValue = "1") int page,
@@ -64,7 +61,7 @@ public class CarController {
 
     @PostMapping
     @RolesAllowed(RoleEnum.RoleType.USER)
-    public ResponseEntity<?> createCar(@Valid @RequestBody CarPayload.ResponseGetCar request) {
+    public ResponseEntity<?> createCar(@Valid @RequestBody CarPayload.RequestUpdateCar request) {
         Brand brand = brandService.getBrandById(request.getBrandId());
         Model model = modelService.getModelById(request.getModelId());
         if (brand == null) {
@@ -145,4 +142,28 @@ public class CarController {
         CarPayload.ResponseGetCar response = ObjectMapperUtils.map(updateCar, CarPayload.ResponseGetCar.class);
         return ResponseEntity.ok(new ApiResponse<>(true, response));
     }
+
+    @GetMapping("/available")
+    @RolesAllowed(RoleEnum.RoleType.ADMINISTRATOR)
+    public ResponseEntity<?> getCarsByAvailable(@RequestParam(value = "isAvailable", required = false, defaultValue = "true") boolean isAvailable,
+                                                @RequestParam(defaultValue = "1") int page,
+                                                @RequestParam(defaultValue = "10") int size) {
+//        if (!accountService.getCurrentUser().getRole().equals(RoleEnum.ADMINISTRATOR)) {
+//            return new ResponseEntity(new ApiError("Role is not allowed", ""), HttpStatus.BAD_REQUEST);
+//        }
+        List<Car> responses = new ArrayList<>();
+        Page<Car> cars = carService.getAllCarsByAvailable(isAvailable, page, size);
+        for (Car car : cars) {
+            Page<Image> images = imageService.getAllImagePaging(page, size, car.getId());
+            car.setImages(images.toList());
+            responses.add(car);
+        }
+        List<CarPayload.ResponseGetCar> carList = ObjectMapperUtils.mapAll(responses,
+                CarPayload.ResponseGetCar.class);
+        PagingPayload pagingPayload =
+                PagingPayload.builder().data(carList).count((int) cars.getTotalElements()).build();
+        return ResponseEntity.ok(new ApiResponse<>(true, pagingPayload));
+    }
+
+
 }
