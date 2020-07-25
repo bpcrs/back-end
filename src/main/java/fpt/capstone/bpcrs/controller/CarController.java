@@ -52,7 +52,7 @@ public class CarController {
 
     ) {
         List<Car> responses = new ArrayList<>();
-        Page<Car> cars = carService.getAllCarsPagingByFilters(page, size, models, seat, fromPrice, toPrice, brand);
+        Page<Car> cars = carService.getAllCarsPagingByFilters(page, size, models, seat, fromPrice, toPrice, brand, accountService.getCurrentUser().getId());
         for (Car car : cars) {
             CarPayload.ResponseGetCar response = new CarPayload.ResponseGetCar();
             car.buildObject(response, false);

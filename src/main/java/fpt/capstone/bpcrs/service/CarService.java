@@ -18,7 +18,7 @@ public interface CarService {
 
     Car updateCar(Car updateCar, int id);
 
-    Page<Car> getAllCarsPagingByFilters(int page, int size, Integer[] modelId, Integer[] seat, Double fromPrice, Double toPrice, Integer[] brandId);
+    Page<Car> getAllCarsPagingByFilters(int page, int size, Integer[] modelId, Integer[] seat, Double fromPrice, Double toPrice, Integer[] brandId, Integer ownerId);
 
     List<Car> getAllCarsByOwnerId(int ownerId);
 
