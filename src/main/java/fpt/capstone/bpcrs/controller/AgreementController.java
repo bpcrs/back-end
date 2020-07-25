@@ -2,10 +2,7 @@ package fpt.capstone.bpcrs.controller;
 
 import fpt.capstone.bpcrs.constant.BookingEnum;
 import fpt.capstone.bpcrs.constant.RoleEnum;
-import fpt.capstone.bpcrs.model.Agreement;
-import fpt.capstone.bpcrs.model.Booking;
-import fpt.capstone.bpcrs.model.Criteria;
-import fpt.capstone.bpcrs.model.Role;
+import fpt.capstone.bpcrs.model.*;
 import fpt.capstone.bpcrs.payload.AgreementPayload;
 import fpt.capstone.bpcrs.payload.ApiError;
 import fpt.capstone.bpcrs.payload.ApiResponse;
@@ -62,7 +59,7 @@ public class AgreementController {
         if (booking == null){
             return new ResponseEntity(new ApiResponse<>(false, "Dont have any booking id =" + id), HttpStatus.BAD_REQUEST);
         }
-        boolean isRenter = booking.getRenter().getId() == accountService.getCurrentUser().getId();
+        boolean isRenter = booking.getRenter().getId().intValue() == accountService.getCurrentUser().getId().intValue();
         List<Agreement> agreements = agreementService.getListAgreementByBookingID(id, isRenter);
         if (agreements.isEmpty()) {
             return new ResponseEntity(new ApiResponse<>(false, "Dont have any agreement with booking_id =" + id), HttpStatus.BAD_REQUEST);
@@ -95,9 +92,10 @@ public class AgreementController {
             return new ResponseEntity(new ApiResponse<>(false, "Dont have any Criteria with criteria id " + request.getCriteriaId()),
                     HttpStatus.BAD_REQUEST);
         }
+        Account currentUser = accountService.getCurrentUser();
         // if user=renter => insert agreement have criteria with isRenter=true
         // overwise, user=lessor => insert agreement have criteria with isRenter=false
-        if ((criteria.isRenter() && booking.getRenter().getId() == accountService.getCurrentUser().getId()) || (!criteria.isRenter() && booking.getLessor().getId() == accountService.getCurrentUser().getId())){
+        if ((criteria.isRenter() && booking.getRenter().getId().intValue() == accountService.getCurrentUser().getId().intValue()) || (criteria.isRenter() && booking.getLessor().getId().intValue() == accountService.getCurrentUser().getId().intValue())){
             AgreementPayload.ResponseCreateAgreement response = new AgreementPayload.ResponseCreateAgreement();
             Agreement newAgreement = (Agreement) new Agreement().buildObject(request, true);
             newAgreement.setBooking(booking);
