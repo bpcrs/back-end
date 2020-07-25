@@ -9,7 +9,7 @@ public interface AgreementService {
 
     List<Agreement> createAgreementList(List<Agreement> agreements);
 
-    List<Agreement> getListAgreementByBookingID(int bookingId);
+    List<Agreement> getListAgreementByBookingID(int bookingId, boolean isRenter);
 
     Agreement getAgreementById(int id);
 

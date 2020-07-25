@@ -10,6 +10,7 @@ import fpt.capstone.bpcrs.payload.AgreementPayload;
 import fpt.capstone.bpcrs.payload.ApiError;
 import fpt.capstone.bpcrs.payload.ApiResponse;
 import fpt.capstone.bpcrs.payload.BookingPayload;
+import fpt.capstone.bpcrs.service.AccountService;
 import fpt.capstone.bpcrs.service.AgreementService;
 import fpt.capstone.bpcrs.service.BookingService;
 import fpt.capstone.bpcrs.service.CriteriaService;
@@ -35,6 +36,8 @@ public class AgreementController {
     private CriteriaService criteriaService;
     @Autowired
     private BookingService bookingService;
+    @Autowired
+    private AccountService accountService;
 
 //    @PostMapping
 //    @RolesAllowed(RoleEnum.RoleType.USER)
@@ -52,10 +55,15 @@ public class AgreementController {
 //        return ResponseEntity.ok(new ApiResponse<>(true, responses));
 //    }
 
-    @GetMapping("/get/{id}")
-    @RolesAllowed({RoleEnum.RoleType.USER, RoleEnum.RoleType.ADMINISTRATOR})
+    @GetMapping("/booking/{id}")
+    @RolesAllowed({RoleEnum.RoleType.USER})
     public ResponseEntity<?> getAgreementsByBookingId(@PathVariable int id) {
-        List<Agreement> agreements = agreementService.getListAgreementByBookingID(id);
+        Booking booking = bookingService.getBookingInformation(id);
+        if (booking == null){
+            return new ResponseEntity(new ApiResponse<>(false, "Dont have any booking id =" + id), HttpStatus.BAD_REQUEST);
+        }
+        boolean isRenter = booking.getRenter().getId() == accountService.getCurrentUser().getId();
+        List<Agreement> agreements = agreementService.getListAgreementByBookingID(id, isRenter);
         if (agreements.isEmpty()) {
             return new ResponseEntity(new ApiResponse<>(false, "Dont have any agreement with booking_id =" + id), HttpStatus.BAD_REQUEST);
         }
@@ -77,24 +85,29 @@ public class AgreementController {
     @PostMapping
     @RolesAllowed(RoleEnum.RoleType.USER)
     public ResponseEntity<?> createAgreement(@Valid @RequestBody AgreementPayload.RequestCreateAgreement request) {
-
         Booking booking = bookingService.getBookingInformation(request.getBookingId());
-        Criteria criteria = criteriaService.findCriteriaByName(request.getCriteriaName());
+        Criteria criteria = criteriaService.getCriteria(request.getCriteriaId());
         if (booking == null) {
             return new ResponseEntity(new ApiResponse<>(false, "Dont have any Booking with bookingId " + request.getBookingId()),
                     HttpStatus.BAD_REQUEST);
         }
         if (criteria == null) {
-            return new ResponseEntity(new ApiResponse<>(false, "Dont have any Criteria with criteria name " + request.getCriteriaName()),
+            return new ResponseEntity(new ApiResponse<>(false, "Dont have any Criteria with criteria id " + request.getCriteriaId()),
                     HttpStatus.BAD_REQUEST);
         }
-
-        AgreementPayload.ResponseCreateAgreement response = new AgreementPayload.ResponseCreateAgreement();
-        Agreement newAgreement = (Agreement) new Agreement().buildObject(request, true);
-        newAgreement.setBooking(booking);
-        newAgreement.setCriteria(criteria);
-        agreementService.createAgreement(newAgreement).buildObject(response, false);
-        return ResponseEntity.ok(new ApiResponse<>(true, response));
+        // if user=renter => insert agreement have criteria with isRenter=true
+        // overwise, user=lessor => insert agreement have criteria with isRenter=false
+        if ((criteria.isRenter() && booking.getRenter().getId() == accountService.getCurrentUser().getId()) || (!criteria.isRenter() && booking.getLessor().getId() == accountService.getCurrentUser().getId())){
+            AgreementPayload.ResponseCreateAgreement response = new AgreementPayload.ResponseCreateAgreement();
+            Agreement newAgreement = (Agreement) new Agreement().buildObject(request, true);
+            newAgreement.setBooking(booking);
+            newAgreement.setCriteria(criteria);
+            newAgreement.setApproved(false);
+            agreementService.createAgreement(newAgreement).buildObject(response, false);
+            return ResponseEntity.ok(new ApiResponse<>(true, response));
+        }
+        return new ResponseEntity(new ApiResponse<>(false, "Action can't performed"),
+                HttpStatus.BAD_REQUEST);
     }
 
 

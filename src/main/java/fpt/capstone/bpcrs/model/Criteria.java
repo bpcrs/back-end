@@ -33,6 +33,9 @@ public class Criteria extends Auditing {
     @NotNull
     private String unit;
 
+    @Column(columnDefinition = "TINYINT(1) default 0")
+    private boolean isRenter;
+
 
     @OneToMany(mappedBy = "criteria", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @ApiModelProperty(hidden = true)

@@ -1,8 +1,6 @@
 package fpt.capstone.bpcrs.service.impl;
 
 import fpt.capstone.bpcrs.component.IgnoreNullProperty;
-import fpt.capstone.bpcrs.component.Paging;
-import fpt.capstone.bpcrs.constant.BookingEnum;
 import fpt.capstone.bpcrs.model.Agreement;
 import fpt.capstone.bpcrs.model.Booking;
 import fpt.capstone.bpcrs.model.Criteria;
@@ -13,14 +11,11 @@ import fpt.capstone.bpcrs.service.AgreementService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -47,9 +42,8 @@ public class AgreementServiceImpl implements AgreementService {
 
 
     @Override
-    public List<Agreement> getListAgreementByBookingID(int bookingId) {
-        List<Agreement> agreements = agreementRepository.findAllByBooking_id(bookingId);
-
+    public List<Agreement> getListAgreementByBookingID(int bookingId, boolean isRenter) {
+        List<Agreement> agreements = agreementRepository.findAllByBooking_IdAndCriteria_IsRenter(bookingId, isRenter);
         return agreements;
     }
 
