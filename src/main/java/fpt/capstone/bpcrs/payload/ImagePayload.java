@@ -1,8 +1,9 @@
 package fpt.capstone.bpcrs.payload;
 
+import fpt.capstone.bpcrs.constant.ImageTypeEnum;
+import fpt.capstone.bpcrs.model.Image;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.Min;
@@ -20,6 +21,8 @@ public class ImagePayload {
 
         @NotNull
         private List<String> link;
+
+//        private ImageTypeEnum type;
     }
 
     @Data
@@ -28,6 +31,7 @@ public class ImagePayload {
     public static class ResponseCreateImage {
         private int id;
         private String link;
+        private Image type;
     }
 
 

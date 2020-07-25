@@ -37,6 +37,9 @@ public class Account extends Auditing {
     @Column(nullable = false)
     private String fullName;
 
+    @Column(length = 15)
+    private String phoneNumber;
+
     @ManyToOne(optional = false)
     @ApiModelProperty(hidden = true)
     @JoinColumn(name = "role_id")

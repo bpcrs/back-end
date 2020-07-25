@@ -8,12 +8,14 @@ import javax.persistence.metamodel.StaticMetamodel;
 @StaticMetamodel(Account.class)
 public abstract class Account_ extends fpt.capstone.bpcrs.component.Auditing_ {
 
+	public static volatile SingularAttribute<Account, String> phoneNumber;
 	public static volatile SingularAttribute<Account, Role> role;
 	public static volatile SingularAttribute<Account, String> imageUrl;
 	public static volatile SingularAttribute<Account, Boolean> active;
 	public static volatile SingularAttribute<Account, String> fullName;
 	public static volatile SingularAttribute<Account, String> email;
 
+	public static final String PHONE_NUMBER = "phoneNumber";
 	public static final String ROLE = "role";
 	public static final String IMAGE_URL = "imageUrl";
 	public static final String ACTIVE = "active";

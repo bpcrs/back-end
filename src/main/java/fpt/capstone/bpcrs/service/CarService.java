@@ -20,7 +20,7 @@ public interface CarService {
 
     Page<Car> getAllCarsPagingByFilters(int page, int size, Integer[] modelId, Integer[] seat, Double fromPrice, Double toPrice, Integer[] brandId);
 
-    List<Car> getAllCarsByOwnerId(int ownerId);
+    Page<Car> getAllCarsByOwnerId(int ownerId, int page, int size);
 
     Car updateCarStatus(Car car, CarEnum status);
 

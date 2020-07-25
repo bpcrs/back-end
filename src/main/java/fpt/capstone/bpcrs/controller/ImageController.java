@@ -1,5 +1,6 @@
 package fpt.capstone.bpcrs.controller;
 
+import fpt.capstone.bpcrs.constant.ImageTypeEnum;
 import fpt.capstone.bpcrs.constant.RoleEnum;
 import fpt.capstone.bpcrs.model.Car;
 import fpt.capstone.bpcrs.model.Image;
@@ -33,12 +34,12 @@ public class ImageController {
 
     @GetMapping
     public ResponseEntity<?> getImages(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "10") int size,
-                                       @RequestParam int carId) {
+                                       @RequestParam int carId, @RequestParam ImageTypeEnum type) {
         Car car = carService.getCarById(carId);
         if (car == null) {
             return new ResponseEntity<>(new ApiError("Car with id = " + carId + " not found", ""), HttpStatus.BAD_REQUEST);
         }
-        Page<Image> images = imageService.getAllImagePaging(page, size, carId);
+        Page<Image> images = imageService.getAllImagePaging(page, size, carId, type);
         List<ImagePayload.ResponseCreateImage> imageList = ObjectMapperUtils.mapAll(images.toList(), ImagePayload.ResponseCreateImage.class);
         PagingPayload pagingPayload =
                 PagingPayload.builder().data(imageList).count((int) images.getTotalElements()).build();
@@ -48,7 +49,7 @@ public class ImageController {
 
     @PostMapping
     @RolesAllowed(RoleEnum.RoleType.USER)
-    public ResponseEntity<?> createImage(@Valid @RequestBody ImagePayload.RequestCreateImage request) {
+    public ResponseEntity<?> createImage(@Valid @RequestBody ImagePayload.RequestCreateImage request, @Valid @RequestParam ImageTypeEnum type) {
 
         Car car = carService.getCarById(request.getCarId());
         if (car == null) {
@@ -57,7 +58,7 @@ public class ImageController {
 //        List<ImagePayload.ResponseCreateImage> responses = new ArrayList<>();
         List<Image> newImages = new ArrayList<>();
         for (String link : request.getLink()) {
-            Image image = Image.builder().car(car).link(link).build();
+            Image image = Image.builder().car(car).link(link).type(type).build();
             newImages.add(image);
         }
         List<Image> images = imageService.createImages(newImages);

@@ -80,9 +80,9 @@ public class CarServiceImpl implements CarService {
     }
 
     @Override
-    public List<Car> getAllCarsByOwnerId(int ownerId) {
-        List<Car> carList = carRepository.findAllByOwner_Id(ownerId);
-        return carRepository.saveAll(carList);
+    public Page<Car> getAllCarsByOwnerId(int ownerId, int page, int size) {
+        Page<Car> carList = carRepository.findAllByOwner_Id(ownerId, new Paging(page, size, Sort.unsorted()));
+        return carList;
     }
 
     @Override
