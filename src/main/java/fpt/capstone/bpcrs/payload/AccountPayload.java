@@ -71,16 +71,4 @@ public class AccountPayload {
         private LocalDateTime createdDate;
     }
 
-    @Data
-    @Builder
-    @AllArgsConstructor
-    @NoArgsConstructor
-    public static class AccountAddressUpdate {
-        @NonNull
-        private int id;
-        private String city;
-        private String district;
-        private String ward;
-        private String street;
-    }
 }
