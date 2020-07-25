@@ -45,14 +45,6 @@ public class AccountPayload {
         @NonNull
         private String role;
 
-        private String city;
-
-        private String district;
-
-        private String ward;
-
-        private String street;
-
     }
 
     @Data

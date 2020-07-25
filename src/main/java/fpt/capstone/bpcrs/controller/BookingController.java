@@ -177,13 +177,13 @@ public class BookingController {
 //        }
 //    }
 
-    @GetMapping("/requests/{id}")
+    @GetMapping("/car/{id}")
     @RolesAllowed({RoleEnum.RoleType.USER, RoleEnum.RoleType.ADMINISTRATOR})
     public ResponseEntity<?> getAllBookingRequestByCar(
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "10") int size,
             @PathVariable() int id,
-            @Valid @RequestParam BookingEnum status) {
+            @Valid @RequestParam BookingEnum[] status) {
         Page<Booking> bookings = bookingService.getAllBookingsRequestByCar(id, status, page, size);
         List<BookingPayload.ResponseCreateBooking> responses = ObjectMapperUtils.mapAll(bookings.toList(),
                 BookingPayload.ResponseCreateBooking.class);
@@ -198,7 +198,7 @@ public class BookingController {
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "10") int size,
             @PathVariable() int id,
-            @Valid @RequestParam BookingEnum status) {
+            @Valid @RequestParam BookingEnum[] status) {
         Page<Booking> bookings = bookingService.getAllBookingRequestsByRenter(id, status, page, size);
         List<BookingPayload.ResponseCreateBooking> responses = ObjectMapperUtils.mapAll(bookings.toList(),
                 BookingPayload.ResponseCreateBooking.class);
