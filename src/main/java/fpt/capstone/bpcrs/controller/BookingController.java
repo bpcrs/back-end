@@ -82,12 +82,11 @@ public class BookingController {
     @RolesAllowed(RoleEnum.RoleType.USER)
     public ResponseEntity<?> createBooking(@Valid @RequestBody BookingPayload.RequestCreateBooking request) {
         Car car = carService.getCarById(request.getCarId());
-        Account lessor = accountService.getAccountById(request.getLessorId());
         Account renter = accountService.getAccountById(request.getRenterId());
 
         BookingPayload.ResponseCreateBooking response = new BookingPayload.ResponseCreateBooking();
 
-        Booking booking = Booking.builder().car(car).lessor(lessor).renter(renter)
+        Booking booking = Booking.builder().car(car).renter(renter)
                 .from_date(request.getFromDate()).to_date(request.getToDate())
                 .location(request.getLocation()).destination(request.getDestination())
                 .status(BookingEnum.REQUEST).totalPrice(request.getTotalPrice()).build();
@@ -103,7 +102,7 @@ public class BookingController {
             if (booking == null) {
                 return ResponseEntity.badRequest().body(new ApiResponse<>(false, "Booking with id " + id + " not existed", null));
             }
-            if (booking.getLessor().getId() != accountService.getCurrentUser().getId()) {
+            if (booking.getCar().getOwner().getId() != accountService.getCurrentUser().getId()) {
                 return ResponseEntity.badRequest().body(new ApiResponse<>(false, "User is not allowed", null));
             }
             if (!bookingService.checkStatusBookingBySM(booking.getStatus(), status)) {

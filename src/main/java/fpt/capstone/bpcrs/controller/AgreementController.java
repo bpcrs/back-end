@@ -96,8 +96,8 @@ public class AgreementController {
                     HttpStatus.BAD_REQUEST);
         }
         // if user=renter => insert agreement have criteria with isRenter=true
-        // overwise, user=lessor => insert agreement have criteria with isRenter=false
-        if ((criteria.isRenter() && booking.getRenter().getId() == accountService.getCurrentUser().getId()) || (!criteria.isRenter() && booking.getLessor().getId() == accountService.getCurrentUser().getId())){
+        // overwise, user=owner => insert agreement have criteria with isRenter=false
+        if ((criteria.isRenter() && booking.getRenter().getId() == accountService.getCurrentUser().getId()) || (!criteria.isRenter() && booking.getCar().getOwner().getId() == accountService.getCurrentUser().getId())){
             AgreementPayload.ResponseCreateAgreement response = new AgreementPayload.ResponseCreateAgreement();
             Agreement newAgreement = (Agreement) new Agreement().buildObject(request, true);
             newAgreement.setBooking(booking);
