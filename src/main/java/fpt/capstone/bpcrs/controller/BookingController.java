@@ -109,7 +109,7 @@ public class BookingController {
             if (!bookingService.checkStatusBookingBySM(booking.getStatus(), status)) {
                 return ResponseEntity.badRequest().body(new ApiResponse<>(false, "Invalid status request", null));
             }
-                booking = bookingService.updateBookingStatus(booking, status);
+            booking = bookingService.updateBookingStatus(booking, status);
             BookingPayload.ResponseCreateBooking response = ObjectMapperUtils.map(booking, BookingPayload.ResponseCreateBooking.class);
             return ResponseEntity.ok(new ApiResponse<>(true, "Booking status was updated", response));
         } catch (BadRequestException ex) {
@@ -192,19 +192,30 @@ public class BookingController {
         return ResponseEntity.ok(new ApiResponse<>(true, pagingPayload));
     }
 
-    @GetMapping("/renter/{id}")
+    @GetMapping("/user/{id}")
     @RolesAllowed({RoleEnum.RoleType.USER, RoleEnum.RoleType.ADMINISTRATOR})
-    public ResponseEntity<?> getAllBookingRequestsByRenter(
+    public ResponseEntity<?> getAllBookingRequestsByUser(
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "10") int size,
             @PathVariable() int id,
-            @Valid @RequestParam BookingEnum[] status) {
-        Page<Booking> bookings = bookingService.getAllBookingRequestsByRenter(id, status, page, size);
+            @Valid @RequestParam BookingEnum[] status,
+            @RequestParam boolean isRenter) {
+        Page<Booking> bookings;
+        if (isRenter) {
+            bookings = bookingService.getAllBookingRequestsByRenter(id, status, page, size);
+        } else {
+            bookings = bookingService.getAllBookingRequestsByOwner(id, status, page, size);
+        }
+        if (bookings == null) {
+            String role = isRenter ? "renter" : "owner";
+            return ResponseEntity.badRequest().body(new ApiResponse<>(false, "Dont have any bookings with user id = " + id + " with role = " + role, HttpStatus.BAD_REQUEST));
+        }
         List<BookingPayload.ResponseCreateBooking> responses = ObjectMapperUtils.mapAll(bookings.toList(),
                 BookingPayload.ResponseCreateBooking.class);
         PagingPayload pagingPayload =
                 PagingPayload.builder().data(responses).count((int) bookings.getTotalElements()).build();
         return ResponseEntity.ok(new ApiResponse<>(true, pagingPayload));
     }
+
 
 }

@@ -3,8 +3,10 @@ package fpt.capstone.bpcrs.service.impl;
 import fpt.capstone.bpcrs.component.Paging;
 import fpt.capstone.bpcrs.constant.BookingEnum;
 import fpt.capstone.bpcrs.model.Booking;
+import fpt.capstone.bpcrs.model.Car;
 import fpt.capstone.bpcrs.payload.BookingPayload;
 import fpt.capstone.bpcrs.repository.BookingRepository;
+import fpt.capstone.bpcrs.repository.CarRepository;
 import fpt.capstone.bpcrs.service.BookingService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +22,9 @@ public class BookingServiceImpl implements BookingService {
 
     @Autowired
     private BookingRepository bookingRepository;
+
+    @Autowired
+    private CarRepository carRepository;
 
     @Override
     public Booking createBooking(Booking request) {
@@ -77,6 +82,11 @@ public class BookingServiceImpl implements BookingService {
     public Page<Booking> getAllBookingsRequestByCar(int carId, BookingEnum[] status, int page, int size) {
         return bookingRepository.findAllByCar_IdAndStatusIn(carId, status,
                 new Paging(page, size, Sort.unsorted()));
+    }
+
+    @Override
+    public Page<Booking> getAllBookingRequestsByOwner(int onwerId, BookingEnum[] status, int page, int size) {
+        return bookingRepository.findAllByCar_Owner_IdAndStatusIn(onwerId, status, new Paging(page, size, Sort.unsorted()));
     }
 
     @Override
