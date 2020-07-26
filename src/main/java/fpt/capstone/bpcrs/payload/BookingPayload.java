@@ -20,9 +20,6 @@ public class BookingPayload {
         private int carId;
 
         @Min(1)
-        private int lessorId;
-
-        @Min(1)
         private int renterId;
 
         @NotNull
@@ -56,8 +53,6 @@ public class BookingPayload {
 
 
         private CarPayload.ResponseGetCar car;
-
-        private AccountPayload.AccountResponse lessor;
 
         private AccountPayload.AccountResponse renter;
 

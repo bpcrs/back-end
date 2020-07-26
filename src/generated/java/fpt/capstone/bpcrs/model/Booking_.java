@@ -18,7 +18,6 @@ public abstract class Booking_ extends fpt.capstone.bpcrs.component.Auditing_ {
 	public static volatile SingularAttribute<Booking, String> destination;
 	public static volatile ListAttribute<Booking, Agreement> agreements;
 	public static volatile SingularAttribute<Booking, String> location;
-	public static volatile SingularAttribute<Booking, Account> lessor;
 	public static volatile SingularAttribute<Booking, Account> renter;
 	public static volatile SingularAttribute<Booking, BookingEnum> status;
 
@@ -29,7 +28,6 @@ public abstract class Booking_ extends fpt.capstone.bpcrs.component.Auditing_ {
 	public static final String DESTINATION = "destination";
 	public static final String AGREEMENTS = "agreements";
 	public static final String LOCATION = "location";
-	public static final String LESSOR = "lessor";
 	public static final String RENTER = "renter";
 	public static final String STATUS = "status";
 
