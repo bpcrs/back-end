@@ -11,7 +11,7 @@ public abstract class Agreement_ extends fpt.capstone.bpcrs.component.Auditing_ 
 	public static volatile SingularAttribute<Agreement, Booking> booking;
 	public static volatile SingularAttribute<Agreement, Criteria> criteria;
 	public static volatile SingularAttribute<Agreement, Boolean> isApproved;
-	public static volatile SingularAttribute<Agreement, Double> value;
+	public static volatile SingularAttribute<Agreement, String> value;
 
 	public static final String BOOKING = "booking";
 	public static final String CRITERIA = "criteria";

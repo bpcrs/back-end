@@ -17,4 +17,6 @@ public interface AgreementRepository extends JpaRepository<Agreement, Integer> {
 
     Page<Agreement> findAll(Pageable paging);
 
+    Agreement findByCriteria_IdAndBooking_Id(int criteriaId, int bookingId);
+
 }
