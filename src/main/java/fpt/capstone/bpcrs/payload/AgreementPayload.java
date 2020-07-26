@@ -24,7 +24,7 @@ public class AgreementPayload {
         private int criteriaId;
 
         @NotNull
-        private double value;
+        private String value;
 
     }
 
@@ -44,7 +44,7 @@ public class AgreementPayload {
         private int criteriaId;
 
         @NotNull
-        private double value;
+        private String value;
 
         private boolean isApproved;
     }
