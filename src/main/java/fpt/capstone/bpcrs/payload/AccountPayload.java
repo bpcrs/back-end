@@ -45,6 +45,8 @@ public class AccountPayload {
         @NonNull
         private String role;
 
+        private String phoneNumber;
+
     }
 
     @Data

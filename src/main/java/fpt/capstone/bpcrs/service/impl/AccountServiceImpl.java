@@ -75,6 +75,16 @@ public class AccountServiceImpl implements AccountService {
         return accountRepository.findById(id).orElse(null);
     }
 
+    @Override
+    public Account updateAccount(int id, String phone) {
+        Account account = accountRepository.findById(id).orElse(null);
+        if (account == null) {
+            throw new BadRequestException("Account doesn't existed");
+        }
+        account.setPhoneNumber(phone);
+        return account;
+    }
+
     private Account setNewAccount(String email, String fullName, String imageUrl, Role role) {
         Account account = new Account();
         account.setEmail(email);
