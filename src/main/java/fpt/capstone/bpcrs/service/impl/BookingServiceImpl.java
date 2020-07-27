@@ -109,7 +109,9 @@ public class BookingServiceImpl implements BookingService {
             case REQUEST:
                 return nextStatus == BookingEnum.PENDING || nextStatus == BookingEnum.DENY;
             case PENDING:
-                return  nextStatus == BookingEnum.CANCEL || nextStatus == BookingEnum.CONFIRM;
+                return  nextStatus == BookingEnum.CANCEL || nextStatus == BookingEnum.CONFIRM || nextStatus == BookingEnum.OWNER_ACCEPTED;
+            case OWNER_ACCEPTED:
+                return nextStatus == BookingEnum.CONFIRM;
             case CONFIRM:
                 return nextStatus == BookingEnum.CANCEL || nextStatus == BookingEnum.DONE;
         }
