@@ -1,7 +1,7 @@
 spring:
   datasource:
     username: root
-    password: 1qaz2wsx
-    url: jdbc:mysql://bpcrs-db:3306/bpcrs
+    password: 1234
+    url: jdbc:mysql://localhost:3306/bpcrs
 app:
-  host: api.bpcrs.network
+  host: localhost:5000
