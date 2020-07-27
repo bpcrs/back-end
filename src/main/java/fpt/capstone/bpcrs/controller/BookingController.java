@@ -4,6 +4,7 @@ import fpt.capstone.bpcrs.constant.BookingEnum;
 import fpt.capstone.bpcrs.constant.RoleEnum;
 import fpt.capstone.bpcrs.exception.BadRequestException;
 import fpt.capstone.bpcrs.model.Account;
+import fpt.capstone.bpcrs.model.Agreement;
 import fpt.capstone.bpcrs.model.Booking;
 import fpt.capstone.bpcrs.model.Car;
 import fpt.capstone.bpcrs.payload.ApiResponse;
@@ -19,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.security.RolesAllowed;
@@ -102,8 +104,12 @@ public class BookingController {
             if (booking == null) {
                 return ResponseEntity.badRequest().body(new ApiResponse<>(false, "Booking with id " + id + " not existed", null));
             }
-            if (booking.getCar().getOwner().getId() != accountService.getCurrentUser().getId()) {
+            if (booking.getCar().getOwner().getId().intValue() != accountService.getCurrentUser().getId().intValue() && booking.getRenter().getId().intValue() != accountService.getCurrentUser().getId().intValue()) {
                 return ResponseEntity.badRequest().body(new ApiResponse<>(false, "User is not allowed", null));
+            }
+            boolean isApproveAllAgreemet = booking.getAgreements().stream().allMatch(Agreement::isApproved);
+            if (!isApproveAllAgreemet){
+                return ResponseEntity.badRequest().body(new ApiResponse<>(false, "All agreement must be approved", null));
             }
             if (!bookingService.checkStatusBookingBySM(booking.getStatus(), status)) {
                 return ResponseEntity.badRequest().body(new ApiResponse<>(false, "Invalid status request", null));
