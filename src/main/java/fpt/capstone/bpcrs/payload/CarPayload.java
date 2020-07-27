@@ -24,8 +24,8 @@ public class CarPayload {
         private ModelPayload.ResponseCreateModel model;
         @Min(1)
         private int seat;
-        @NotNull
-        private String sound;
+//        @NotNull
+//        private String sound;
         @NotNull
         private String screen;
         @NotNull
@@ -56,8 +56,8 @@ public class CarPayload {
         private int modelId;
         @Min(1)
         private int seat;
-        @NotNull
-        private String sound;
+//        @NotNull
+//        private String sound;
         @NotNull
         private String screen;
         @NotNull
