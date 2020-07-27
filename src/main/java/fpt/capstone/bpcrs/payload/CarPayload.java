@@ -33,8 +33,6 @@ public class CarPayload {
         @NotNull
         private boolean autoDriver;
         @NotNull
-        private boolean isAvailable;
-        @NotNull
         private String plateNum;
         private BrandPayload.ResponseCreateBrand brand;
         @NotNull
@@ -66,8 +64,6 @@ public class CarPayload {
         private String year;
         @NotNull
         private boolean autoDriver;
-        @NotNull
-        private boolean isAvailable;
         @NotNull
         private String plateNum;
         private int brandId;
