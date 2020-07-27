@@ -11,7 +11,6 @@ import javax.persistence.metamodel.StaticMetamodel;
 public abstract class Car_ extends fpt.capstone.bpcrs.component.Auditing_ {
 
 	public static volatile SingularAttribute<Car, Account> owner;
-	public static volatile SingularAttribute<Car, Boolean> isAvailable;
 	public static volatile ListAttribute<Car, Image> images;
 	public static volatile SingularAttribute<Car, String> year;
 	public static volatile SingularAttribute<Car, String> sound;
@@ -28,7 +27,6 @@ public abstract class Car_ extends fpt.capstone.bpcrs.component.Auditing_ {
 	public static volatile SingularAttribute<Car, CarEnum> status;
 
 	public static final String OWNER = "owner";
-	public static final String IS_AVAILABLE = "isAvailable";
 	public static final String IMAGES = "images";
 	public static final String YEAR = "year";
 	public static final String SOUND = "sound";

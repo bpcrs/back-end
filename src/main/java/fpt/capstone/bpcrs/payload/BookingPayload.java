@@ -1,6 +1,7 @@
 package fpt.capstone.bpcrs.payload;
 
 import fpt.capstone.bpcrs.constant.BookingEnum;
+import fpt.capstone.bpcrs.model.BookingTracking;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -10,6 +11,7 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.List;
 
 @NoArgsConstructor
 public class BookingPayload {
@@ -74,6 +76,8 @@ public class BookingPayload {
         private double totalPrice;
 
         private LocalDateTime createdDate;
+
+        private List<BookingTracking> trackings;
     }
 
     @Data

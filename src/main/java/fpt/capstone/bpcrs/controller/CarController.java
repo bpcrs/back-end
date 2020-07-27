@@ -83,7 +83,7 @@ public class CarController {
         newCar.setBrand(brand);
         newCar.setModel(model);
         newCar.setOwner(accountService.getCurrentUser());
-        newCar.setStatus(CarEnum.AVAILABLE);
+        newCar.setStatus(CarEnum.UNAVAILABLE);
         //check car VIN API (limit 25/month)
 //        try {
 //            if (!carService.checkCarVin(newCar)) {

@@ -2,7 +2,6 @@ plugins {
     id 'org.springframework.boot' version '2.3.0.RELEASE'
     id 'io.spring.dependency-management' version '1.0.9.RELEASE'
     id 'java'
-    id "com.google.protobuf" version "0.8.8"
 }
 
 group = 'fpt.capstone'
