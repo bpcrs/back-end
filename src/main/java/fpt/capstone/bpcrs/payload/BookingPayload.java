@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @NoArgsConstructor
@@ -39,7 +40,6 @@ public class BookingPayload {
 
         @NotNull
         private double totalPrice;
-
     }
 
 
@@ -50,7 +50,6 @@ public class BookingPayload {
 
         @NotNull
         private int id;
-
 
         private CarPayload.ResponseGetCar car;
 
@@ -74,6 +73,7 @@ public class BookingPayload {
         @NotNull
         private double totalPrice;
 
+        private LocalDateTime createdDate;
     }
 
     @Data
