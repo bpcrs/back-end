@@ -37,10 +37,6 @@ public class  Car extends Auditing {
 
     @Column
     @NotNull
-    private String sound;
-
-    @Column
-    @NotNull
     private String screen;
 
     @Column(nullable = false, columnDefinition = "TINYINT(1) default 0")

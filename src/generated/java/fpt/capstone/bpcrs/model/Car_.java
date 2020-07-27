@@ -13,7 +13,6 @@ public abstract class Car_ extends fpt.capstone.bpcrs.component.Auditing_ {
 	public static volatile SingularAttribute<Car, Account> owner;
 	public static volatile ListAttribute<Car, Image> images;
 	public static volatile SingularAttribute<Car, String> year;
-	public static volatile SingularAttribute<Car, String> sound;
 	public static volatile SingularAttribute<Car, String> screen;
 	public static volatile SingularAttribute<Car, String> plateNum;
 	public static volatile SingularAttribute<Car, Boolean> autoDriver;
@@ -29,7 +28,6 @@ public abstract class Car_ extends fpt.capstone.bpcrs.component.Auditing_ {
 	public static final String OWNER = "owner";
 	public static final String IMAGES = "images";
 	public static final String YEAR = "year";
-	public static final String SOUND = "sound";
 	public static final String SCREEN = "screen";
 	public static final String PLATE_NUM = "plateNum";
 	public static final String AUTO_DRIVER = "autoDriver";
