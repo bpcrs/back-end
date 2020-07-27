@@ -53,6 +53,23 @@ public class AccountPayload {
 
         private String street;
 
+//        @NonNull
+        private LocalDateTime createdDate;
+
+        private String phone;
+
+        private String identification;
+
+        private String imageUrlLicense1;
+
+        private String imageUrlLicense2;
+
+        private String imageUrlLicense3;
+
+        private String imageUrlLicense4;
+
+        @NonNull
+        private boolean licenseCheck;
     }
 
     @Data
@@ -75,8 +92,23 @@ public class AccountPayload {
         @NonNull
         private boolean active;
 
-        @NonNull
+//        @NonNull
         private LocalDateTime createdDate;
+
+        private String phone;
+
+        private String identification;
+
+        private String imageUrlLicense1;
+
+        private String imageUrlLicense2;
+
+        private String imageUrlLicense3;
+
+        private String imageUrlLicense4;
+
+        @NonNull
+        private boolean licenseCheck;
     }
 
     @Data
@@ -90,5 +122,29 @@ public class AccountPayload {
         private String district;
         private String ward;
         private String street;
+    }
+
+    @Data
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class AccountRequestUpdate {
+        @NonNull
+        private int id;
+
+        private String phone;
+
+        private String identification;
+
+        private String imageUrlLicense1;
+
+        private String imageUrlLicense2;
+
+        private String imageUrlLicense3;
+
+        private String imageUrlLicense4;
+
+        @NonNull
+        private boolean licenseCheck;
     }
 }

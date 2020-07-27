@@ -20,6 +20,7 @@ public interface AccountService {
 
   Account getAccountById(int id);
 
-//  Page<Account> getAllAccountUser(int page, int size);
+  Account updateAccountLicense(Account accountUpdate, int id);
+
 
 }

@@ -1,5 +1,6 @@
 package fpt.capstone.bpcrs.service.impl;
 
+import fpt.capstone.bpcrs.component.IgnoreNullProperty;
 import fpt.capstone.bpcrs.component.UserPrincipal;
 import fpt.capstone.bpcrs.constant.RoleEnum;
 import fpt.capstone.bpcrs.exception.BadRequestException;
@@ -10,6 +11,7 @@ import fpt.capstone.bpcrs.repository.AccountRepository;
 import fpt.capstone.bpcrs.repository.RoleRepository;
 import fpt.capstone.bpcrs.service.AccountService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -84,4 +86,13 @@ public class AccountServiceImpl implements AccountService {
         account.setRole(role);
         return accountRepository.save(account);
     }
+
+    @Override
+    public Account updateAccountLicense(Account accountUpdate, int id) {
+        Account account = accountRepository.getOne(id);
+        BeanUtils.copyProperties(accountUpdate, account, IgnoreNullProperty.getNullPropertyNames(accountUpdate));
+        return accountRepository.save(account);
+    }
+
+
 }
