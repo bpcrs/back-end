@@ -3,9 +3,11 @@ package fpt.capstone.bpcrs.service.impl;
 import fpt.capstone.bpcrs.component.Paging;
 import fpt.capstone.bpcrs.constant.BookingEnum;
 import fpt.capstone.bpcrs.model.Booking;
+import fpt.capstone.bpcrs.model.BookingTracking;
 import fpt.capstone.bpcrs.model.Car;
 import fpt.capstone.bpcrs.payload.BookingPayload;
 import fpt.capstone.bpcrs.repository.BookingRepository;
+import fpt.capstone.bpcrs.repository.BookingTrackingRepository;
 import fpt.capstone.bpcrs.repository.CarRepository;
 import fpt.capstone.bpcrs.service.BookingService;
 import lombok.extern.slf4j.Slf4j;
@@ -26,14 +28,20 @@ public class BookingServiceImpl implements BookingService {
     @Autowired
     private CarRepository carRepository;
 
+    @Autowired
+    private BookingTrackingRepository bookingTrackingRepository;
+
     @Override
     public Booking createBooking(Booking request) {
-        return bookingRepository.save(request);
+        request = bookingRepository.save(request);
+        bookingTrackingRepository.save(BookingTracking.builder().booking(request).status(request.getStatus()).build());
+        return request;
     }
 
     @Override
     public Booking updateBookingStatus(Booking booking, BookingEnum status) {
         booking.setStatus(status);
+        bookingTrackingRepository.save(BookingTracking.builder().booking(booking).status(status).build());
         return bookingRepository.save(booking);
     }
 
