@@ -105,11 +105,11 @@ public class CarServiceImpl implements CarService {
         return false;
     }
 
-    @Override
-    public Page<Car> getAllCarsByAvailable(boolean isAvailable, int page, int size) {
-        Specification conditon = (Specification) (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get(Car_.STATUS), CarEnum.AVAILABLE);
-        Page<Car> cars = carRepository.findAll(conditon, new Paging(page, size, Sort.unsorted()));
-        return cars;
-    }
+//    @Override
+//    public Page<Car> getAllCarsByAvailable(boolean isAvailable, int page, int size) {
+//        Specification conditon = (Specification) (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get(Car_.STATUS), CarEnum.AVAILABLE);
+//        Page<Car> cars = carRepository.findAll(conditon, new Paging(page, size, Sort.unsorted()));
+//        return cars;
+//    }
 
 }

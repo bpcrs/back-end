@@ -175,24 +175,24 @@ public class CarController {
 
     }
 
-    @GetMapping("/available")
-    @RolesAllowed(RoleEnum.RoleType.ADMINISTRATOR)
-    public ResponseEntity<?> getCarsByAvailable(@RequestParam(value = "isAvailable", required = false, defaultValue = "true") boolean isAvailable,
-                                                @RequestParam(defaultValue = "1") int page,
-                                                @RequestParam(defaultValue = "10") int size) {
-        List<Car> responses = new ArrayList<>();
-        Page<Car> cars = carService.getAllCarsByAvailable(isAvailable, page, size);
-        for (Car car : cars) {
-            Page<Image> images = imageService.getAllImagePaging(page, size, car.getId(), ImageTypeEnum.CAR);
-            car.setImages(images.toList());
-            responses.add(car);
-        }
-        List<CarPayload.ResponseGetCar> carList = ObjectMapperUtils.mapAll(responses,
-                CarPayload.ResponseGetCar.class);
-        PagingPayload pagingPayload =
-                PagingPayload.builder().data(carList).count((int) cars.getTotalElements()).build();
-        return ResponseEntity.ok(new ApiResponse<>(true, pagingPayload));
-    }
+//    @GetMapping("/available")
+//    @RolesAllowed(RoleEnum.RoleType.ADMINISTRATOR)
+//    public ResponseEntity<?> getCarsByAvailable(@RequestParam(value = "isAvailable", required = false, defaultValue = "true") boolean isAvailable,
+//                                                @RequestParam(defaultValue = "1") int page,
+//                                                @RequestParam(defaultValue = "10") int size) {
+//        List<Car> responses = new ArrayList<>();
+//        Page<Car> cars = carService.getAllCarsByAvailable(isAvailable, page, size);
+//        for (Car car : cars) {
+//            Page<Image> images = imageService.getAllImagePaging(page, size, car.getId(), ImageTypeEnum.CAR);
+//            car.setImages(images.toList());
+//            responses.add(car);
+//        }
+//        List<CarPayload.ResponseGetCar> carList = ObjectMapperUtils.mapAll(responses,
+//                CarPayload.ResponseGetCar.class);
+//        PagingPayload pagingPayload =
+//                PagingPayload.builder().data(carList).count((int) cars.getTotalElements()).build();
+//        return ResponseEntity.ok(new ApiResponse<>(true, pagingPayload));
+//    }
 
 
 }
