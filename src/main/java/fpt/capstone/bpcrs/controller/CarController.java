@@ -144,22 +144,20 @@ public class CarController {
 
 
     @GetMapping("/admin")
-//    @RolesAllowed({RoleEnum.RoleType.ADMINISTRATOR})
-    public ResponseEntity<?> getCar(@RequestParam(defaultValue = "1") int page,
+    @RolesAllowed({RoleEnum.RoleType.ADMINISTRATOR})
+    public ResponseEntity<?> getCarsAdmin(@RequestParam(defaultValue = "1") int page,
                                     @RequestParam(defaultValue = "10") int size
                                     ) {
         Page<Car> cars = carService.getAllCars(page, size);
+        if (cars.isEmpty()) {
+            return new ResponseEntity(new ApiError("System don't have any car", ""), HttpStatus.BAD_REQUEST);
+        }
         List<CarPayload.ResponseGetCar> carList = ObjectMapperUtils.mapAll(cars.toList(),
                 CarPayload.ResponseGetCar.class);
+
         PagingPayload pagingPayload =
                 PagingPayload.builder().data(carList).count((int) cars.getTotalElements()).build();
         return ResponseEntity.ok(new ApiResponse<>(true, pagingPayload));
-//        CarPayload.ResponseGetCar response = new CarPayload.ResponseGetCar();
-//        if (cars.isEmpty()) {
-//            return new ResponseEntity(new ApiError("User dont have any car", ""), HttpStatus.BAD_REQUEST);
-//        }
-//        List<CarPayload.ResponseGetCar> responses = ObjectMapperUtils.mapAll(cars, CarPayload.ResponseGetCar.class);
-//        return ResponseEntity.ok(new ApiResponse<>(true, responses));
     }
     @PutMapping("/status/{id}")
     @RolesAllowed({RoleEnum.RoleType.USER, RoleEnum.RoleType.ADMINISTRATOR})
