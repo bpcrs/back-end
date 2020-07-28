@@ -48,13 +48,12 @@ public class ImageController {
 
     @GetMapping("/check/{id}")
 //    @RolesAllowed(RoleEnum.RoleType.ADMINISTRATOR)
-    public ResponseEntity<?> getImagesCarCheck(@PathVariable() int id) {
+    public ResponseEntity<?> getLicenseImage(@PathVariable() int id) {
         Car car = carService.getCarById(id);
         if (car == null) {
             return new ResponseEntity<>(new ApiError("Car with id = " + id + " not found", ""), HttpStatus.BAD_REQUEST);
         }
-        List<Image> imageList = imageService.getAllImage(id, ImageTypeEnum.CAR);
-        imageList.addAll(imageService.getAllImage(id, ImageTypeEnum.LICENSE_CAR));
+        List<Image> imageList = imageService.getAllImage(id, ImageTypeEnum.LICENSE_CAR);
         return ResponseEntity.ok(new ApiResponse<>(true, imageList));
     }
 

@@ -1,9 +1,6 @@
 package fpt.capstone.bpcrs.payload;
 
 import fpt.capstone.bpcrs.constant.CarEnum;
-import fpt.capstone.bpcrs.model.Brand;
-import fpt.capstone.bpcrs.model.Car;
-import fpt.capstone.bpcrs.model.Model;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -17,15 +14,15 @@ public class CarPayload {
 
     @Data
     @NoArgsConstructor
-    public static class ResponseGetCar{
+    public static class ResponseGetCar {
         @NotNull
         private String name;
         @NotNull
         private ModelPayload.ResponseCreateModel model;
         @Min(1)
         private int seat;
-//        @NotNull
-//        private String sound;
+        @NotNull
+        private String sound;
         @NotNull
         private String screen;
         @NotNull
@@ -49,14 +46,14 @@ public class CarPayload {
 
     @Data
     @NoArgsConstructor
-    public static class RequestUpdateCar{
+    public static class RequestUpdateCar {
         @NotNull
         private String name;
         @NotNull
         private int modelId;
         @Min(1)
         private int seat;
-//        @NotNull
+        //        @NotNull
 //        private String sound;
         @NotNull
         private String screen;
