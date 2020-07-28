@@ -22,5 +22,7 @@ public interface AccountService {
 
   Account updateAccountLicense(Account accountUpdate, int id);
 
+  Account updateAccount(int id, String phone);
+
 
 }

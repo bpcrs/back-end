@@ -3,8 +3,12 @@ package fpt.capstone.bpcrs.service.impl;
 import fpt.capstone.bpcrs.component.Paging;
 import fpt.capstone.bpcrs.constant.BookingEnum;
 import fpt.capstone.bpcrs.model.Booking;
+import fpt.capstone.bpcrs.model.BookingTracking;
+import fpt.capstone.bpcrs.model.Car;
 import fpt.capstone.bpcrs.payload.BookingPayload;
 import fpt.capstone.bpcrs.repository.BookingRepository;
+import fpt.capstone.bpcrs.repository.BookingTrackingRepository;
+import fpt.capstone.bpcrs.repository.CarRepository;
 import fpt.capstone.bpcrs.service.BookingService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,14 +25,23 @@ public class BookingServiceImpl implements BookingService {
     @Autowired
     private BookingRepository bookingRepository;
 
+    @Autowired
+    private CarRepository carRepository;
+
+    @Autowired
+    private BookingTrackingRepository bookingTrackingRepository;
+
     @Override
     public Booking createBooking(Booking request) {
-        return bookingRepository.save(request);
+        request = bookingRepository.save(request);
+        bookingTrackingRepository.save(BookingTracking.builder().booking(request).status(request.getStatus()).build());
+        return request;
     }
 
     @Override
     public Booking updateBookingStatus(Booking booking, BookingEnum status) {
         booking.setStatus(status);
+        bookingTrackingRepository.save(BookingTracking.builder().booking(booking).status(status).build());
         return bookingRepository.save(booking);
     }
 
@@ -74,17 +87,20 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public Page<Booking> getAllBookingsRequestByCar(int carId, BookingEnum status, int page, int size) {
-        Page<Booking> bookings = bookingRepository.findAllByCar_IdAndStatus(carId, status,
+    public Page<Booking> getAllBookingsRequestByCar(int carId, BookingEnum[] status, int page, int size) {
+        return bookingRepository.findAllByCar_IdAndStatusIn(carId, status,
                 new Paging(page, size, Sort.unsorted()));
-        return bookings;
     }
 
     @Override
-    public Page<Booking> getAllBookingRequestsByRenter(int renterId, BookingEnum status, int page, int size) {
-        Page<Booking> bookings = bookingRepository.findAllByRenter_IdAndStatus(renterId, status,
+    public Page<Booking> getAllBookingRequestsByOwner(int onwerId, BookingEnum[] status, int page, int size) {
+        return bookingRepository.findAllByCar_Owner_IdAndStatusIn(onwerId, status, new Paging(page, size, Sort.unsorted()));
+    }
+
+    @Override
+    public Page<Booking> getAllBookingRequestsByRenter(int renterId, BookingEnum[] status, int page, int size) {
+        return bookingRepository.findAllByRenter_IdAndStatusIn(renterId, status,
                 new Paging(page, size, Sort.unsorted()));
-        return bookings;
     }
 
     @Override
@@ -93,7 +109,9 @@ public class BookingServiceImpl implements BookingService {
             case REQUEST:
                 return nextStatus == BookingEnum.PENDING || nextStatus == BookingEnum.DENY;
             case PENDING:
-                return  nextStatus == BookingEnum.CANCEL || nextStatus == BookingEnum.CONFIRM;
+                return  nextStatus == BookingEnum.CANCEL || nextStatus == BookingEnum.OWNER_ACCEPTED;
+            case OWNER_ACCEPTED:
+                return nextStatus == BookingEnum.CONFIRM;
             case CONFIRM:
                 return nextStatus == BookingEnum.CANCEL || nextStatus == BookingEnum.DONE;
         }

@@ -1,11 +1,9 @@
 package fpt.capstone.bpcrs.service.impl;
 
 import fpt.capstone.bpcrs.component.IgnoreNullProperty;
-import fpt.capstone.bpcrs.component.Paging;
-import fpt.capstone.bpcrs.constant.BookingEnum;
+import fpt.capstone.bpcrs.exception.BpcrsException;
 import fpt.capstone.bpcrs.model.Agreement;
-import fpt.capstone.bpcrs.model.Booking;
-import fpt.capstone.bpcrs.model.Criteria;
+import fpt.capstone.bpcrs.payload.AgreementPayload;
 import fpt.capstone.bpcrs.repository.AgreementRepository;
 import fpt.capstone.bpcrs.repository.BookingRepository;
 import fpt.capstone.bpcrs.repository.CriteriaRepository;
@@ -13,14 +11,11 @@ import fpt.capstone.bpcrs.service.AgreementService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -36,7 +31,16 @@ public class AgreementServiceImpl implements AgreementService {
     private BookingRepository bookingRepository;
 
     @Override
-    public Agreement createAgreement(Agreement agreement) {
+    public Agreement createOrUpdateAgreement(AgreementPayload.RequestCreateAgreement requestCreateAgreement) {
+        Agreement agreement = agreementRepository.findByCriteria_IdAndBooking_Id(requestCreateAgreement.getCriteriaId(),requestCreateAgreement.getBookingId());
+        if (agreement == null){
+            agreement = (Agreement) new Agreement().buildObject(requestCreateAgreement, true);
+            agreement.setBooking(bookingRepository.getOne(requestCreateAgreement.getBookingId()));
+            agreement.setCriteria(criteriaRepository.getOne(requestCreateAgreement.getCriteriaId()));
+            agreement.setApproved(false);
+        } else {
+            agreement.setValue(requestCreateAgreement.getValue());
+        }
         return agreementRepository.save(agreement);
     }
 
@@ -47,9 +51,8 @@ public class AgreementServiceImpl implements AgreementService {
 
 
     @Override
-    public List<Agreement> getListAgreementByBookingID(int bookingId) {
-        List<Agreement> agreements = agreementRepository.findAllByBooking_id(bookingId);
-
+    public List<Agreement> getListAgreementByBookingID(int bookingId, boolean isRenter) {
+        List<Agreement> agreements = agreementRepository.findAllByBooking_IdAndCriteria_IsRenter(bookingId, isRenter);
         return agreements;
     }
 
@@ -73,16 +76,12 @@ public class AgreementServiceImpl implements AgreementService {
     }
 
     @Override
-    public List<Agreement> createAgreementListRequest(int bookingId) {
-        Booking booking = bookingRepository.getOne(bookingId);
-        List<Criteria> criteriaList = criteriaRepository.findAll();
-        List<Agreement> agreements = new ArrayList<>();
-        for (Criteria criteria : criteriaList) {
-            Agreement agreement = Agreement.builder().booking(booking).criteria(criteria)
-                    .value(30).isApproved(false).build();
-            agreements.add(agreement);
+    public Agreement acceptAgreementByCriteriaAndBooking(int criteriaId, int bookingId) throws BpcrsException {
+        Agreement agreement = agreementRepository.findByCriteria_IdAndBooking_Id(criteriaId,bookingId);
+        if (agreement.isApproved()){
+            throw new BpcrsException("Agreement is already accepted");
         }
-
-        return agreementRepository.saveAll(agreements);
+        agreement.setApproved(true);
+        return agreementRepository.save(agreement);
     }
 }

@@ -18,9 +18,9 @@ public interface CarService {
 
     Car updateCar(Car updateCar, int id);
 
-    Page<Car> getAllCarsPagingByFilters(int page, int size, Integer[] modelId, Integer[] seat, Double fromPrice, Double toPrice, Integer[] brandId);
+    Page<Car> getAllCarsPagingByFilters(int page, int size, Integer[] modelId, Integer[] seat, Double fromPrice, Double toPrice, Integer[] brandId, Integer ownerId);
 
-    List<Car> getAllCarsByOwnerId(int ownerId);
+    Page<Car> getAllCarsByOwnerId(int ownerId, int page, int size);
 
 
     Page<Car> getAllCars(int page, int size);
@@ -29,6 +29,6 @@ public interface CarService {
 
     boolean checkStatusCarBySM (CarEnum currentStatus, CarEnum nextStatus);
 
-    Page<Car> getAllCarsByAvailable(boolean isAvailable, int page, int size);
+//    Page<Car> getAllCarsByAvailable(boolean isAvailable, int page, int size);
 
 }

@@ -24,16 +24,14 @@ public class CarPayload {
         private ModelPayload.ResponseCreateModel model;
         @Min(1)
         private int seat;
-        @NotNull
-        private String sound;
+//        @NotNull
+//        private String sound;
         @NotNull
         private String screen;
         @NotNull
         private String year;
         @NotNull
         private boolean autoDriver;
-        @NotNull
-        private boolean isAvailable;
         @NotNull
         private String plateNum;
         private BrandPayload.ResponseCreateBrand brand;
@@ -58,16 +56,14 @@ public class CarPayload {
         private int modelId;
         @Min(1)
         private int seat;
-        @NotNull
-        private String sound;
+//        @NotNull
+//        private String sound;
         @NotNull
         private String screen;
         @NotNull
         private String year;
         @NotNull
         private boolean autoDriver;
-        @NotNull
-        private boolean isAvailable;
         @NotNull
         private String plateNum;
         private int brandId;

@@ -60,8 +60,9 @@ public class CarServiceImpl implements CarService {
     }
 
     @Override
-    public Page<Car> getAllCarsPagingByFilters(int page, int size, Integer[] modelIds, Integer[] seat, Double fromPrice, Double toPrice, Integer[] brandIds) {
-        Specification conditon = (Specification) (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get(Car_.IS_AVAILABLE), true);
+    public Page<Car> getAllCarsPagingByFilters(int page, int size, Integer[] modelIds, Integer[] seat, Double fromPrice, Double toPrice, Integer[] brandIds, Integer ownerId) {
+        Specification conditon = (Specification) (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get(Car_.STATUS), CarEnum.AVAILABLE);
+        conditon = conditon.and(CarSpecification.carNotOwner(ownerId));
         if (modelIds != null && modelIds.length != 0) {
             conditon = conditon.and(CarSpecification.carHasModelName(modelIds));
         }
@@ -79,9 +80,9 @@ public class CarServiceImpl implements CarService {
     }
 
     @Override
-    public List<Car> getAllCarsByOwnerId(int ownerId) {
-        List<Car> carList = carRepository.findAllByOwner_Id(ownerId);
-        return carRepository.saveAll(carList);
+    public Page<Car> getAllCarsByOwnerId(int ownerId, int page, int size) {
+        Page<Car> carList = carRepository.findAllByOwner_Id(ownerId, new Paging(page, size, Sort.unsorted()));
+        return carList;
     }
 
     @Override
@@ -104,11 +105,11 @@ public class CarServiceImpl implements CarService {
         return false;
     }
 
-    @Override
-    public Page<Car> getAllCarsByAvailable(boolean isAvailable, int page, int size) {
-        Specification conditon = (Specification) (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get(Car_.IS_AVAILABLE), isAvailable);
-        Page<Car> cars = carRepository.findAll(conditon, new Paging(page, size, Sort.unsorted()));
-        return cars;
-    }
+//    @Override
+//    public Page<Car> getAllCarsByAvailable(boolean isAvailable, int page, int size) {
+//        Specification conditon = (Specification) (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get(Car_.STATUS), CarEnum.AVAILABLE);
+//        Page<Car> cars = carRepository.findAll(conditon, new Paging(page, size, Sort.unsorted()));
+//        return cars;
+//    }
 
 }

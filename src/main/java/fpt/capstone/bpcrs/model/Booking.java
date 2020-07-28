@@ -48,22 +48,31 @@ public class Booking extends Auditing {
     @NotNull
     private String location;
 
+    @Column
+    @NotNull
+    private double totalPrice;
+
+
     @ManyToOne
     @JoinColumn(name = "renter_id")
     @ApiModelProperty(hidden = true)
+    @ToString.Exclude
     private Account renter;
 
-    @ManyToOne
-    @JoinColumn(name = "lessor_id")
-    @ApiModelProperty(hidden = true)
-    private Account lessor;
 
     @ManyToOne
     @JoinColumn(name = "car_id")
     @ApiModelProperty(hidden = true)
+    @ToString.Exclude
     private Car car;
 
     @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @ApiModelProperty(hidden = true)
+    @ToString.Exclude
     private List<Agreement> agreements;
+
+    @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ApiModelProperty(hidden = true)
+    @ToString.Exclude
+    private List<BookingTracking> trackings;
 }

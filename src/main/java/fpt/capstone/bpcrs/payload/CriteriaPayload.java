@@ -31,5 +31,7 @@ public class CriteriaPayload {
 
         @NotNull
         private String unit;
+
+        private boolean isRenter;
     }
 }

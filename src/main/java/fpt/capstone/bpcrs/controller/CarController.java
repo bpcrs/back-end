@@ -1,6 +1,7 @@
 package fpt.capstone.bpcrs.controller;
 
 import fpt.capstone.bpcrs.constant.CarEnum;
+import fpt.capstone.bpcrs.constant.ImageTypeEnum;
 import fpt.capstone.bpcrs.constant.RoleEnum;
 import fpt.capstone.bpcrs.model.Brand;
 import fpt.capstone.bpcrs.model.Car;
@@ -10,10 +11,7 @@ import fpt.capstone.bpcrs.payload.*;
 import fpt.capstone.bpcrs.service.*;
 import fpt.capstone.bpcrs.util.ObjectMapperUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.tomcat.util.json.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.configurationprocessor.json.JSONException;
-import org.springframework.context.annotation.Role;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -51,8 +49,16 @@ public class CarController {
                                      @RequestParam(required = false) Integer[] brand
 
     ) {
-        Page<Car> cars = carService.getAllCarsPagingByFilters(page, size, models, seat, fromPrice, toPrice, brand);
-        List<CarPayload.ResponseGetCar> carList = ObjectMapperUtils.mapAll(cars.toList(),
+        List<Car> responses = new ArrayList<>();
+        Page<Car> cars = carService.getAllCarsPagingByFilters(page, size, models, seat, fromPrice, toPrice, brand, accountService.getCurrentUser().getId());
+        for (Car car : cars) {
+            CarPayload.ResponseGetCar response = new CarPayload.ResponseGetCar();
+            List<Image> images = imageService.getAllImage(car.getId(), ImageTypeEnum.CAR);
+            car.setImages(images);
+            car.buildObject(response, false);
+            responses.add(car);
+        }
+        List<CarPayload.ResponseGetCar> carList = ObjectMapperUtils.mapAll(responses,
                 CarPayload.ResponseGetCar.class);
         PagingPayload pagingPayload =
                 PagingPayload.builder().data(carList).count((int) cars.getTotalElements()).build();
@@ -104,14 +110,22 @@ public class CarController {
 
     @GetMapping("/owner/{id}")
     @RolesAllowed({RoleEnum.RoleType.USER, RoleEnum.RoleType.ADMINISTRATOR})
-    public ResponseEntity<?> getCarsByOwner(@PathVariable() int id) {
-        List<Car> cars = carService.getAllCarsByOwnerId(id);
+    public ResponseEntity<?> getCarsByOwner(@PathVariable() int id,
+                                            @RequestParam(defaultValue = "1") int page,
+                                            @RequestParam(defaultValue = "10") int size) {
+        List<Car> responses = new ArrayList<>();
+        Page<Car> cars = carService.getAllCarsByOwnerId(id, page, size);
         if (cars.isEmpty()) {
             return new ResponseEntity(new ApiError("User dont have any car", ""), HttpStatus.BAD_REQUEST);
         }
-        List<CarPayload.ResponseGetCar> responses = ObjectMapperUtils.mapAll(cars, CarPayload.ResponseGetCar.class);
-//        cars.b
-        return ResponseEntity.ok(new ApiResponse<>(true, responses));
+        for (Car car : cars) {
+            responses.add(car);
+        }
+        List<CarPayload.ResponseGetCar> carList = ObjectMapperUtils.mapAll(responses,
+                CarPayload.ResponseGetCar.class);
+        PagingPayload pagingPayload =
+                PagingPayload.builder().data(carList).count((int) cars.getTotalElements()).build();
+        return ResponseEntity.ok(new ApiResponse<>(true, pagingPayload));
     }
 
     @PutMapping("/{id}")
@@ -130,22 +144,20 @@ public class CarController {
 
 
     @GetMapping("/admin")
-//    @RolesAllowed({RoleEnum.RoleType.ADMINISTRATOR})
-    public ResponseEntity<?> getCar(@RequestParam(defaultValue = "1") int page,
+    @RolesAllowed({RoleEnum.RoleType.ADMINISTRATOR})
+    public ResponseEntity<?> getCarsAdmin(@RequestParam(defaultValue = "1") int page,
                                     @RequestParam(defaultValue = "10") int size
                                     ) {
         Page<Car> cars = carService.getAllCars(page, size);
+        if (cars.isEmpty()) {
+            return new ResponseEntity(new ApiError("System don't have any car", ""), HttpStatus.BAD_REQUEST);
+        }
         List<CarPayload.ResponseGetCar> carList = ObjectMapperUtils.mapAll(cars.toList(),
                 CarPayload.ResponseGetCar.class);
+
         PagingPayload pagingPayload =
                 PagingPayload.builder().data(carList).count((int) cars.getTotalElements()).build();
         return ResponseEntity.ok(new ApiResponse<>(true, pagingPayload));
-//        CarPayload.ResponseGetCar response = new CarPayload.ResponseGetCar();
-//        if (cars.isEmpty()) {
-//            return new ResponseEntity(new ApiError("User dont have any car", ""), HttpStatus.BAD_REQUEST);
-//        }
-//        List<CarPayload.ResponseGetCar> responses = ObjectMapperUtils.mapAll(cars, CarPayload.ResponseGetCar.class);
-//        return ResponseEntity.ok(new ApiResponse<>(true, responses));
     }
     @PutMapping("/status/{id}")
     @RolesAllowed({RoleEnum.RoleType.USER, RoleEnum.RoleType.ADMINISTRATOR})
@@ -163,27 +175,24 @@ public class CarController {
 
     }
 
-    @GetMapping("/available")
-    @RolesAllowed(RoleEnum.RoleType.ADMINISTRATOR)
-    public ResponseEntity<?> getCarsByAvailable(@RequestParam(value = "isAvailable", required = false, defaultValue = "true") boolean isAvailable,
-                                                @RequestParam(defaultValue = "1") int page,
-                                                @RequestParam(defaultValue = "10") int size) {
-//        if (!accountService.getCurrentUser().getRole().equals(RoleEnum.ADMINISTRATOR)) {
-//            return new ResponseEntity(new ApiError("Role is not allowed", ""), HttpStatus.BAD_REQUEST);
+//    @GetMapping("/available")
+//    @RolesAllowed(RoleEnum.RoleType.ADMINISTRATOR)
+//    public ResponseEntity<?> getCarsByAvailable(@RequestParam(value = "isAvailable", required = false, defaultValue = "true") boolean isAvailable,
+//                                                @RequestParam(defaultValue = "1") int page,
+//                                                @RequestParam(defaultValue = "10") int size) {
+//        List<Car> responses = new ArrayList<>();
+//        Page<Car> cars = carService.getAllCarsByAvailable(isAvailable, page, size);
+//        for (Car car : cars) {
+//            Page<Image> images = imageService.getAllImagePaging(page, size, car.getId(), ImageTypeEnum.CAR);
+//            car.setImages(images.toList());
+//            responses.add(car);
 //        }
-        List<Car> responses = new ArrayList<>();
-        Page<Car> cars = carService.getAllCarsByAvailable(isAvailable, page, size);
-        for (Car car : cars) {
-            Page<Image> images = imageService.getAllImagePaging(page, size, car.getId());
-            car.setImages(images.toList());
-            responses.add(car);
-        }
-        List<CarPayload.ResponseGetCar> carList = ObjectMapperUtils.mapAll(responses,
-                CarPayload.ResponseGetCar.class);
-        PagingPayload pagingPayload =
-                PagingPayload.builder().data(carList).count((int) cars.getTotalElements()).build();
-        return ResponseEntity.ok(new ApiResponse<>(true, pagingPayload));
-    }
+//        List<CarPayload.ResponseGetCar> carList = ObjectMapperUtils.mapAll(responses,
+//                CarPayload.ResponseGetCar.class);
+//        PagingPayload pagingPayload =
+//                PagingPayload.builder().data(carList).count((int) cars.getTotalElements()).build();
+//        return ResponseEntity.ok(new ApiResponse<>(true, pagingPayload));
+//    }
 
 
 }

@@ -45,13 +45,7 @@ public class AccountPayload {
         @NonNull
         private String role;
 
-        private String city;
-
-        private String district;
-
-        private String ward;
-
-        private String street;
+        private String phoneNumber;
 
 //        @NonNull
         private LocalDateTime createdDate;

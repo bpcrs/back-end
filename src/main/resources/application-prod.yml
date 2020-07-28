@@ -5,3 +5,12 @@ spring:
     url: jdbc:mysql://localhost:3306/bpcrs
 app:
   host: localhost:5000
+
+dapp:
+  pem:
+    file: crypto-config/peerOrganizations/org1.example.com/ca/ca.org1.example.com-cert.pem
+  ca:
+    url: localhost:7054
+  network:
+    config:
+      path: crypto-config/peerOrganizations/org1.example.com/connection-org1.yaml

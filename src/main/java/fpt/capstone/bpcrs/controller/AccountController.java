@@ -25,6 +25,8 @@ import javax.validation.Valid;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @RestController
 @RequestMapping("/account")
@@ -140,4 +142,22 @@ public ResponseEntity<?> updateAccountLicense(
     }
   }
 
+    @PutMapping("/{id}")
+    @RolesAllowed(RoleEnum.RoleType.USER)
+    public ResponseEntity<?> updateAccount(@PathVariable int id, @RequestParam String phone) {
+        try {
+//            String patterns = "^\\d{10}$" + "^\\d{11}$";
+//            Pattern pattern = Pattern.compile(patterns);
+//            Matcher matcher = pattern.matcher(phone);
+//            if (!matcher.matches()) {
+//                return ResponseEntity.badRequest().body(new ApiResponse<>(false, "Invalid phone number", null));
+//            }
+            Account account = accountService.updateAccount(id, phone);
+            AccountPayload.AccountResponse response = ObjectMapperUtils
+                    .map(account, AccountPayload.AccountResponse.class);
+            return ResponseEntity.ok(new ApiResponse<>(true, "Account updated", response));
+        } catch (BadRequestException ex) {
+            return ResponseEntity.badRequest().body(new ApiResponse<>(false, ex.getMessage(), null));
+        }
+    }
 }

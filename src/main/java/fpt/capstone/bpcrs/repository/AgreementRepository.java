@@ -11,10 +11,12 @@ import java.util.List;
 @Repository
 public interface AgreementRepository extends JpaRepository<Agreement, Integer> {
 
-    List<Agreement> findAllByBooking_id(int bookingId);
+    List<Agreement> findAllByBooking_IdAndCriteria_IsRenter(int bookingId, boolean isRenter);
 
     Page<Agreement> findAllByCriteria_Id(int criteriaId, Pageable paging);
 
     Page<Agreement> findAll(Pageable paging);
+
+    Agreement findByCriteria_IdAndBooking_Id(int criteriaId, int bookingId);
 
 }

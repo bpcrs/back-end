@@ -35,13 +35,6 @@ public class  Car extends Auditing {
     @Column
     private int seat;
 
-    @Column(nullable = false, columnDefinition = "TINYINT(1) default 0")
-    private boolean isAvailable;
-
-    @Column
-    @NotNull
-    private String sound;
-
     @Column
     @NotNull
     private String screen;

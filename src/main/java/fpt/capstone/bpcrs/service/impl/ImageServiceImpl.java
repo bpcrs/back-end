@@ -1,6 +1,7 @@
 package fpt.capstone.bpcrs.service.impl;
 
 import fpt.capstone.bpcrs.component.Paging;
+import fpt.capstone.bpcrs.constant.ImageTypeEnum;
 import fpt.capstone.bpcrs.model.Image;
 import fpt.capstone.bpcrs.repository.CarRepository;
 import fpt.capstone.bpcrs.repository.ImageRepository;
@@ -11,9 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -26,11 +25,17 @@ public class ImageServiceImpl  implements ImageService {
     private CarRepository carRepository;
 
     @Override
-    public Page<Image> getAllImagePaging(int page, int size, int carId) {
-        Page<Image> images = imageRepository.findAllByCar_Id(carId, new Paging(page, size, Sort.unsorted()));
+    public Page<Image> getAllImagePaging(int page, int size, int carId, ImageTypeEnum type) {
+        Page<Image> images = imageRepository.findAllByCar_IdAndType(carId, type, new Paging(page, size, Sort.unsorted()));
         return images;
     }
-  
+
+    @Override
+    public List<Image> getAllImage(int carId, ImageTypeEnum type) {
+        List<Image> images = imageRepository.findAllByCar_IdAndType(carId, type);
+        return images;
+    }
+
     @Override
     public List<Image> createImages(List<Image> images) {
         return  imageRepository.saveAll(images);

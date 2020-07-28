@@ -4,6 +4,7 @@ import fpt.capstone.bpcrs.constant.BookingEnum;
 import fpt.capstone.bpcrs.constant.RoleEnum;
 import fpt.capstone.bpcrs.exception.BadRequestException;
 import fpt.capstone.bpcrs.model.Account;
+import fpt.capstone.bpcrs.model.Agreement;
 import fpt.capstone.bpcrs.model.Booking;
 import fpt.capstone.bpcrs.model.Car;
 import fpt.capstone.bpcrs.payload.ApiResponse;
@@ -19,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.security.RolesAllowed;
@@ -82,15 +84,14 @@ public class BookingController {
     @RolesAllowed(RoleEnum.RoleType.USER)
     public ResponseEntity<?> createBooking(@Valid @RequestBody BookingPayload.RequestCreateBooking request) {
         Car car = carService.getCarById(request.getCarId());
-        Account lessor = accountService.getAccountById(request.getLessorId());
         Account renter = accountService.getAccountById(request.getRenterId());
 
         BookingPayload.ResponseCreateBooking response = new BookingPayload.ResponseCreateBooking();
 
-        Booking booking = Booking.builder().car(car).lessor(lessor).renter(renter)
+        Booking booking = Booking.builder().car(car).renter(renter)
                 .from_date(request.getFromDate()).to_date(request.getToDate())
                 .location(request.getLocation()).destination(request.getDestination())
-                .status(BookingEnum.REQUEST).build();
+                .status(BookingEnum.REQUEST).totalPrice(request.getTotalPrice()).build();
         bookingService.createBooking(booking).buildObject(response, false);
         return ResponseEntity.ok(new ApiResponse<>(true, response));
     }
@@ -103,13 +104,17 @@ public class BookingController {
             if (booking == null) {
                 return ResponseEntity.badRequest().body(new ApiResponse<>(false, "Booking with id " + id + " not existed", null));
             }
-            if (booking.getLessor().getId() != accountService.getCurrentUser().getId()) {
+            if (booking.getCar().getOwner().getId().intValue() != accountService.getCurrentUser().getId().intValue() && booking.getRenter().getId().intValue() != accountService.getCurrentUser().getId().intValue()) {
                 return ResponseEntity.badRequest().body(new ApiResponse<>(false, "User is not allowed", null));
+            }
+            boolean isApproveAllAgreemet = booking.getAgreements().stream().allMatch(Agreement::isApproved);
+            if (!isApproveAllAgreemet){
+                return ResponseEntity.badRequest().body(new ApiResponse<>(false, "All agreement must be approved", null));
             }
             if (!bookingService.checkStatusBookingBySM(booking.getStatus(), status)) {
                 return ResponseEntity.badRequest().body(new ApiResponse<>(false, "Invalid status request", null));
             }
-                booking = bookingService.updateBookingStatus(booking, status);
+            booking = bookingService.updateBookingStatus(booking, status);
             BookingPayload.ResponseCreateBooking response = ObjectMapperUtils.map(booking, BookingPayload.ResponseCreateBooking.class);
             return ResponseEntity.ok(new ApiResponse<>(true, "Booking status was updated", response));
         } catch (BadRequestException ex) {
@@ -177,13 +182,13 @@ public class BookingController {
 //        }
 //    }
 
-    @GetMapping("/requests/{id}")
+    @GetMapping("/car/{id}")
     @RolesAllowed({RoleEnum.RoleType.USER, RoleEnum.RoleType.ADMINISTRATOR})
     public ResponseEntity<?> getAllBookingRequestByCar(
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "10") int size,
             @PathVariable() int id,
-            @Valid @RequestParam BookingEnum status) {
+            @Valid @RequestParam BookingEnum[] status) {
         Page<Booking> bookings = bookingService.getAllBookingsRequestByCar(id, status, page, size);
         List<BookingPayload.ResponseCreateBooking> responses = ObjectMapperUtils.mapAll(bookings.toList(),
                 BookingPayload.ResponseCreateBooking.class);
@@ -192,19 +197,30 @@ public class BookingController {
         return ResponseEntity.ok(new ApiResponse<>(true, pagingPayload));
     }
 
-    @GetMapping("/renter/{id}")
+    @GetMapping("/user/{id}")
     @RolesAllowed({RoleEnum.RoleType.USER, RoleEnum.RoleType.ADMINISTRATOR})
-    public ResponseEntity<?> getAllBookingRequestsByRenter(
+    public ResponseEntity<?> getAllBookingRequestsByUser(
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "10") int size,
             @PathVariable() int id,
-            @Valid @RequestParam BookingEnum status) {
-        Page<Booking> bookings = bookingService.getAllBookingRequestsByRenter(id, status, page, size);
+            @Valid @RequestParam BookingEnum[] status,
+            @RequestParam boolean isRenter) {
+        Page<Booking> bookings;
+        if (isRenter) {
+            bookings = bookingService.getAllBookingRequestsByRenter(id, status, page, size);
+        } else {
+            bookings = bookingService.getAllBookingRequestsByOwner(id, status, page, size);
+        }
+        if (bookings == null) {
+            String role = isRenter ? "renter" : "owner";
+            return ResponseEntity.badRequest().body(new ApiResponse<>(false, "Dont have any bookings with user id = " + id + " with role = " + role, HttpStatus.BAD_REQUEST));
+        }
         List<BookingPayload.ResponseCreateBooking> responses = ObjectMapperUtils.mapAll(bookings.toList(),
                 BookingPayload.ResponseCreateBooking.class);
         PagingPayload pagingPayload =
                 PagingPayload.builder().data(responses).count((int) bookings.getTotalElements()).build();
         return ResponseEntity.ok(new ApiResponse<>(true, pagingPayload));
     }
+
 
 }

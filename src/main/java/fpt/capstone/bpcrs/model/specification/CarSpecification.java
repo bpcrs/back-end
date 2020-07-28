@@ -23,4 +23,8 @@ public class CarSpecification {
     public static Specification<Car> carHasBrand(Integer[] brandId) {
         return (Specification<Car>) (root, query, cb) -> root.get(Car_.BRAND).in(Arrays.asList(brandId));
     }
+
+    public static Specification<Car> carNotOwner(Integer ownerId) {
+        return (Specification<Car>) (root, query, cb) -> cb.notEqual(root.get(Car_.OWNER),ownerId);
+    }
 }

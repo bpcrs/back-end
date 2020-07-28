@@ -20,12 +20,12 @@ public class AgreementPayload {
         private int bookingId;
 
         @NotNull
-        private String criteriaName;
+        @Min(1)
+        private int criteriaId;
 
         @NotNull
-        private double value;
+        private String value;
 
-        private boolean isApproved;
     }
 
 
@@ -44,7 +44,7 @@ public class AgreementPayload {
         private int criteriaId;
 
         @NotNull
-        private double value;
+        private String value;
 
         private boolean isApproved;
     }
