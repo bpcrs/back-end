@@ -1,6 +1,5 @@
 package fpt.capstone.bpcrs.payload;
 
-import fpt.capstone.bpcrs.constant.ImageTypeEnum;
 import fpt.capstone.bpcrs.model.Image;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -15,7 +14,7 @@ public class ImagePayload {
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class RequestCreateImage{
+    public static class RequestCreateImage {
         @Min(1)
         private int carId;
 
@@ -33,6 +32,4 @@ public class ImagePayload {
         private String link;
         private Image type;
     }
-
-
 }

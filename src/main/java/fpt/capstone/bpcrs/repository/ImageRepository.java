@@ -12,6 +12,6 @@ import java.util.List;
 @Repository
 public interface ImageRepository extends JpaRepository<Image, Integer> {
 
-    Page<Image> findAllByCar_IdAndType(int carIds, ImageTypeEnum type, Pageable paging);
-    List<Image> findAllByCar_IdAndType(int carId, ImageTypeEnum type);
+    Page<Image> findAllByCar_IdAndType(Integer car_id, ImageTypeEnum type, Pageable pageable);
+    List<Image> findAllByCar_IdAndType(Integer car_id, ImageTypeEnum type);
 }
