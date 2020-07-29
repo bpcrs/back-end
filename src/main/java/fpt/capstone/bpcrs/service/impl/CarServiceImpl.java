@@ -101,6 +101,12 @@ public class CarServiceImpl implements CarService {
         switch (currentStatus) {
             case UNAVAILABLE:
                 return nextStatus == CarEnum.AVAILABLE;
+            case AVAILABLE:
+                return nextStatus == CarEnum.UNAVAILABLE || nextStatus == CarEnum.BOOKED || nextStatus == CarEnum.UNAVAILABLE;
+            case BOOKED:
+                return nextStatus == CarEnum.RENTING || nextStatus == CarEnum.AVAILABLE;
+            case RENTING:
+                return nextStatus == CarEnum.AVAILABLE || nextStatus == CarEnum.AVAILABLE;
         }
         return false;
     }
