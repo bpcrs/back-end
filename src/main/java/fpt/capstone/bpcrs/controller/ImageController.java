@@ -65,4 +65,15 @@ public class ImageController {
         List<ImagePayload.ResponseCreateImage> imageList = ObjectMapperUtils.mapAll(images, ImagePayload.ResponseCreateImage.class);
         return ResponseEntity.ok(new ApiResponse<>(true, imageList));
     }
+
+    @DeleteMapping("/{id}")
+    @RolesAllowed(RoleEnum.RoleType.USER)
+    public ResponseEntity<?> deleteImage(@PathVariable() int id) {
+        Image image = imageService.getImageById(id);
+        if (image == null) {
+            return new ResponseEntity<>(new ApiError("Image with id = " + id + " not found", ""), HttpStatus.BAD_REQUEST);
+        }
+        imageService.deleteImage(id);
+        return ResponseEntity.ok(new ApiResponse<>(true, "Delete success"));
+    }
 }

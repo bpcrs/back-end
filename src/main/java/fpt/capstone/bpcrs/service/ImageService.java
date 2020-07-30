@@ -10,4 +10,6 @@ public interface ImageService {
     Page<Image> getAllImagePaging(int page, int size, int carId, ImageTypeEnum type);
     List<Image> getAllImage(int carId, ImageTypeEnum type);
     List<Image> createImages(List<Image> images);
+    void deleteImage(int id);
+    Image getImageById(int id);
 }
