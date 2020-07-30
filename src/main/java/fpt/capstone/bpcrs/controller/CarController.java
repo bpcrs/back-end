@@ -84,6 +84,7 @@ public class CarController {
         newCar.setModel(model);
         newCar.setOwner(accountService.getCurrentUser());
         newCar.setStatus(CarEnum.UNAVAILABLE);
+        newCar.setLocation("Ho Chi Minh City");
         //check car VIN API (limit 25/month)
 //        try {
 //            if (!carService.checkCarVin(newCar)) {
