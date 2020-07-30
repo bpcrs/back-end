@@ -31,7 +31,7 @@ public class ImagePayload {
     public static class ResponseCreateImage {
         private int id;
         private String link;
-        private Image type;
+        private ImageTypeEnum type;
     }
 
 

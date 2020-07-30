@@ -1,9 +1,9 @@
 package fpt.capstone.bpcrs.constant;
 
 public enum ImageTypeEnum {
-    CAR("CAR"), LICENSE("LICENSE");
+    CAR, LICENSE, DELETE;
 
-    ImageTypeEnum(String type) {
-
-    }
+//    ImageTypeEnum(String type) {
+//
+//    }
 }

@@ -13,6 +13,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -39,5 +40,24 @@ public class ImageServiceImpl  implements ImageService {
     @Override
     public List<Image> createImages(List<Image> images) {
         return  imageRepository.saveAll(images);
+    }
+
+    @Override
+    public void deleteImage(int id) {
+        Image image = imageRepository.getOne(id);
+        imageRepository.delete(image);
+    }
+
+    @Override
+    public Image getImageById(int id) {
+        Optional<Image> image = imageRepository.findById(id);
+        return image.orElse(null);
+    }
+
+    @Override
+    public Image changeTypeImage(Image image, ImageTypeEnum type) {
+//        Image image = imageRepository.findById(id).orElse(null);
+        image.setType(type);
+        return imageRepository.save(image);
     }
 }
