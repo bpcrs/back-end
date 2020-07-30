@@ -12,4 +12,5 @@ public interface ImageService {
     List<Image> createImages(List<Image> images);
     void deleteImage(int id);
     Image getImageById(int id);
+    Image changeTypeImage(Image image, ImageTypeEnum type);
 }

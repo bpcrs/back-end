@@ -76,4 +76,16 @@ public class ImageController {
         imageService.deleteImage(id);
         return ResponseEntity.ok(new ApiResponse<>(true, "Delete success"));
     }
+
+    @PutMapping("/{id}")
+    @RolesAllowed({RoleEnum.RoleType.USER, RoleEnum.RoleType.ADMINISTRATOR})
+    public ResponseEntity<?> changeImageType(@PathVariable() int id,@RequestParam ImageTypeEnum type) {
+        Image image = imageService.getImageById(id);
+        if (image == null) {
+            return new ResponseEntity<>(new ApiError("Image with id = " + id + " not found", ""), HttpStatus.BAD_REQUEST);
+        }
+        imageService.changeTypeImage(image, type);
+        ImagePayload.ResponseCreateImage response = ObjectMapperUtils.map(image, ImagePayload.ResponseCreateImage.class);
+        return ResponseEntity.ok(new ApiResponse<>(true, response));
+    }
 }

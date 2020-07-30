@@ -53,4 +53,11 @@ public class ImageServiceImpl  implements ImageService {
         Optional<Image> image = imageRepository.findById(id);
         return image.orElse(null);
     }
+
+    @Override
+    public Image changeTypeImage(Image image, ImageTypeEnum type) {
+//        Image image = imageRepository.findById(id).orElse(null);
+        image.setType(type);
+        return imageRepository.save(image);
+    }
 }
