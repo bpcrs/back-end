@@ -52,16 +52,19 @@ public class Account extends Auditing {
     private String identification;
 
     @Column(columnDefinition = "text")
-    private String imageUrlLicense1;
+    private String imageLicense;
 
-    @Column(columnDefinition = "text")
-    private String imageUrlLicense2;
-
-    @Column(columnDefinition = "text")
-    private String imageUrlLicense3;
-
-    @Column(columnDefinition = "text")
-    private String imageUrlLicense4;
+//    @Column(columnDefinition = "text")
+//    private String imageUrlLicense1;
+//
+//    @Column(columnDefinition = "text")
+//    private String imageUrlLicense2;
+//
+//    @Column(columnDefinition = "text")
+//    private String imageUrlLicense3;
+//
+//    @Column(columnDefinition = "text")
+//    private String imageUrlLicense4;
 
     @Column(columnDefinition = "TINYINT(1) default 0")
     private boolean licenseCheck;

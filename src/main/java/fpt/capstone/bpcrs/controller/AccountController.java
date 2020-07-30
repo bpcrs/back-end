@@ -128,12 +128,14 @@ public ResponseEntity<?> updateAccountLicense(
     try {
         Account account = accountService.getAccountById(id);
         if(account == null){
-            return new ResponseEntity(new ApiError("Car with id=" + id + " not found", ""), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity(new ApiError("account with id=" + id + " not found", ""), HttpStatus.BAD_REQUEST);
         }else {
-            AccountPayload.AccountRequestUpdate response = new AccountPayload.AccountRequestUpdate();
             Account updateAcc = (Account) new Account().buildObject(request, true);
             updateAcc.setId(id);
+            updateAcc.setActive(true);
             accountService.updateAccountLicense(updateAcc, id);
+
+            AccountPayload.AccountRequestUpdate response = ObjectMapperUtils.map(updateAcc, AccountPayload.AccountRequestUpdate.class);
             return ResponseEntity.ok(new ApiResponse<>(true, response));
         }
 

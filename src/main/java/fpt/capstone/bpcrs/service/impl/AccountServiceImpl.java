@@ -83,7 +83,8 @@ public class AccountServiceImpl implements AccountService {
         if (account == null) {
             throw new BadRequestException("Account doesn't existed");
         }
-        account.setPhoneNumber(phone);
+//        account.setPhoneNumber(phone);
+        account.setPhone(phone);
         return account;
     }
 
@@ -99,7 +100,7 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public Account updateAccountLicense(Account accountUpdate, int id) {
-        Account account = accountRepository.getOne(id);
+        Account account = accountRepository.findById(id).orElse(null);
         BeanUtils.copyProperties(accountUpdate, account, IgnoreNullProperty.getNullPropertyNames(accountUpdate));
         return accountRepository.save(account);
     }

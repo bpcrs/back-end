@@ -45,7 +45,7 @@ public class AccountPayload {
         @NonNull
         private String role;
 
-        private String phoneNumber;
+//        private String phoneNumber;
 
 //        @NonNull
         private LocalDateTime createdDate;
@@ -54,13 +54,14 @@ public class AccountPayload {
 
         private String identification;
 
-        private String imageUrlLicense1;
-
-        private String imageUrlLicense2;
-
-        private String imageUrlLicense3;
-
-        private String imageUrlLicense4;
+        private String imageLicense;
+//        private String imageUrlLicense1;
+//
+//        private String imageUrlLicense2;
+//
+//        private String imageUrlLicense3;
+//
+//        private String imageUrlLicense4;
 
         @NonNull
         private boolean licenseCheck;
@@ -91,15 +92,16 @@ public class AccountPayload {
 
         private String phone;
 
-        private String identification;
-
-        private String imageUrlLicense1;
-
-        private String imageUrlLicense2;
-
-        private String imageUrlLicense3;
-
-        private String imageUrlLicense4;
+        private  String imageLicense;
+//        private String identification;
+//
+//        private String imageUrlLicense1;
+//
+//        private String imageUrlLicense2;
+//
+//        private String imageUrlLicense3;
+//
+//        private String imageUrlLicense4;
 
         @NonNull
         private boolean licenseCheck;
@@ -128,15 +130,18 @@ public class AccountPayload {
 
         private String phone;
 
+        private boolean active;
+
         private String identification;
 
-        private String imageUrlLicense1;
-
-        private String imageUrlLicense2;
-
-        private String imageUrlLicense3;
-
-        private String imageUrlLicense4;
+        private String imageLicense;
+//        private String imageUrlLicense1;
+//
+//        private String imageUrlLicense2;
+//
+//        private String imageUrlLicense3;
+//
+//        private String imageUrlLicense4;
 
         @NonNull
         private boolean licenseCheck;
