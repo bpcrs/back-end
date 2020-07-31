@@ -22,4 +22,9 @@ public class BlockchainServiceImpl implements BlockchainService {
 //                "mychannel", "agreements","createCar","CAR20", "Honda", "Accord", "Red", "HungPT");
 //        System.out.println(resultChaincode.getData());
     }
+
+    @Override
+    public boolean registerUser(String username) throws Exception {
+        return hfHelper.registerUser(username);
+    }
 }

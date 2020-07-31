@@ -53,6 +53,7 @@ dependencies {
 //    compile group: 'io.grpc', name: 'grpc-all', version: '1.29.0'
     compile "com.google.protobuf:protobuf-java:3.12.1"
     compile group: 'javax.persistence', name: 'javax.persistence-api', version: '2.2'
+    compile 'com.google.maps:google-maps-services:0.14.0'
 }
 
 

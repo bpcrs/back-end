@@ -172,7 +172,6 @@ public class CarController {
         Car updateCar = carService.updateCarStatus(car, status);
         CarPayload.ResponseGetCar response = ObjectMapperUtils.map(updateCar, CarPayload.ResponseGetCar.class);
         return ResponseEntity.ok(new ApiResponse<>(true, response));
-
     }
 
 //    @GetMapping("/available")
