@@ -88,7 +88,7 @@ public class CarServiceImpl implements CarService {
 
     @Override
     public Page<Car> getAllCars(int page, int size) {
-        Page<Car> cars = carRepository.findAll(new Paging(page, size, Sort.unsorted()));
+        Page<Car> cars = carRepository.findAllByStatus(CarEnum.REGISTER , new Paging(page, size, Sort.unsorted()));
         return cars;
     }
 
@@ -109,6 +109,8 @@ public class CarServiceImpl implements CarService {
                 return nextStatus == CarEnum.BOOKED || nextStatus == CarEnum.AVAILABLE;
             case BOOKED:
                 return nextStatus == CarEnum.RENTING || nextStatus == CarEnum.AVAILABLE;
+            case REGISTER:
+                return nextStatus == CarEnum.UNAVAILABLE;
         }
         return false;
     }
