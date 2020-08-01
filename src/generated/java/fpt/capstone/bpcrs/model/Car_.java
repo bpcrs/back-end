@@ -21,6 +21,7 @@ public abstract class Car_ extends fpt.capstone.bpcrs.component.Auditing_ {
 	public static volatile SingularAttribute<Car, Double> price;
 	public static volatile SingularAttribute<Car, String> name;
 	public static volatile SingularAttribute<Car, String> VIN;
+	public static volatile SingularAttribute<Car, String> location;
 	public static volatile SingularAttribute<Car, Model> model;
 	public static volatile SingularAttribute<Car, Brand> brand;
 	public static volatile SingularAttribute<Car, CarEnum> status;
@@ -36,6 +37,7 @@ public abstract class Car_ extends fpt.capstone.bpcrs.component.Auditing_ {
 	public static final String PRICE = "price";
 	public static final String NAME = "name";
 	public static final String V_IN = "VIN";
+	public static final String LOCATION = "location";
 	public static final String MODEL = "model";
 	public static final String BRAND = "brand";
 	public static final String STATUS = "status";

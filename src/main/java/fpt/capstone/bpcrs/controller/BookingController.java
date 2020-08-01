@@ -93,7 +93,6 @@ public class BookingController {
                 .from_date(request.getFromDate()).to_date(request.getToDate())
                 .location(request.getLocation()).destination(request.getDestination())
                 .status(BookingEnum.REQUEST).totalPrice(request.getTotalPrice()).build();
-        carService.updateCarStatus(car, CarEnum.BOOKED);
         bookingService.createBooking(booking).buildObject(response, false);
         return ResponseEntity.ok(new ApiResponse<>(true, response));
     }
