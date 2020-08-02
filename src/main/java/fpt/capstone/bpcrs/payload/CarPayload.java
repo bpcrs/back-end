@@ -1,9 +1,6 @@
 package fpt.capstone.bpcrs.payload;
 
 import fpt.capstone.bpcrs.constant.CarEnum;
-import fpt.capstone.bpcrs.model.Brand;
-import fpt.capstone.bpcrs.model.Car;
-import fpt.capstone.bpcrs.model.Model;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -75,6 +72,8 @@ public class CarPayload {
         private double price;
         private CarEnum status;
         private String location;
+        private String ownerEmail;
+        private String message;
     }
 
 }

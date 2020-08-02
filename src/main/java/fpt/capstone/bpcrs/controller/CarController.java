@@ -7,7 +7,10 @@ import fpt.capstone.bpcrs.model.Brand;
 import fpt.capstone.bpcrs.model.Car;
 import fpt.capstone.bpcrs.model.Image;
 import fpt.capstone.bpcrs.model.Model;
-import fpt.capstone.bpcrs.payload.*;
+import fpt.capstone.bpcrs.payload.ApiError;
+import fpt.capstone.bpcrs.payload.ApiResponse;
+import fpt.capstone.bpcrs.payload.CarPayload;
+import fpt.capstone.bpcrs.payload.PagingPayload;
 import fpt.capstone.bpcrs.service.*;
 import fpt.capstone.bpcrs.util.ObjectMapperUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -140,6 +143,10 @@ public class CarController {
         Car updateCar = (Car) new Car().buildObject(request, true);
         updateCar.setId(id);
         carService.updateCar(updateCar, id).buildObject(response, false);
+        response.setOwnerEmail(car.getOwner().getEmail());
+        if (!request.getMessage().isEmpty()) {
+            response.setMessage(request.getMessage());
+        }
         return ResponseEntity.ok(new ApiResponse<>(true, response));
     }
 
@@ -147,8 +154,8 @@ public class CarController {
     @GetMapping("/admin")
     @RolesAllowed({RoleEnum.RoleType.ADMINISTRATOR})
     public ResponseEntity<?> getCarsAdmin(@RequestParam(defaultValue = "1") int page,
-                                    @RequestParam(defaultValue = "10") int size
-                                    ) {
+                                          @RequestParam(defaultValue = "10") int size
+    ) {
         Page<Car> cars = carService.getAllCars(page, size);
         if (cars.isEmpty()) {
             return new ResponseEntity(new ApiError("System don't have any car", ""), HttpStatus.BAD_REQUEST);
@@ -160,6 +167,7 @@ public class CarController {
                 PagingPayload.builder().data(carList).count((int) cars.getTotalElements()).build();
         return ResponseEntity.ok(new ApiResponse<>(true, pagingPayload));
     }
+
     @PutMapping("/status/{id}")
     @RolesAllowed({RoleEnum.RoleType.USER, RoleEnum.RoleType.ADMINISTRATOR})
     public ResponseEntity<?> updateStatus(@PathVariable() int id, @Valid @RequestParam CarEnum status) {
