@@ -42,7 +42,7 @@ public class CarPayload {
         @NotNull
         private double price;
         private LocalDateTime createdDate;
-
+        private String location;
         private CarEnum status;
         private List<ImagePayload.ResponseCreateImage> images;
     }
@@ -74,6 +74,7 @@ public class CarPayload {
         @NotNull
         private double price;
         private CarEnum status;
+        private String location;
     }
 
 }

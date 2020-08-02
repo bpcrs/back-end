@@ -46,7 +46,7 @@ public class HFHelper {
         return hfcaClient;
     }
 
-    public void registerUser(String username) throws Exception {
+    public boolean registerUser(String username) throws Exception {
         HFCAClient caClient = getCAClient();
         // Create a wallet for managing identities
         Wallet wallet = Wallets.newFileSystemWallet(Paths.get("wallet"));
@@ -55,13 +55,14 @@ public class HFHelper {
         boolean userExists = wallet.get(username) != null;
         if (userExists) {
             System.out.println("An identity for the user \"" + username + "\" already exists in the wallet");
-            return;
+            return false;
         }
 
         userExists = wallet.get(ADMIN_USERNAME) != null;
         if (!userExists) {
             System.out.println("\"" + ADMIN_USERNAME + "\" needs to be enrolled and added to the wallet first");
-            return;
+
+            return false;
         }
 
         HFUser adminUser = new HFUser("wallet", ADMIN_USERNAME);
@@ -76,6 +77,7 @@ public class HFHelper {
         Identity user = Identities.newX509Identity("Org1MSP", enrollment);
         wallet.put(username, user);
         System.out.println("Successfully registered user \"" + username + "\" and imported it into the wallet");
+        return true;
     }
 
     public static UserCertificate loadFromFile(String username, String certFolder) throws Exception {

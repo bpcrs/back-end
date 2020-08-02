@@ -1,5 +1,5 @@
 package fpt.capstone.bpcrs.constant;
 
 public enum  CarEnum {
-    AVAILABLE, RENTING, BOOKED, UNAVAILABLE
+    AVAILABLE, RENTING, REQUEST, BOOKED, UNAVAILABLE, REGISTER
 }

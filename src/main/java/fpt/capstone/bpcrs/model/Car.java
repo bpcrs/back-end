@@ -23,7 +23,7 @@ import java.util.List;
         value = {"createdDate", "lastModifiedDate"},
         allowGetters = true)
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "ordinal")
-public class  Car extends Auditing {
+public class Car extends Auditing {
 
     @Column
     @NotNull
@@ -53,6 +53,9 @@ public class  Car extends Auditing {
     @Column
     @NotNull
     private double price;
+
+    @Column
+    private String location;
 
     @Column
     @NotNull

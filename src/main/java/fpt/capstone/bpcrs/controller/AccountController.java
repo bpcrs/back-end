@@ -11,6 +11,7 @@ import fpt.capstone.bpcrs.payload.AccountPayload.AccountResponse;
 import fpt.capstone.bpcrs.payload.ApiError;
 import fpt.capstone.bpcrs.payload.ApiResponse;
 import fpt.capstone.bpcrs.service.AccountService;
+import fpt.capstone.bpcrs.service.BlockchainService;
 import fpt.capstone.bpcrs.util.ObjectMapperUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +42,9 @@ public class AccountController {
 
     @Autowired
     private GoogleIdTokenVerifier googleIdTokenVerifier;
+
+    @Autowired
+    private BlockchainService blockchainService;
 
 
     @GetMapping
@@ -91,6 +95,10 @@ public class AccountController {
             String imageUrl = (String) payload.get("picture");
             Account account = accountService.getAccountByEmail(email);
             if (account == null) {
+                boolean isSuccess = blockchainService.registerUser(email);
+                if (!isSuccess){
+                    return ResponseEntity.badRequest().body(new ApiResponse<>(false, "Can't register user on blockchain", null));
+                }
                 account = accountService.setGoogleAccount(email, name, imageUrl);
             } else if (!account.isActive()){
                 return ResponseEntity.badRequest().body(new ApiResponse<>(false, "Your account has been disabled.", null));
@@ -105,8 +113,8 @@ public class AccountController {
                             .build());
             return ResponseEntity.ok(
                     new ApiResponse<>(true, "Logged successfully", jwt));
-        } catch (BadRequestException | GeneralSecurityException | IOException ex) {
-            return ResponseEntity.badRequest().body(new ApiResponse<>(false, ex.getMessage(), null));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(new ApiResponse<>(false, e.getMessage(), null));
         }
     }
 

@@ -83,7 +83,8 @@ public class CarController {
         newCar.setBrand(brand);
         newCar.setModel(model);
         newCar.setOwner(accountService.getCurrentUser());
-        newCar.setStatus(CarEnum.UNAVAILABLE);
+        newCar.setStatus(CarEnum.REGISTER);
+        newCar.setLocation("Ho Chi Minh City");
         //check car VIN API (limit 25/month)
 //        try {
 //            if (!carService.checkCarVin(newCar)) {
@@ -172,7 +173,6 @@ public class CarController {
         Car updateCar = carService.updateCarStatus(car, status);
         CarPayload.ResponseGetCar response = ObjectMapperUtils.map(updateCar, CarPayload.ResponseGetCar.class);
         return ResponseEntity.ok(new ApiResponse<>(true, response));
-
     }
 
 //    @GetMapping("/available")

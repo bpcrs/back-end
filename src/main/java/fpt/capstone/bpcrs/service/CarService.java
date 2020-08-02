@@ -22,7 +22,6 @@ public interface CarService {
 
     Page<Car> getAllCarsByOwnerId(int ownerId, int page, int size);
 
-
     Page<Car> getAllCars(int page, int size);
 
     Car updateCarStatus(Car car, CarEnum status);
