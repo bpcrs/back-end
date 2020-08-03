@@ -223,6 +223,5 @@ public class BookingController {
                 PagingPayload.builder().data(responses).count((int) bookings.getTotalElements()).build();
         return ResponseEntity.ok(new ApiResponse<>(true, pagingPayload));
     }
-
-
+    
 }

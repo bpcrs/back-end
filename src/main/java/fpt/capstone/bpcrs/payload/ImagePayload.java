@@ -22,7 +22,28 @@ public class ImagePayload {
         @NotNull
         private List<String> link;
 
-//        private ImageTypeEnum type;
+    }
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class RequestImage{
+//        @Min(1)
+//        private int carId;
+
+        @NotNull
+        private String link;
+
+        @NotNull
+        private ImageTypeEnum type;
+    }
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class CreateImage{
+        @NotNull
+        private List<RequestImage> images;
     }
 
     @Data
