@@ -72,8 +72,6 @@ public class CarPayload {
         private double price;
         private CarEnum status;
         private String location;
-        private String ownerEmail;
-        private String message;
     }
 
 }

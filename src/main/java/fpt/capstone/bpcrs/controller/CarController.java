@@ -143,10 +143,6 @@ public class CarController {
         Car updateCar = (Car) new Car().buildObject(request, true);
         updateCar.setId(id);
         carService.updateCar(updateCar, id).buildObject(response, false);
-        response.setOwnerEmail(car.getOwner().getEmail());
-        if (request.getMessage() != null) {
-            response.setMessage(request.getMessage());
-        }
         return ResponseEntity.ok(new ApiResponse<>(true, response));
     }
 
