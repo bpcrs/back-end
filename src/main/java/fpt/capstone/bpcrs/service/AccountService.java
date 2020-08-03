@@ -20,8 +20,9 @@ public interface AccountService {
 
   Account getAccountById(int id);
 
+  Account updateAccountLicense(Account accountUpdate, int id);
+
   Account updateAccount(int id, String phone);
 
-//  Page<Account> getAllAccountUser(int page, int size);
 
 }

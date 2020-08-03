@@ -45,8 +45,26 @@ public class AccountPayload {
         @NonNull
         private String role;
 
-        private String phoneNumber;
+//        private String phoneNumber;
 
+//        @NonNull
+        private LocalDateTime createdDate;
+
+        private String phone;
+
+        private String identification;
+
+        private String imageLicense;
+//        private String imageUrlLicense1;
+//
+//        private String imageUrlLicense2;
+//
+//        private String imageUrlLicense3;
+//
+//        private String imageUrlLicense4;
+
+        @NonNull
+        private boolean licenseCheck;
     }
 
     @Data
@@ -69,8 +87,63 @@ public class AccountPayload {
         @NonNull
         private boolean active;
 
-        @NonNull
+//        @NonNull
         private LocalDateTime createdDate;
+
+        private String phone;
+
+        private  String imageLicense;
+//        private String identification;
+//
+//        private String imageUrlLicense1;
+//
+//        private String imageUrlLicense2;
+//
+//        private String imageUrlLicense3;
+//
+//        private String imageUrlLicense4;
+
+        @NonNull
+        private boolean licenseCheck;
     }
 
+    @Data
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class AccountAddressUpdate {
+        @NonNull
+        private int id;
+        private String city;
+        private String district;
+        private String ward;
+        private String street;
+    }
+
+    @Data
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class AccountRequestUpdate {
+        @NonNull
+        private int id;
+
+        private String phone;
+
+        private boolean active;
+
+        private String identification;
+
+        private String imageLicense;
+//        private String imageUrlLicense1;
+//
+//        private String imageUrlLicense2;
+//
+//        private String imageUrlLicense3;
+//
+//        private String imageUrlLicense4;
+
+        @NonNull
+        private boolean licenseCheck;
+    }
 }
