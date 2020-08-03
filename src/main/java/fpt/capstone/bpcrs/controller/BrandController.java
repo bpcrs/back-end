@@ -5,7 +5,6 @@ import fpt.capstone.bpcrs.model.Brand;
 import fpt.capstone.bpcrs.payload.ApiResponse;
 import fpt.capstone.bpcrs.payload.BrandPayload;
 import fpt.capstone.bpcrs.service.BrandService;
-import fpt.capstone.bpcrs.service.CarService;
 import fpt.capstone.bpcrs.util.ObjectMapperUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
