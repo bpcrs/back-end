@@ -37,12 +37,35 @@ public class Account extends Auditing {
     @Column(nullable = false)
     private String fullName;
 
-    @Column(length = 15)
-    private String phoneNumber;
+//    @Column(length = 15)
+//    private String phoneNumber;
 
     @ManyToOne(optional = false)
     @ApiModelProperty(hidden = true)
     @JoinColumn(name = "role_id")
     private Role role;
 
+    @Column(columnDefinition = "text")
+    private String phone;
+
+    @Column(columnDefinition = "text")
+    private String identification;
+
+    @Column(columnDefinition = "text")
+    private String imageLicense;
+
+//    @Column(columnDefinition = "text")
+//    private String imageUrlLicense1;
+//
+//    @Column(columnDefinition = "text")
+//    private String imageUrlLicense2;
+//
+//    @Column(columnDefinition = "text")
+//    private String imageUrlLicense3;
+//
+//    @Column(columnDefinition = "text")
+//    private String imageUrlLicense4;
+
+    @Column(columnDefinition = "TINYINT(1) default 0")
+    private boolean licenseCheck;
 }

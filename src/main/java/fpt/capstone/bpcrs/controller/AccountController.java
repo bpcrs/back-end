@@ -125,6 +125,29 @@ public class AccountController {
         return ResponseEntity.ok(new ApiResponse<>(true, response));
     }
 
+@PutMapping("/license/{id}")
+public ResponseEntity<?> updateAccountLicense(
+        @PathVariable("id") int id,
+        @RequestBody AccountPayload.AccountRequestUpdate request) {
+    try {
+        Account account = accountService.getAccountById(id);
+        if(account == null){
+            return new ResponseEntity(new ApiError("account with id=" + id + " not found", ""), HttpStatus.BAD_REQUEST);
+        }else {
+            Account updateAcc = (Account) new Account().buildObject(request, true);
+            updateAcc.setId(id);
+            updateAcc.setActive(true);
+            accountService.updateAccountLicense(updateAcc, id);
+
+            AccountPayload.AccountRequestUpdate response = ObjectMapperUtils.map(updateAcc, AccountPayload.AccountRequestUpdate.class);
+            return ResponseEntity.ok(new ApiResponse<>(true, response));
+        }
+
+    } catch (BadRequestException ex) {
+        return ResponseEntity.badRequest().body(new ApiResponse<>(false, ex.getMessage(), null));
+    }
+  }
+
     @PutMapping("/{id}")
     @RolesAllowed(RoleEnum.RoleType.USER)
     public ResponseEntity<?> updateAccount(@PathVariable int id, @RequestParam String phone) {
