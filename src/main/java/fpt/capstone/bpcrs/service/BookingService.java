@@ -33,4 +33,5 @@ public interface BookingService {
     Page<Booking> getAllBookingRequestsByRenter(int renterId, BookingEnum[] status, int page, int size);
 
     boolean checkStatusBookingBySM (BookingEnum currentStatus, BookingEnum nextStatus);
+
 }

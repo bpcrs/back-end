@@ -94,6 +94,7 @@ public class BookingController {
                 .location(request.getLocation()).destination(request.getDestination())
                 .status(BookingEnum.REQUEST).totalPrice(request.getTotalPrice()).build();
         bookingService.createBooking(booking).buildObject(response, false);
+        carService.updateCarStatus(car, CarEnum.REQUEST);
         return ResponseEntity.ok(new ApiResponse<>(true, response));
     }
 
@@ -222,6 +223,5 @@ public class BookingController {
                 PagingPayload.builder().data(responses).count((int) bookings.getTotalElements()).build();
         return ResponseEntity.ok(new ApiResponse<>(true, pagingPayload));
     }
-
-
+    
 }
