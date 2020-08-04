@@ -22,6 +22,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.security.RolesAllowed;
@@ -56,18 +57,6 @@ public class BookingController {
         return ResponseEntity.ok(new ApiResponse<>(true, "Get list booking successful", responses));
     }
 
-//    @GetMapping("/hiring/{id}")
-//    @RolesAllowed({RoleEnum.RoleType.USER, RoleEnum.RoleType.ADMINISTRATOR})
-//    public ResponseEntity<?> getUserHiringBookingList(@PathVariable("id") int id) {
-//        List<Booking> bookings = bookingService.getUserHiringBookingList(id);
-//        if (bookings.isEmpty()) {
-//            return new ResponseEntity(new ApiResponse<>(false, "Dont have any booking with id " + id), HttpStatus.BAD_REQUEST);
-//        }
-//        List<BookingPayload.ResponseCreateBooking> responseList = ObjectMapperUtils.mapAll(bookings, BookingPayload.ResponseCreateBooking.class);
-//        return ResponseEntity.ok(new ApiResponse<>(true, "Get list booking successful", responseList));
-//
-//    }
-
     @GetMapping("/{id}")
     @RolesAllowed({RoleEnum.RoleType.USER, RoleEnum.RoleType.ADMINISTRATOR})
     public ResponseEntity<?> getBooking(@PathVariable() int id) {
@@ -86,6 +75,10 @@ public class BookingController {
     public ResponseEntity<?> createBooking(@Valid @RequestBody BookingPayload.RequestCreateBooking request) {
         Car car = carService.getCarById(request.getCarId());
         Account renter = accountService.getAccountById(request.getRenterId());
+
+        if (renter.getPhone() == null || renter.getImageLicense() == null || renter.getIdentification() == null) {
+            return ResponseEntity.badRequest().body(new ApiResponse<>(false, "User is not eligible to book", HttpStatus.BAD_REQUEST));
+        }
 
         BookingPayload.ResponseCreateBooking response = new BookingPayload.ResponseCreateBooking();
 
@@ -124,7 +117,59 @@ public class BookingController {
         }
     }
 
-//    @PutMapping("/return/{id}")
+    @GetMapping("/car/{id}")
+    @RolesAllowed({RoleEnum.RoleType.USER, RoleEnum.RoleType.ADMINISTRATOR})
+    public ResponseEntity<?> getAllBookingRequestByCar(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @PathVariable() int id,
+            @Valid @RequestParam BookingEnum[] status) {
+        Page<Booking> bookings = bookingService.getAllBookingsRequestByCar(id, status, page, size);
+        List<BookingPayload.ResponseCreateBooking> responses = ObjectMapperUtils.mapAll(bookings.toList(),
+                BookingPayload.ResponseCreateBooking.class);
+        PagingPayload pagingPayload =
+                PagingPayload.builder().data(responses).count((int) bookings.getTotalElements()).build();
+        return ResponseEntity.ok(new ApiResponse<>(true, pagingPayload));
+    }
+
+    @GetMapping("/user/{id}")
+    @RolesAllowed({RoleEnum.RoleType.USER, RoleEnum.RoleType.ADMINISTRATOR})
+    public ResponseEntity<?> getAllBookingRequestsByUser(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @PathVariable() int id,
+            @Valid @RequestParam BookingEnum[] status,
+            @RequestParam boolean isRenter) {
+        Page<Booking> bookings;
+        if (isRenter) {
+            bookings = bookingService.getAllBookingRequestsByRenter(id, status, page, size);
+        } else {
+            bookings = bookingService.getAllBookingRequestsByOwner(id, status, page, size);
+        }
+        if (bookings == null) {
+            String role = isRenter ? "renter" : "owner";
+            return ResponseEntity.badRequest().body(new ApiResponse<>(false, "Dont have any bookings with user id = " + id + " with role = " + role, HttpStatus.BAD_REQUEST));
+        }
+        List<BookingPayload.ResponseCreateBooking> responses = ObjectMapperUtils.mapAll(bookings.toList(),
+                BookingPayload.ResponseCreateBooking.class);
+        PagingPayload pagingPayload =
+                PagingPayload.builder().data(responses).count((int) bookings.getTotalElements()).build();
+        return ResponseEntity.ok(new ApiResponse<>(true, pagingPayload));
+    }
+
+    //    @GetMapping("/hiring/{id}")
+//    @RolesAllowed({RoleEnum.RoleType.USER, RoleEnum.RoleType.ADMINISTRATOR})
+//    public ResponseEntity<?> getUserHiringBookingList(@PathVariable("id") int id) {
+//        List<Booking> bookings = bookingService.getUserHiringBookingList(id);
+//        if (bookings.isEmpty()) {
+//            return new ResponseEntity(new ApiResponse<>(false, "Dont have any booking with id " + id), HttpStatus.BAD_REQUEST);
+//        }
+//        List<BookingPayload.ResponseCreateBooking> responseList = ObjectMapperUtils.mapAll(bookings, BookingPayload.ResponseCreateBooking.class);
+//        return ResponseEntity.ok(new ApiResponse<>(true, "Get list booking successful", responseList));
+//
+//    }
+
+    //    @PutMapping("/return/{id}")
 //    @RolesAllowed(RoleEnum.RoleType.USER)
 //    public ResponseEntity<?> returnBookingCar(@PathVariable("id") int id) {
 //        try {
@@ -183,45 +228,4 @@ public class BookingController {
 //            return ResponseEntity.badRequest().body(new ApiResponse<>(false, ex.getMessage(), null));
 //        }
 //    }
-
-    @GetMapping("/car/{id}")
-    @RolesAllowed({RoleEnum.RoleType.USER, RoleEnum.RoleType.ADMINISTRATOR})
-    public ResponseEntity<?> getAllBookingRequestByCar(
-            @RequestParam(defaultValue = "1") int page,
-            @RequestParam(defaultValue = "10") int size,
-            @PathVariable() int id,
-            @Valid @RequestParam BookingEnum[] status) {
-        Page<Booking> bookings = bookingService.getAllBookingsRequestByCar(id, status, page, size);
-        List<BookingPayload.ResponseCreateBooking> responses = ObjectMapperUtils.mapAll(bookings.toList(),
-                BookingPayload.ResponseCreateBooking.class);
-        PagingPayload pagingPayload =
-                PagingPayload.builder().data(responses).count((int) bookings.getTotalElements()).build();
-        return ResponseEntity.ok(new ApiResponse<>(true, pagingPayload));
-    }
-
-    @GetMapping("/user/{id}")
-    @RolesAllowed({RoleEnum.RoleType.USER, RoleEnum.RoleType.ADMINISTRATOR})
-    public ResponseEntity<?> getAllBookingRequestsByUser(
-            @RequestParam(defaultValue = "1") int page,
-            @RequestParam(defaultValue = "10") int size,
-            @PathVariable() int id,
-            @Valid @RequestParam BookingEnum[] status,
-            @RequestParam boolean isRenter) {
-        Page<Booking> bookings;
-        if (isRenter) {
-            bookings = bookingService.getAllBookingRequestsByRenter(id, status, page, size);
-        } else {
-            bookings = bookingService.getAllBookingRequestsByOwner(id, status, page, size);
-        }
-        if (bookings == null) {
-            String role = isRenter ? "renter" : "owner";
-            return ResponseEntity.badRequest().body(new ApiResponse<>(false, "Dont have any bookings with user id = " + id + " with role = " + role, HttpStatus.BAD_REQUEST));
-        }
-        List<BookingPayload.ResponseCreateBooking> responses = ObjectMapperUtils.mapAll(bookings.toList(),
-                BookingPayload.ResponseCreateBooking.class);
-        PagingPayload pagingPayload =
-                PagingPayload.builder().data(responses).count((int) bookings.getTotalElements()).build();
-        return ResponseEntity.ok(new ApiResponse<>(true, pagingPayload));
-    }
-    
 }
