@@ -14,10 +14,14 @@ public class BlockchainServiceImpl implements BlockchainService {
 
     @Override
     public void submitContract() {
-
-        DappPayload.ResultChaincode resultChaincode = hfHelper.sendRequest(HFHelper.RequestType.QUERY, "admin",
-                "mychannel", "agreements","queryAllCars","");
-        System.out.println(resultChaincode.getData());
+        try {
+            hfHelper.enrollAdmin();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+//        DappPayload.ResultChaincode resultChaincode = hfHelper.sendRequest(HFHelper.RequestType.QUERY, "admin",
+//                "mychannel", "agreements","queryContract","123");
+//        System.out.println(resultChaincode.getData());
 //        DappPayload.ResultChaincode resultChaincode = hfHelper.sendRequest(HFHelper.RequestType.INVOKE, "admin",
 //                "mychannel", "agreements","createCar","CAR20", "Honda", "Accord", "Red", "HungPT");
 //        System.out.println(resultChaincode.getData());

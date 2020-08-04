@@ -1,22 +1,29 @@
 package fpt.capstone.bpcrs.hepler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import fpt.capstone.bpcrs.model.HFUser;
 import fpt.capstone.bpcrs.model.UserCertificate;
 import fpt.capstone.bpcrs.payload.DappPayload;
 import org.hyperledger.fabric.gateway.*;
+import org.hyperledger.fabric.gateway.Identity;
 import org.hyperledger.fabric.sdk.Enrollment;
 import org.hyperledger.fabric.sdk.security.CryptoSuite;
 import org.hyperledger.fabric.sdk.security.CryptoSuiteFactory;
+import org.hyperledger.fabric_ca.sdk.EnrollmentRequest;
 import org.hyperledger.fabric_ca.sdk.HFCAClient;
 import org.hyperledger.fabric_ca.sdk.RegistrationRequest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.security.*;
+import java.security.cert.CertificateFactory;
+import java.security.cert.X509Certificate;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.PKCS8EncodedKeySpec;
+import java.util.Base64;
 import java.util.Properties;
 
 @Component
@@ -38,12 +45,34 @@ public class HFHelper {
     // Create a CA client for interacting with the CA.
     public HFCAClient getCAClient() throws Exception {
         Properties props = new Properties();
-        props.put("pemFile", PEM_FILE_PATH);
+        props.put("pemFile", "crypto-config/peerOrganizations/org1.example.com/ca/ca.org1.example.com-cert.pem");
         props.put("allowAllHostNames", true);
-        HFCAClient hfcaClient = HFCAClient.createNewInstance(CA_URL, props);
+        HFCAClient hfcaClient = HFCAClient.createNewInstance("https://localhost:7054", props);
         CryptoSuite cryptoSuite = CryptoSuiteFactory.getDefault().getCryptoSuite();
         hfcaClient.setCryptoSuite(cryptoSuite);
         return hfcaClient;
+    }
+
+    public void enrollAdmin() throws Exception {
+        HFCAClient caClient = getCAClient();
+        // Create a wallet for managing identities
+        Wallet wallet = Wallets.newFileSystemWallet(Paths.get("wallet"));
+
+        // Check to see if we've already enrolled the admin user.
+        boolean adminExists = wallet.get("admin") != null;
+        if (adminExists) {
+            System.out.println("An identity for the admin user \"admin\" already exists in the wallet");
+            return;
+        }
+
+        // Enroll the admin user, and import the new identity into the wallet.
+        final EnrollmentRequest enrollmentRequestTLS = new EnrollmentRequest();
+        enrollmentRequestTLS.addHost("localhost1");
+        enrollmentRequestTLS.setProfile("tls");
+        Enrollment enrollment = caClient.enroll("admin", "adminpw", enrollmentRequestTLS);
+        X509Identity user = Identities.newX509Identity("Org1MSP", enrollment);
+        wallet.put("admin", user);
+        System.out.println("Successfully enrolled user \"admin\" and imported it into the wallet");
     }
 
     public boolean registerUser(String username) throws Exception {
@@ -139,4 +168,15 @@ public class HFHelper {
         }
         return resultChaincode;
     }
+
+//    public PrivateKey getPrivateKey(String privateKey) throws NoSuchAlgorithmException, InvalidKeySpecException {
+//        privateKey = privateKey.replace("-----BEGIN PRIVATE KEY-----","").replace("-----END PRIVATE KEY-----","").replaceAll("\n","").replaceAll("\r","");
+//        byte[] keyData = Base64.getDecoder().decode(privateKey);
+//        PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(keyData);
+//        KeyFactory kf = KeyFactory.getInstance("EC");
+//        return kf.generatePrivate(keySpec);
+//    }
+
+
+
 }

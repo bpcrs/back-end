@@ -22,13 +22,11 @@ public class ContractController {
     @Autowired
     private BlockchainService blockchainService;
 
-//    @GetMapping()
-//    public ResponseEntity<?> getContract() {
-////        blockchainService.submitContract();
-//        GoogleMapsHelper googleMapsHelper = new GoogleMapsHelper();
-//        googleMapsHelper.distanceBetweenTwoLocation("Trường Đại học FPT, Lô E2a-7, Đường D1, Khu Công Nghệ Cao, Long Thạnh Mỹ, Quận 9, Thành phố Hồ Chí Minh","Căn hộ Sky 9, Liên Phường, Bình Trưng Đông, Quận 9, Thành phố Hồ Chí Minh");
-//        return new ResponseEntity(new ApiResponse<>(true,""), HttpStatus.BAD_REQUEST);
-//    }
+    @GetMapping()
+    public ResponseEntity<?> getContract() {
+        blockchainService.submitContract();
+        return new ResponseEntity(new ApiResponse<>(true,""), HttpStatus.BAD_REQUEST);
+    }
 
 
 }

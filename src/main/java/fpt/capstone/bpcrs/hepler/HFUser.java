@@ -1,6 +1,7 @@
-package fpt.capstone.bpcrs.model;
+package fpt.capstone.bpcrs.hepler;
 
 import fpt.capstone.bpcrs.hepler.HFHelper;
+import fpt.capstone.bpcrs.model.UserCertificate;
 import org.hyperledger.fabric.sdk.Enrollment;
 import org.hyperledger.fabric.sdk.User;
 

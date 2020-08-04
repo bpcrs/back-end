@@ -15,7 +15,9 @@ import org.springframework.context.annotation.Bean;
 
 @SpringBootApplication
 public class BpcrsApplication extends SpringBootServletInitializer {
-
+  static {
+    System.setProperty("org.hyperledger.fabric.sdk.service_discovery.as_localhost", "false");
+  }
   public static void main(String[] args) {
     SpringApplication.run(BpcrsApplication.class, args);
   }

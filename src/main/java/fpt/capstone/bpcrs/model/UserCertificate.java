@@ -1,5 +1,7 @@
 package fpt.capstone.bpcrs.model;
 
+import fpt.capstone.bpcrs.hepler.Credentials;
+
 import java.io.Serializable;
 
 public class UserCertificate implements Serializable {
