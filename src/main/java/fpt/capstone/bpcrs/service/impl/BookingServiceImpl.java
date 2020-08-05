@@ -110,7 +110,7 @@ public class BookingServiceImpl implements BookingService {
     public boolean checkStatusBookingBySM(BookingEnum currentStatus, BookingEnum nextStatus) {
         switch (currentStatus) {
             case REQUEST:
-                return nextStatus == BookingEnum.PENDING || nextStatus == BookingEnum.DENY;
+                return nextStatus == BookingEnum.PENDING || nextStatus == BookingEnum.DENY || nextStatus == BookingEnum.CANCEL;
             case PENDING:
                 return  nextStatus == BookingEnum.CANCEL || nextStatus == BookingEnum.OWNER_ACCEPTED;
             case OWNER_ACCEPTED:
@@ -119,6 +119,12 @@ public class BookingServiceImpl implements BookingService {
                 return nextStatus == BookingEnum.CANCEL || nextStatus == BookingEnum.DONE;
         }
         return false;
+    }
+
+    @Override
+    public List<Booking> getAllBookingsByFromDate(int bookingId) {
+        Booking booking = bookingRepository.findById(bookingId).orElse(null);
+        return null;
     }
 
 

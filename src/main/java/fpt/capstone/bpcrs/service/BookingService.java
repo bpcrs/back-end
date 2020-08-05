@@ -34,4 +34,6 @@ public interface BookingService {
 
     boolean checkStatusBookingBySM (BookingEnum currentStatus, BookingEnum nextStatus);
 
+    List<Booking> getAllBookingsByFromDate(int bookingId);
+
 }
