@@ -121,7 +121,7 @@ public class BookingController {
                     return ResponseEntity.badRequest().body(new ApiResponse<>(false, "Can't store in blockchain network", null));
                 }
             }
-//            booking = bookingService.updateBookingStatus(booking, status);
+            booking = bookingService.updateBookingStatus(booking, status);
             BookingPayload.ResponseCreateBooking response = ObjectMapperUtils.map(booking, BookingPayload.ResponseCreateBooking.class);
             return ResponseEntity.ok(new ApiResponse<>(true, "Booking status was updated", response));
         } catch (BadRequestException | JSONException ex) {
