@@ -90,7 +90,7 @@ public class BookingController {
         BookingPayload.ResponseCreateBooking response = new BookingPayload.ResponseCreateBooking();
 
         Booking booking = Booking.builder().car(car).renter(renter)
-                .from_date(request.getFromDate()).to_date(request.getToDate())
+                .fromDate(request.getFromDate()).toDate(request.getToDate())
                 .location(request.getLocation()).destination(request.getDestination())
                 .status(BookingEnum.REQUEST).totalPrice(request.getTotalPrice()).build();
         carService.updateCarStatus(car, CarEnum.BOOKED);

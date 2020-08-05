@@ -2,6 +2,7 @@ package fpt.capstone.bpcrs.service.impl;
 
 import fpt.capstone.bpcrs.hepler.HFHelper;
 import fpt.capstone.bpcrs.hepler.RestTemplateHelper;
+import fpt.capstone.bpcrs.model.Booking;
 import fpt.capstone.bpcrs.payload.DappPayload;
 import fpt.capstone.bpcrs.service.BlockchainService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,16 +23,20 @@ public class BlockchainServiceImpl implements BlockchainService {
     private RestTemplateHelper restTemplateHelper;
 
     @Override
-    public void submitContract(int bookingId) {
-//        try {
-//            hfHelper.enrollAdmin();
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//        DappPayload.ResultChaincode resultChaincode = hfHelper.sendRequest(HFHelper.RequestType.INVOKE, "admin",
-//                "mychannel", "agreements","submitContract",
-//                "1","1","1","2",new Date().toString(),new Date().toString(),"HCM","VT","1000","5000","[]");
-//        System.out.println(resultChaincode.getData());
+    public boolean submitContract(Booking booking) throws JSONException {
+        JSONObject requestBody = new JSONObject();
+        requestBody.put("carId", booking.getCar().getId());
+        requestBody.put("renterId", booking.getRenter().getId());
+        requestBody.put("ownerId", booking.getCar().getId());
+        requestBody.put("fromDate", booking.getFromDate());
+        requestBody.put("toDate", booking.getToDate());
+        requestBody.put("carPrice",booking.getCar().getPrice());
+        requestBody.put("totalPrice",booking.getTotalPrice());
+        requestBody.put("location",booking.getLocation());
+        requestBody.put("destination",booking.getDestination());
+        requestBody.put("criteria","[]");
+        DappPayload.ResultChaincode resultChaincode = restTemplateHelper.httpPost("submit-contract",requestBody);
+        return resultChaincode.isSuccess();
     }
 
     @Override

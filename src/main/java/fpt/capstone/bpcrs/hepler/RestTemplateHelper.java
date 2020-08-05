@@ -19,7 +19,6 @@ public class RestTemplateHelper {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<String> entity = new HttpEntity<String>(requestBody.toString(), headers);
-//        HttpEntity request = new HttpEntity<>(new DappPayload.RegisterUser());
         DappPayload.ResultChaincode resultChaincode = restTemplate.postForObject("http://localhost:" + DAPP_PORT +
                 "/" + endpoint, entity, DappPayload.ResultChaincode.class);
         return resultChaincode;
