@@ -21,8 +21,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.security.RolesAllowed;
@@ -83,7 +81,7 @@ public class BookingController {
         BookingPayload.ResponseCreateBooking response = new BookingPayload.ResponseCreateBooking();
 
         Booking booking = Booking.builder().car(car).renter(renter)
-                .from_date(request.getFromDate()).to_date(request.getToDate())
+                .fromDate(request.getFromDate()).toDate(request.getToDate())
                 .location(request.getLocation()).destination(request.getDestination())
                 .status(BookingEnum.REQUEST).totalPrice(request.getTotalPrice()).build();
         bookingService.createBooking(booking).buildObject(response, false);
@@ -108,6 +106,9 @@ public class BookingController {
             }
             if (!bookingService.checkStatusBookingBySM(booking.getStatus(), status)) {
                 return ResponseEntity.badRequest().body(new ApiResponse<>(false, "Invalid status request", null));
+            }
+            if (booking.getStatus() == BookingEnum.REQUEST && status == BookingEnum.PENDING){
+                bookingService.updateCancelBookingDuplicateDate(booking.getFromDate(),booking.getCar().getId());
             }
             booking = bookingService.updateBookingStatus(booking, status);
             BookingPayload.ResponseCreateBooking response = ObjectMapperUtils.map(booking, BookingPayload.ResponseCreateBooking.class);
