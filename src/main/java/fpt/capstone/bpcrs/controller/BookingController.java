@@ -11,13 +11,11 @@ import fpt.capstone.bpcrs.model.Car;
 import fpt.capstone.bpcrs.payload.ApiResponse;
 import fpt.capstone.bpcrs.payload.BookingPayload;
 import fpt.capstone.bpcrs.payload.PagingPayload;
-import fpt.capstone.bpcrs.service.AccountService;
-import fpt.capstone.bpcrs.service.AgreementService;
-import fpt.capstone.bpcrs.service.BookingService;
-import fpt.capstone.bpcrs.service.CarService;
+import fpt.capstone.bpcrs.service.*;
 import fpt.capstone.bpcrs.util.ObjectMapperUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -43,6 +41,9 @@ public class BookingController {
 
     @Autowired
     private AgreementService agreementService;
+
+    @Autowired
+    private BlockchainService blockchainService;
 
     @GetMapping("/renting/{id}")
     @RolesAllowed({RoleEnum.RoleType.USER, RoleEnum.RoleType.ADMINISTRATOR})
@@ -100,20 +101,30 @@ public class BookingController {
             if (booking.getCar().getOwner().getId().intValue() != accountService.getCurrentUser().getId().intValue() && booking.getRenter().getId().intValue() != accountService.getCurrentUser().getId().intValue()) {
                 return ResponseEntity.badRequest().body(new ApiResponse<>(false, "User is not allowed", null));
             }
-            boolean isApproveAllAgreemet = booking.getAgreements().stream().allMatch(Agreement::isApproved);
-            if (!isApproveAllAgreemet){
-                return ResponseEntity.badRequest().body(new ApiResponse<>(false, "All agreement must be approved", null));
-            }
             if (!bookingService.checkStatusBookingBySM(booking.getStatus(), status)) {
                 return ResponseEntity.badRequest().body(new ApiResponse<>(false, "Invalid status request", null));
             }
+            // if duplicate ngày booking thì sẽ cancel những request khônng được approve
             if (booking.getStatus() == BookingEnum.REQUEST && status == BookingEnum.PENDING){
                 bookingService.updateCancelBookingDuplicateDate(booking.getFromDate(),booking.getCar().getId());
             }
-            booking = bookingService.updateBookingStatus(booking, status);
+            //Save to BLC
+            if (status == BookingEnum.CONFIRM){
+                //check agreement before => CONFIRM
+                boolean isApproveAllAgreemet = booking.getAgreements().stream().allMatch(Agreement::isApproved);
+                if (!isApproveAllAgreemet){
+                    return ResponseEntity.badRequest().body(new ApiResponse<>(false, "All agreement must be approved", null));
+                }
+                boolean isSuccess = blockchainService.submitContract(booking);
+
+                if (!isSuccess){
+                    return ResponseEntity.badRequest().body(new ApiResponse<>(false, "Can't store in blockchain network", null));
+                }
+            }
+//            booking = bookingService.updateBookingStatus(booking, status);
             BookingPayload.ResponseCreateBooking response = ObjectMapperUtils.map(booking, BookingPayload.ResponseCreateBooking.class);
             return ResponseEntity.ok(new ApiResponse<>(true, "Booking status was updated", response));
-        } catch (BadRequestException ex) {
+        } catch (BadRequestException | JSONException ex) {
             return ResponseEntity.badRequest().body(new ApiResponse<>(false, ex.getMessage(), null));
         }
     }

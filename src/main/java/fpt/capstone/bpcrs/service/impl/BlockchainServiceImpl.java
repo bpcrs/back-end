@@ -25,9 +25,10 @@ public class BlockchainServiceImpl implements BlockchainService {
     @Override
     public boolean submitContract(Booking booking) throws JSONException {
         JSONObject requestBody = new JSONObject();
+        requestBody.put("bookingId", booking.getId());
         requestBody.put("carId", booking.getCar().getId());
         requestBody.put("renterId", booking.getRenter().getId());
-        requestBody.put("ownerId", booking.getCar().getId());
+        requestBody.put("ownerId", booking.getCar().getOwner().getId());
         requestBody.put("fromDate", booking.getFromDate());
         requestBody.put("toDate", booking.getToDate());
         requestBody.put("carPrice",booking.getCar().getPrice());
@@ -36,6 +37,7 @@ public class BlockchainServiceImpl implements BlockchainService {
         requestBody.put("destination",booking.getDestination());
         requestBody.put("criteria","[]");
         DappPayload.ResultChaincode resultChaincode = restTemplateHelper.httpPost("submit-contract",requestBody);
+        System.out.println(resultChaincode.getData());
         return resultChaincode.isSuccess();
     }
 
