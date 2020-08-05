@@ -1,6 +1,5 @@
 package fpt.capstone.bpcrs.service.impl;
 
-import fpt.capstone.bpcrs.hepler.HFHelper;
 import fpt.capstone.bpcrs.hepler.RestTemplateHelper;
 import fpt.capstone.bpcrs.model.Booking;
 import fpt.capstone.bpcrs.payload.DappPayload;
@@ -8,12 +7,7 @@ import fpt.capstone.bpcrs.service.BlockchainService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
-
-import java.util.Date;
 
 @Service
 public class BlockchainServiceImpl implements BlockchainService {
