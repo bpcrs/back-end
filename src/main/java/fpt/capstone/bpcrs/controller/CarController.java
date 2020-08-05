@@ -164,7 +164,7 @@ public class CarController {
                                     ) {
         Page<Car> cars = carService.getAllCars(page, size);
         if (cars.isEmpty()) {
-            return new ResponseEntity(new ApiError("System don't have any car", ""), HttpStatus.BAD_REQUEST);
+            return ResponseEntity.ok(new ApiResponse<>(false, ""));
         }
         List<CarPayload.ResponseGetCar> carList = ObjectMapperUtils.mapAll(cars.toList(),
                 CarPayload.ResponseGetCar.class);

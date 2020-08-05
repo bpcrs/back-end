@@ -5,6 +5,7 @@ import fpt.capstone.bpcrs.model.Car;
 import fpt.capstone.bpcrs.model.Review;
 import fpt.capstone.bpcrs.payload.ApiError;
 import fpt.capstone.bpcrs.payload.ApiResponse;
+import fpt.capstone.bpcrs.payload.PagingPayload;
 import fpt.capstone.bpcrs.payload.ReviewPayload;
 import fpt.capstone.bpcrs.service.AccountService;
 import fpt.capstone.bpcrs.service.CarService;
@@ -12,6 +13,7 @@ import fpt.capstone.bpcrs.service.ReviewService;
 import fpt.capstone.bpcrs.util.ObjectMapperUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -35,9 +37,22 @@ public class ReviewController {
     public ResponseEntity<?> getReviews(@RequestParam(defaultValue = "1") int page,
                                         @RequestParam(defaultValue = "10") int size,
                                         @RequestParam int carId) {
-        List<Review> reviews = reviewService.getAllReviewPaging(page, size, carId);
-        List<ReviewPayload.ResponseCreateReview> reviewList = ObjectMapperUtils.mapAll(reviews,ReviewPayload.ResponseCreateReview.class);
-        return ResponseEntity.ok(new ApiResponse<>(true, reviewList));
+//        List<Review> reviews = reviewService.getAllReviewPaging(page, size, carId);
+//        List<ReviewPayload.ResponseCreateReview> reviewList = ObjectMapperUtils.mapAll(reviews,ReviewPayload.ResponseCreateReview.class);
+//        return ResponseEntity.ok(new ApiResponse<>(true, reviewList));
+        Page<Review> reviews = reviewService.getAllReviewPaging(page, size, carId);
+        if (reviews.isEmpty()) {
+            return new ResponseEntity(new ApiError("System don't have any review", ""), HttpStatus.BAD_REQUEST);
+        }else{
+            List<ReviewPayload.ResponseCreateReview> reviewList
+                    = ObjectMapperUtils.mapAll(reviews.toList(),ReviewPayload.ResponseCreateReview.class);
+
+            PagingPayload pagingPayload =
+                    PagingPayload.builder().data(reviewList).count((int) reviews.getTotalElements()).build();
+
+            return ResponseEntity.ok(new ApiResponse<>(true, pagingPayload));
+        }
+
     }
 
     @PostMapping
