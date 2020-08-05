@@ -21,10 +21,15 @@ public class ReviewServiceImpl implements ReviewService {
     @Autowired
     private ReviewRepository reviewRepository;
 
+//    @Override
+//    public List<Review> getAllReviewPaging(int page, int size, int carId) {
+//        Page<Review> reviews = reviewRepository.findAllByCar_Id(carId, new Paging(page, size, Sort.unsorted()));
+//        return reviews.get().collect(Collectors.toList());
+//    }
     @Override
-    public List<Review> getAllReviewPaging(int page, int size, int carId) {
+    public Page<Review> getAllReviewPaging(int page, int size, int carId) {
         Page<Review> reviews = reviewRepository.findAllByCar_Id(carId, new Paging(page, size, Sort.unsorted()));
-        return reviews.get().collect(Collectors.toList());
+        return reviews;
     }
 
     @Override

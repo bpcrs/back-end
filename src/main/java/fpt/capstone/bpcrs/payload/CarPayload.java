@@ -24,8 +24,6 @@ public class CarPayload {
         private ModelPayload.ResponseCreateModel model;
         @Min(1)
         private int seat;
-//        @NotNull
-//        private String sound;
         @NotNull
         private String screen;
         @NotNull
@@ -42,9 +40,40 @@ public class CarPayload {
         @NotNull
         private double price;
         private LocalDateTime createdDate;
-
+        private String location;
         private CarEnum status;
         private List<ImagePayload.ResponseCreateImage> images;
+    }
+
+    @Data
+    @NoArgsConstructor
+    public static class ResponseFilterCar{
+        @NotNull
+        private String name;
+        @NotNull
+        private ModelPayload.ResponseCreateModel model;
+        @Min(1)
+        private int seat;
+        @NotNull
+        private String screen;
+        @NotNull
+        private String year;
+        @NotNull
+        private boolean autoDriver;
+        @NotNull
+        private String plateNum;
+        private BrandPayload.ResponseCreateBrand brand;
+        @NotNull
+        private int id;
+        private String VIN;
+        private AccountPayload.AccountResponse owner;
+        @NotNull
+        private double price;
+        private LocalDateTime createdDate;
+        private String location;
+        private CarEnum status;
+        private List<ImagePayload.ResponseCreateImage> images;
+        private String distance;
     }
 
     @Data
@@ -74,6 +103,7 @@ public class CarPayload {
         @NotNull
         private double price;
         private CarEnum status;
+        private String location;
     }
 
 }

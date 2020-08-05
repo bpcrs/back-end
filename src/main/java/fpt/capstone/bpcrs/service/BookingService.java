@@ -5,6 +5,7 @@ import fpt.capstone.bpcrs.model.Booking;
 import fpt.capstone.bpcrs.payload.BookingPayload;
 import org.springframework.data.domain.Page;
 
+import java.util.Date;
 import java.util.List;
 
 public interface BookingService {
@@ -33,4 +34,6 @@ public interface BookingService {
     Page<Booking> getAllBookingRequestsByRenter(int renterId, BookingEnum[] status, int page, int size);
 
     boolean checkStatusBookingBySM (BookingEnum currentStatus, BookingEnum nextStatus);
+
+    void updateCancelBookingDuplicateDate(Date date, int carId);
 }

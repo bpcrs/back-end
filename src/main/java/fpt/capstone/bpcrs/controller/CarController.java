@@ -3,6 +3,8 @@ package fpt.capstone.bpcrs.controller;
 import fpt.capstone.bpcrs.constant.CarEnum;
 import fpt.capstone.bpcrs.constant.ImageTypeEnum;
 import fpt.capstone.bpcrs.constant.RoleEnum;
+import fpt.capstone.bpcrs.exception.BpcrsException;
+import fpt.capstone.bpcrs.hepler.GoogleMapsHelper;
 import fpt.capstone.bpcrs.model.Brand;
 import fpt.capstone.bpcrs.model.Car;
 import fpt.capstone.bpcrs.model.Image;
@@ -38,6 +40,8 @@ public class CarController {
     private AccountService accountService;
     @Autowired
     private ImageService imageService;
+    @Autowired
+    private GoogleMapsHelper googleMapsHelper;
 
     @GetMapping
     public ResponseEntity<?> getCars(@RequestParam(defaultValue = "1") int page,
@@ -46,20 +50,29 @@ public class CarController {
                                      @RequestParam(required = false) Integer[] seat,
                                      @RequestParam(required = false) Double fromPrice,
                                      @RequestParam(required = false) Double toPrice,
-                                     @RequestParam(required = false) Integer[] brand
+                                     @RequestParam(required = false) Integer[] brand,
+                                     @RequestParam(required = false) String locationPickup
 
     ) {
         List<Car> responses = new ArrayList<>();
         Page<Car> cars = carService.getAllCarsPagingByFilters(page, size, models, seat, fromPrice, toPrice, brand, accountService.getCurrentUser().getId());
         for (Car car : cars) {
-            CarPayload.ResponseGetCar response = new CarPayload.ResponseGetCar();
+            CarPayload.ResponseFilterCar response = new CarPayload.ResponseFilterCar();
             List<Image> images = imageService.getAllImage(car.getId(), ImageTypeEnum.CAR);
             car.setImages(images);
+
             car.buildObject(response, false);
             responses.add(car);
         }
-        List<CarPayload.ResponseGetCar> carList = ObjectMapperUtils.mapAll(responses,
-                CarPayload.ResponseGetCar.class);
+        List<CarPayload.ResponseFilterCar> carList = ObjectMapperUtils.mapAll(responses,
+                CarPayload.ResponseFilterCar.class);
+        carList.stream().forEach(car -> {
+            try {
+                car.setDistance(googleMapsHelper.distanceBetweenTwoLocation(locationPickup, car.getLocation()));
+            } catch (BpcrsException e) {
+                log.debug(e.getMessage());
+            }
+        });
         PagingPayload pagingPayload =
                 PagingPayload.builder().data(carList).count((int) cars.getTotalElements()).build();
         return ResponseEntity.ok(new ApiResponse<>(true, pagingPayload));
@@ -83,7 +96,8 @@ public class CarController {
         newCar.setBrand(brand);
         newCar.setModel(model);
         newCar.setOwner(accountService.getCurrentUser());
-        newCar.setStatus(CarEnum.UNAVAILABLE);
+        newCar.setStatus(CarEnum.REGISTER);
+        newCar.setLocation("Ho Chi Minh City");
         //check car VIN API (limit 25/month)
 //        try {
 //            if (!carService.checkCarVin(newCar)) {
@@ -150,7 +164,7 @@ public class CarController {
                                     ) {
         Page<Car> cars = carService.getAllCars(page, size);
         if (cars.isEmpty()) {
-            return new ResponseEntity(new ApiError("System don't have any car", ""), HttpStatus.BAD_REQUEST);
+            return ResponseEntity.ok(new ApiResponse<>(false, ""));
         }
         List<CarPayload.ResponseGetCar> carList = ObjectMapperUtils.mapAll(cars.toList(),
                 CarPayload.ResponseGetCar.class);
