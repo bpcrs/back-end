@@ -118,12 +118,6 @@ public class BookingServiceImpl implements BookingService {
         return false;
     }
 
-    @Override
-    public List<Booking> getAllBookingsByFromDate(int bookingId) {
-        Booking booking = bookingRepository.findById(bookingId).orElse(null);
-        return null;
-    }
-
 
     @Override
     public void updateCancelBookingDuplicateDate(Date date, int carId) {
