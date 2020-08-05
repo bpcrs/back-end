@@ -7,9 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.sql.Date;
-import java.time.LocalDateTime;
-import java.time.OffsetDateTime;
+import java.util.Date;
 import java.util.List;
 
 @Repository
@@ -23,5 +21,5 @@ public interface BookingRepository extends JpaRepository<Booking, Integer> {
     Page<Booking> findAllByCar_Owner_IdAndStatusIn(int ownerId, BookingEnum[] status , Pageable paging);
 
     //    Page<Booking> findAllByRenter_Id(int ownerId, Pageable paging);
-
+    List<Booking> findAllByFromDateLessThanEqualAndCarId(Date date, int carId);
 }

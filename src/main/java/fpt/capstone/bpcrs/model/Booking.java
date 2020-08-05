@@ -29,11 +29,11 @@ public class Booking extends Auditing {
 
     @Column
     @NotNull
-    private Date from_date;
+    private Date fromDate;
 
     @Column
     @NotNull
-    private Date to_date;
+    private Date toDate;
 
     @Column
     @NotNull
