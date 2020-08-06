@@ -13,4 +13,5 @@ public interface CarRepository extends JpaRepository<Car, Integer>,  JpaSpecific
     Page<Car> findAllByOwner_Id(int ownerId, Pageable paging);
     Page<Car> findAllByStatus(CarEnum status, Pageable paging);
     Car findByVIN(String VIN);
+    Car findByPlateNum(String plateNum);
 }

@@ -120,6 +120,11 @@ public class CarServiceImpl implements CarService {
         return carRepository.findByVIN(VIN);
     }
 
+    @Override
+    public Car getCarByPlateNum(String plateNum) {
+        return carRepository.findByPlateNum(plateNum);
+    }
+
 //    @Override
 //    public Page<Car> getAllCarsByAvailable(boolean isAvailable, int page, int size) {
 //        Specification conditon = (Specification) (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get(Car_.STATUS), CarEnum.AVAILABLE);

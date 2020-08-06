@@ -26,5 +26,5 @@ public interface CarService {
 
     Car getCarByVinNumber(String VIN);
 //    Page<Car> getAllCarsByAvailable(boolean isAvailable, int page, int size);
-
+    Car getCarByPlateNum(String plateNum);
 }

@@ -88,6 +88,10 @@ public class CarController {
             return new ResponseEntity(new ApiError("Car with VIN number " + request.getVIN() + " is existed", ""),
                     HttpStatus.BAD_REQUEST);
         }
+        if (carService.getCarByPlateNum(request.getPlateNum()) != null) {
+            return new ResponseEntity(new ApiError("Car with plate number " + request.getPlateNum() + " is existed", ""),
+                    HttpStatus.BAD_REQUEST);
+        }
         //check car VIN API (limit 25/month)
 //        try {
 //            if (!carService.checkCarVin(newCar)) {
