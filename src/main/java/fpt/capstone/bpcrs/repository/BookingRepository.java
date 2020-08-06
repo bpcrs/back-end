@@ -14,11 +14,11 @@ import java.util.List;
 public interface BookingRepository extends JpaRepository<Booking, Integer> {
     List<Booking> findAllByRenter_Id(Integer id);
 
-    Page<Booking> findAllByRenter_IdAndStatusIn(int ownerId, BookingEnum[] status, Pageable paging);
+    Page<Booking> findAllByRenter_IdAndStatusInOrderByCreatedDateDesc(int ownerId, BookingEnum[] status, Pageable paging);
 
-    Page<Booking> findAllByCar_IdAndStatusIn(int carId, BookingEnum[] status , Pageable paging);
+    Page<Booking> findAllByCar_IdAndStatusInOrderByCreatedDateDesc(int carId, BookingEnum[] status , Pageable paging);
 
-    Page<Booking> findAllByCar_Owner_IdAndStatusIn(int ownerId, BookingEnum[] status , Pageable paging);
+    Page<Booking> findAllByCar_Owner_IdAndStatusInOrderByCreatedDateDesc(int ownerId, BookingEnum[] status , Pageable paging);
 
     List<Booking> findAllByFromDateLessThanEqualAndCarId(Date date, int carId);
 }
