@@ -2,9 +2,9 @@ spring:
   datasource:
     username: root
     password: 1qaz2wsx
-    url: jdbc:mysql://localhost:3306/bpcrs
+    url: jdbc:mysql://bpcrs-db:3306/bpcrs
 app:
-  host: localhost:api.bpcrs.network
+  host: api.bpcrs.network
 
 dapp:
   pem:

@@ -55,7 +55,6 @@ public class ImageController {
         if (car == null) {
             return new ResponseEntity<>(new ApiError("Car with id = " + request.getCarId() + " not found", ""), HttpStatus.BAD_REQUEST);
         }
-//        List<ImagePayload.ResponseCreateImage> responses = new ArrayList<>();
         List<Image> newImages = new ArrayList<>();
         for (String link : request.getLink()) {
             Image image = Image.builder().car(car).link(link).type(type).build();
@@ -64,6 +63,23 @@ public class ImageController {
         List<Image> images = imageService.createImages(newImages);
         List<ImagePayload.ResponseCreateImage> imageList = ObjectMapperUtils.mapAll(images, ImagePayload.ResponseCreateImage.class);
         return ResponseEntity.ok(new ApiResponse<>(true, imageList));
+    }
+
+    @PostMapping("/car/{id}")
+    @RolesAllowed(RoleEnum.RoleType.USER)
+    public ResponseEntity<?> createImages(@PathVariable() int id, @RequestBody ImagePayload.CreateImage requests) {
+        Car car = carService.getCarById(id);
+        if ( car == null) {
+            return new ResponseEntity<>(new ApiError("Car with id = " + id + " not found", ""), HttpStatus.BAD_REQUEST);
+        }
+        List<Image> newImages = new ArrayList<>();
+        for (ImagePayload.RequestImage image : requests.getImages()) {
+            Image img = Image.builder().car(car).link(image.getLink()).type(image.getType()).build();
+            newImages.add(img);
+        }
+        List<Image> images = imageService.createImages(newImages);
+        List<ImagePayload.ResponseCreateImage> responses = ObjectMapperUtils.mapAll(images, ImagePayload.ResponseCreateImage.class);
+        return  ResponseEntity.ok(new ApiResponse<>(true, responses));
     }
 
     @DeleteMapping("/{id}")

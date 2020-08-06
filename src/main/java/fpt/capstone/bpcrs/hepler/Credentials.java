@@ -1,4 +1,4 @@
-package fpt.capstone.bpcrs.model;
+package fpt.capstone.bpcrs.hepler;
 
 import java.io.Serializable;
 import java.security.KeyFactory;

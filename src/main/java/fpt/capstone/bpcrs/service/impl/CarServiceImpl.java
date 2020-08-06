@@ -63,6 +63,8 @@ public class CarServiceImpl implements CarService {
     @Override
     public Page<Car> getAllCarsPagingByFilters(int page, int size, Integer[] modelIds, Integer[] seat, Double fromPrice, Double toPrice, Integer[] brandIds, Integer ownerId) {
         Specification conditon = (Specification) (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get(Car_.STATUS), CarEnum.AVAILABLE);
+        Specification conditonReq = (Specification) (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get(Car_.STATUS), CarEnum.REQUEST);
+        conditon = conditon.or(conditonReq);
         conditon = conditon.and(CarSpecification.carNotOwner(ownerId));
         if (modelIds != null && modelIds.length != 0) {
             conditon = conditon.and(CarSpecification.carHasModelName(modelIds));
@@ -106,7 +108,7 @@ public class CarServiceImpl implements CarService {
             case AVAILABLE:
                 return nextStatus == CarEnum.UNAVAILABLE || nextStatus == CarEnum.REQUEST;
             case REQUEST:
-                return nextStatus == CarEnum.BOOKED || nextStatus == CarEnum.AVAILABLE;
+                return nextStatus == CarEnum.BOOKED || nextStatus == CarEnum.AVAILABLE || nextStatus == CarEnum.REQUEST;
             case BOOKED:
                 return nextStatus == CarEnum.RENTING || nextStatus == CarEnum.AVAILABLE;
             case REGISTER:

@@ -4,7 +4,6 @@ import fpt.capstone.bpcrs.component.Paging;
 import fpt.capstone.bpcrs.constant.BookingEnum;
 import fpt.capstone.bpcrs.model.Booking;
 import fpt.capstone.bpcrs.model.BookingTracking;
-import fpt.capstone.bpcrs.model.Car;
 import fpt.capstone.bpcrs.payload.BookingPayload;
 import fpt.capstone.bpcrs.repository.BookingRepository;
 import fpt.capstone.bpcrs.repository.BookingTrackingRepository;
@@ -16,6 +15,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -107,7 +107,7 @@ public class BookingServiceImpl implements BookingService {
     public boolean checkStatusBookingBySM(BookingEnum currentStatus, BookingEnum nextStatus) {
         switch (currentStatus) {
             case REQUEST:
-                return nextStatus == BookingEnum.PENDING || nextStatus == BookingEnum.DENY;
+                return nextStatus == BookingEnum.PENDING || nextStatus == BookingEnum.DENY || nextStatus == BookingEnum.CANCEL;
             case PENDING:
                 return  nextStatus == BookingEnum.CANCEL || nextStatus == BookingEnum.OWNER_ACCEPTED;
             case OWNER_ACCEPTED:
@@ -118,4 +118,11 @@ public class BookingServiceImpl implements BookingService {
         return false;
     }
 
+
+    @Override
+    public void updateCancelBookingDuplicateDate(Date date, int carId) {
+        List<Booking> bookingList = bookingRepository.findAllByFromDateLessThanEqualAndCarId(date,carId);
+        bookingList.stream().forEach(booking -> booking.setStatus(BookingEnum.CANCEL));
+        bookingRepository.saveAll(bookingList);
+    }
 }

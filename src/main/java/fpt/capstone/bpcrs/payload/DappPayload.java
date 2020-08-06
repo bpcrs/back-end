@@ -4,36 +4,27 @@ import java.io.Serializable;
 
 public class DappPayload {
 
+
     public static class ResultChaincode implements Serializable {
-        private int code;
-        private String message;
+        private boolean success;
         private String data;
 
         public ResultChaincode() {
-            this.code = 200;
+            this.success = false;
             this.data = "";
         }
 
-        public ResultChaincode(int code, String message, String data) {
-            this.code = code;
-            this.message = message;
+        public ResultChaincode(int code, boolean success, String data) {
+            this.success = success;
             this.data = data;
         }
 
-        public int getCode() {
-            return code;
+        public boolean isSuccess() {
+            return success;
         }
 
-        public void setCode(int code) {
-            this.code = code;
-        }
-
-        public String getMessage() {
-            return message;
-        }
-
-        public void setMessage(String message) {
-            this.message = message;
+        public void setSuccess(boolean success) {
+            this.success = success;
         }
 
         public String getData() {
@@ -43,5 +34,13 @@ public class DappPayload {
         public void setData(String data) {
             this.data = data;
         }
+    }
+
+    public static class RegisterUser{
+        public RegisterUser(String username) {
+            this.username = username;
+        }
+
+        private String username;
     }
 }
