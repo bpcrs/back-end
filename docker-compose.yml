@@ -22,6 +22,12 @@ services:
       - 5000:5000
     networks:
       - bpcrs
+  dapp-nest:
+    image: docker.pkg.github.com/bpcrs/dapp-nest/dapp-nest:latest
+    ports:
+      - 6000:6000
+    networks:
+      - bpcrs
 networks:
   bpcrs:
     driver: bridge

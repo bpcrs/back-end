@@ -11,15 +11,15 @@ import org.springframework.web.client.RestTemplate;
 
 @Component
 public class RestTemplateHelper {
-    @Value("${dapp.port}")
-    private String DAPP_PORT;
+    @Value("${dapp.host}")
+    private String DAPP_HOST;
 
     public DappPayload.ResultChaincode httpPost(String endpoint, JSONObject requestBody) {
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<String> entity = new HttpEntity<String>(requestBody.toString(), headers);
-        DappPayload.ResultChaincode resultChaincode = restTemplate.postForObject("http://localhost:" + DAPP_PORT +
+        DappPayload.ResultChaincode resultChaincode = restTemplate.postForObject(DAPP_HOST +
                 "/" + endpoint, entity, DappPayload.ResultChaincode.class);
         return resultChaincode;
     }
