@@ -12,4 +12,8 @@ public interface ReviewService {
     Review createReview(Review newReview);
 
     Review getReviewById(int id);
+
+    Boolean checkBookingCanReview(int bookingId);
+
+    Boolean checkBookingIsReviewYet(int carId, int renterId);
 }

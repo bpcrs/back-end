@@ -28,6 +28,9 @@ public class ReviewPayload {
         @NotNull
         private String comment;
 
+        @NotNull
+        private int bookingId;
+
     }
 
     @EqualsAndHashCode(callSuper = true)
