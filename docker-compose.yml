@@ -24,6 +24,8 @@ services:
       - bpcrs
   dapp-nest:
     image: docker.pkg.github.com/bpcrs/dapp-nest/dapp-nest:latest
+    volumes:
+    - ./bpcrs-network/crypto-config:/app/dist/crypto-config
     ports:
       - 6000:6000
     networks:
