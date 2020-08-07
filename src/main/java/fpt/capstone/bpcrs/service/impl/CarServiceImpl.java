@@ -11,13 +11,11 @@ import fpt.capstone.bpcrs.service.CarService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -115,6 +113,16 @@ public class CarServiceImpl implements CarService {
                 return nextStatus == CarEnum.UNAVAILABLE;
         }
         return false;
+    }
+
+    @Override
+    public Car getCarByVinNumber(String VIN) {
+        return carRepository.findByVIN(VIN);
+    }
+
+    @Override
+    public Car getCarByPlateNum(String plateNum) {
+        return carRepository.findByPlateNum(plateNum);
     }
 
 //    @Override
