@@ -1,10 +1,12 @@
 package fpt.capstone.bpcrs.service.impl;
 
 import fpt.capstone.bpcrs.hepler.RestTemplateHelper;
+import fpt.capstone.bpcrs.model.Agreement;
 import fpt.capstone.bpcrs.model.Booking;
 import fpt.capstone.bpcrs.payload.DappPayload;
 import fpt.capstone.bpcrs.service.BlockchainService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.configurationprocessor.json.JSONArray;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.stereotype.Service;
@@ -21,17 +23,16 @@ public class BlockchainServiceImpl implements BlockchainService {
         JSONObject requestBody = new JSONObject();
         requestBody.put("bookingId", booking.getId());
         requestBody.put("carId", booking.getCar().getId());
-        requestBody.put("renterId", booking.getRenter().getId());
-        requestBody.put("ownerId", booking.getCar().getOwner().getId());
+        requestBody.put("renter", booking.getRenter().getEmail());
+        requestBody.put("owner", booking.getCar().getOwner().getEmail());
         requestBody.put("fromDate", booking.getFromDate());
         requestBody.put("toDate", booking.getToDate());
-        requestBody.put("carPrice",booking.getCar().getPrice());
-        requestBody.put("totalPrice",booking.getTotalPrice());
-        requestBody.put("location",booking.getLocation());
-        requestBody.put("destination",booking.getDestination());
-        requestBody.put("criteria","[]");
-        DappPayload.ResultChaincode resultChaincode = restTemplateHelper.httpPost("submit-contract",requestBody);
-        System.out.println(resultChaincode.getData());
+        requestBody.put("carPrice", booking.getCar().getPrice());
+        requestBody.put("totalPrice", booking.getTotalPrice());
+        requestBody.put("location", booking.getLocation());
+        requestBody.put("destination", booking.getDestination());
+        requestBody.put("criteria", booking.agreementsToJSONArray());
+        DappPayload.ResultChaincode resultChaincode = restTemplateHelper.httpPost("submit-contract", requestBody);
         return resultChaincode.isSuccess();
     }
 
@@ -46,7 +47,21 @@ public class BlockchainServiceImpl implements BlockchainService {
     public boolean registerUser(String username) throws JSONException {
         JSONObject requestBody = new JSONObject();
         requestBody.put("username", username);
-        DappPayload.ResultChaincode resultChaincode = restTemplateHelper.httpPost("register",requestBody);
+        DappPayload.ResultChaincode resultChaincode = restTemplateHelper.httpPost("register", requestBody);
+        return resultChaincode.isSuccess();
+    }
+
+    @Override
+    public boolean signingContract(Booking booking, boolean isOwner) throws JSONException {
+        JSONObject requestBody = new JSONObject();
+        requestBody.put("data", booking.toString() + "_" + booking.agreementsToJSONArray());
+        requestBody.put("bookingId", booking.getId());
+        requestBody.put("carId", booking.getCar().getId());
+        requestBody.put("renter", booking.getRenter().getEmail());
+        requestBody.put("owner", booking.getCar().getOwner().getEmail());
+        requestBody.put("isOwner", isOwner);
+        DappPayload.ResultChaincode resultChaincode = restTemplateHelper.httpPost("sign-contract", requestBody);
+        if (resultChaincode == null) return false;
         return resultChaincode.isSuccess();
     }
 }

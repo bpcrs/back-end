@@ -7,9 +7,13 @@ import fpt.capstone.bpcrs.component.Auditing;
 import fpt.capstone.bpcrs.constant.BookingEnum;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
+import org.springframework.boot.configurationprocessor.json.JSONArray;
+import org.springframework.boot.configurationprocessor.json.JSONException;
+import org.springframework.boot.configurationprocessor.json.JSONObject;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.text.DecimalFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -75,4 +79,24 @@ public class Booking extends Auditing {
     @ApiModelProperty(hidden = true)
     @ToString.Exclude
     private List<BookingTracking> trackings;
+
+    @Override
+    public String toString() {
+        DecimalFormat decimalFormat = new DecimalFormat("#.##");
+
+        return getCar().getId() + "_" + getCar().getOwner().getEmail() + "_" + getRenter().getEmail() + "_" + getFromDate() + "_" + getToDate() + "_" + decimalFormat.format(totalPrice)  + "_" + decimalFormat.format(getCar().getPrice())  + "_" + getLocation() + "_" + getDestination() + "_AGREEMENT";
+    }
+
+    public JSONArray agreementsToJSONArray() throws JSONException {
+        JSONArray jsonArray = new JSONArray();
+        for (Agreement agreement : getAgreements()) {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("value", agreement.getValue());
+            jsonObject.put("name", agreement.getCriteria().getName());
+            jsonObject.put("isApprove", agreement.isApproved());
+            jsonArray.put(jsonObject);
+        }
+        return jsonArray;
+    }
 }
+

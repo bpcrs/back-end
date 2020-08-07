@@ -61,6 +61,7 @@ public class BookingController {
     public ResponseEntity<?> getBooking(@PathVariable() int id) {
         BookingPayload.ResponseCreateBooking response = new BookingPayload.ResponseCreateBooking();
         Booking booking = bookingService.getBookingInformation(id);
+        System.out.println(booking.toString());
         if (booking != null) {
             booking.buildObject(response, false);
             return ResponseEntity.ok(new ApiResponse<>(true, response));
@@ -109,7 +110,7 @@ public class BookingController {
                 bookingService.updateCancelBookingDuplicateDate(booking.getFromDate(),booking.getCar().getId());
             }
             //Save to BLC
-            if (status == BookingEnum.CONFIRM){
+            if (status == BookingEnum.CONFIRM || status == BookingEnum.OWNER_ACCEPTED){
                 //check agreement before => CONFIRM
                 boolean isApproveAllAgreemet = booking.getAgreements().stream().allMatch(Agreement::isApproved);
                 if (!isApproveAllAgreemet){
