@@ -9,7 +9,10 @@ import fpt.capstone.bpcrs.model.Brand;
 import fpt.capstone.bpcrs.model.Car;
 import fpt.capstone.bpcrs.model.Image;
 import fpt.capstone.bpcrs.model.Model;
-import fpt.capstone.bpcrs.payload.*;
+import fpt.capstone.bpcrs.payload.ApiError;
+import fpt.capstone.bpcrs.payload.ApiResponse;
+import fpt.capstone.bpcrs.payload.CarPayload;
+import fpt.capstone.bpcrs.payload.PagingPayload;
 import fpt.capstone.bpcrs.service.*;
 import fpt.capstone.bpcrs.util.ObjectMapperUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -81,6 +84,23 @@ public class CarController {
     @PostMapping
     @RolesAllowed(RoleEnum.RoleType.USER)
     public ResponseEntity<?> createCar(@Valid @RequestBody CarPayload.RequestUpdateCar request) {
+        if (carService.getCarByVinNumber(request.getVIN()) != null) {
+            return new ResponseEntity(new ApiError("Car with VIN number " + request.getVIN() + " is existed", ""),
+                    HttpStatus.BAD_REQUEST);
+        }
+        if (carService.getCarByPlateNum(request.getPlateNum()) != null) {
+            return new ResponseEntity(new ApiError("Car with plate number " + request.getPlateNum() + " is existed", ""),
+                    HttpStatus.BAD_REQUEST);
+        }
+        //check car VIN API (limit 25/month)
+//        try {
+//            if (!carService.checkCarVin(newCar)) {
+//                throw new JSONException("VIN car is not valid!");
+//            }
+//        } catch (JSONException | ParseException e) {
+//            return new ResponseEntity<>(new ApiError(e.toString(), "Car cannot created!"),
+//                    HttpStatus.BAD_REQUEST);
+//        }
         Brand brand = brandService.getBrandById(request.getBrandId());
         Model model = modelService.getModelById(request.getModelId());
         if (brand == null) {
@@ -98,15 +118,6 @@ public class CarController {
         newCar.setOwner(accountService.getCurrentUser());
         newCar.setStatus(CarEnum.REGISTER);
         newCar.setLocation("Ho Chi Minh City");
-        //check car VIN API (limit 25/month)
-//        try {
-//            if (!carService.checkCarVin(newCar)) {
-//                throw new JSONException("VIN car is not valid!");
-//            }
-//        } catch (JSONException | ParseException e) {
-//            return new ResponseEntity<>(new ApiError(e.toString(), "Car cannot created!"),
-//                    HttpStatus.BAD_REQUEST);
-//        }
         carService.createCar(newCar).buildObject(response, false);
         return ResponseEntity.ok(new ApiResponse<>(true, response));
     }
@@ -160,8 +171,8 @@ public class CarController {
     @GetMapping("/admin")
     @RolesAllowed({RoleEnum.RoleType.ADMINISTRATOR})
     public ResponseEntity<?> getCarsAdmin(@RequestParam(defaultValue = "1") int page,
-                                    @RequestParam(defaultValue = "10") int size
-                                    ) {
+                                          @RequestParam(defaultValue = "10") int size
+    ) {
         Page<Car> cars = carService.getAllCars(page, size);
         if (cars.isEmpty()) {
             return ResponseEntity.ok(new ApiResponse<>(false, ""));
@@ -173,6 +184,7 @@ public class CarController {
                 PagingPayload.builder().data(carList).count((int) cars.getTotalElements()).build();
         return ResponseEntity.ok(new ApiResponse<>(true, pagingPayload));
     }
+
     @PutMapping("/status/{id}")
     @RolesAllowed({RoleEnum.RoleType.USER, RoleEnum.RoleType.ADMINISTRATOR})
     public ResponseEntity<?> updateStatus(@PathVariable() int id, @Valid @RequestParam CarEnum status) {
