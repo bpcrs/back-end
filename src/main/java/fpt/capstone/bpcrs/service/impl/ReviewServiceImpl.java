@@ -54,34 +54,12 @@ public class ReviewServiceImpl implements ReviewService {
     @Override
     public Boolean checkBookingCanReview(int bookingId) {
         Booking booking = bookingRepository.findById(bookingId).orElse(null);
-        if(booking != null){
-//            String statusCheck = booking.getStatus().toString();
-            BookingEnum statusCheck = booking.getStatus();
-            if(statusCheck.equals(BookingEnum.DONE)){
-                return true;
-            }else{
-                return false;
-            }
-        }else{
-            return false;
-        }
+        return booking != null && booking.getStatus() == BookingEnum.DONE;
     }
 
     @Override
     public Boolean checkBookingIsReviewYet(int carId, int renterId) {
-//        List<Review> reviews = reviewRepository.findAll();
-//        for (int i = 0; i < reviews.size(); i++){
-//            if(reviews.get(i).getRenter().getId() == renterId){
-//                if(reviews.get(i).getCar().getId() == carId){
-//                    return true;
-//                }
-//            }
-//        }
-//        return false;
         Review review = reviewRepository.findReviewByCarIdAndRenterId(carId, renterId);
-        if(review != null){
-            return true;
-        }
-        return false;
+        return review != null;
     }
 }
