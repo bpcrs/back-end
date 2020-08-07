@@ -153,10 +153,13 @@ public class CarController {
             return new ResponseEntity(new ApiError("Car with id=" + id + " not found", ""), HttpStatus.BAD_REQUEST);
         }
         CarPayload.RequestUpdateCar response = new CarPayload.RequestUpdateCar();
+        if (car.getStatus() == CarEnum.AVAILABLE || car.getStatus() == CarEnum.UNAVAILABLE) {
         Car updateCar = (Car) new Car().buildObject(request, true);
         updateCar.setId(id);
         carService.updateCar(updateCar, id).buildObject(response, false);
         return ResponseEntity.ok(new ApiResponse<>(true, response));
+        }
+        return new ResponseEntity(new ApiError("Can not update because status is " + car.getStatus(), ""), HttpStatus.BAD_REQUEST);
     }
 
 
