@@ -6,4 +6,4 @@ spring:
 app:
   host: api.bpcrs.network
 dapp:
-  host: http://dapp-nest:6000
+  host: http://localhost:6000
