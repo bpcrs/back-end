@@ -88,18 +88,18 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public Page<Booking> getAllBookingsRequestByCar(int carId, BookingEnum[] status, int page, int size) {
-        return bookingRepository.findAllByCar_IdAndStatusIn(carId, status,
+        return bookingRepository.findAllByCar_IdAndStatusInOrderByCreatedDateDesc(carId, status,
                 new Paging(page, size, Sort.unsorted()));
     }
 
     @Override
     public Page<Booking> getAllBookingRequestsByOwner(int onwerId, BookingEnum[] status, int page, int size) {
-        return bookingRepository.findAllByCar_Owner_IdAndStatusIn(onwerId, status, new Paging(page, size, Sort.unsorted()));
+        return bookingRepository.findAllByCar_Owner_IdAndStatusInOrderByCreatedDateDesc(onwerId, status, new Paging(page, size, Sort.unsorted()));
     }
 
     @Override
     public Page<Booking> getAllBookingRequestsByRenter(int renterId, BookingEnum[] status, int page, int size) {
-        return bookingRepository.findAllByRenter_IdAndStatusIn(renterId, status,
+        return bookingRepository.findAllByRenter_IdAndStatusInOrderByCreatedDateDesc(renterId, status,
                 new Paging(page, size, Sort.unsorted()));
     }
 
