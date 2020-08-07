@@ -120,9 +120,8 @@ public class BookingServiceImpl implements BookingService {
 
 
     @Override
-    public void updateCancelBookingDuplicateDate(Date date, int carId) {
-        List<Booking> bookingList = bookingRepository.findAllByFromDateLessThanEqualAndCarId(date,carId);
-        bookingList.stream().forEach(booking -> booking.setStatus(BookingEnum.CANCEL));
-        bookingRepository.saveAll(bookingList);
+    public void updateCancelBookingDuplicateDate(Booking approveBooking) {
+        List<Booking> bookingList = bookingRepository.findAllByFromDateBetweenOrToDateBetweenAndCarIdAndStatus(approveBooking.getFromDate(), approveBooking.getToDate(), approveBooking.getFromDate(), approveBooking.getToDate(), approveBooking.getCar().getId(), BookingEnum.REQUEST);
+        bookingList.stream().filter(booking -> booking.getId() != approveBooking.getId()).forEach(booking -> updateBookingStatus(booking, BookingEnum.CANCEL));
     }
 }
