@@ -1,6 +1,7 @@
 package fpt.capstone.bpcrs.service.impl;
 
 import fpt.capstone.bpcrs.component.Paging;
+import fpt.capstone.bpcrs.constant.BookingEnum;
 import fpt.capstone.bpcrs.model.Booking;
 import fpt.capstone.bpcrs.model.Review;
 import fpt.capstone.bpcrs.repository.AccountRepository;
@@ -54,8 +55,9 @@ public class ReviewServiceImpl implements ReviewService {
     public Boolean checkBookingCanReview(int bookingId) {
         Booking booking = bookingRepository.findById(bookingId).orElse(null);
         if(booking != null){
-            String statusCheck = booking.getStatus().toString();
-            if(statusCheck.contains("DONE")){
+//            String statusCheck = booking.getStatus().toString();
+            BookingEnum statusCheck = booking.getStatus();
+            if(statusCheck.equals(BookingEnum.DONE)){
                 return true;
             }else{
                 return false;
