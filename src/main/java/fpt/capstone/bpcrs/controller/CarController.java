@@ -84,23 +84,15 @@ public class CarController {
     @PostMapping
     @RolesAllowed(RoleEnum.RoleType.USER)
     public ResponseEntity<?> createCar(@Valid @RequestBody CarPayload.RequestUpdateCar request) {
-        if (carService.getCarByVinNumber(request.getVIN()) != null) {
-            return new ResponseEntity(new ApiError("Car with VIN number " + request.getVIN() + " is existed", ""),
-                    HttpStatus.BAD_REQUEST);
-        }
-        if (carService.getCarByPlateNum(request.getPlateNum()) != null) {
-            return new ResponseEntity(new ApiError("Car with plate number " + request.getPlateNum() + " is existed", ""),
-                    HttpStatus.BAD_REQUEST);
-        }
-        //check car VIN API (limit 25/month)
-//        try {
-//            if (!carService.checkCarVin(newCar)) {
-//                throw new JSONException("VIN car is not valid!");
-//            }
-//        } catch (JSONException | ParseException e) {
-//            return new ResponseEntity<>(new ApiError(e.toString(), "Car cannot created!"),
+//        if (carService.getCarByVinNumber(request.getVIN()) != null) {
+//            return new ResponseEntity(new ApiError("Car with VIN number " + request.getVIN() + " is existed", ""),
 //                    HttpStatus.BAD_REQUEST);
 //        }
+//        if (carService.getCarByPlateNum(request.getPlateNum()) != null) {
+//            return new ResponseEntity(new ApiError("Car with plate number " + request.getPlateNum() + " is existed", ""),
+//                    HttpStatus.BAD_REQUEST);
+//        }
+
         Brand brand = brandService.getBrandById(request.getBrandId());
         Model model = modelService.getModelById(request.getModelId());
         if (brand == null) {
@@ -161,10 +153,13 @@ public class CarController {
             return new ResponseEntity(new ApiError("Car with id=" + id + " not found", ""), HttpStatus.BAD_REQUEST);
         }
         CarPayload.RequestUpdateCar response = new CarPayload.RequestUpdateCar();
+        if (car.getStatus() == CarEnum.AVAILABLE || car.getStatus() == CarEnum.UNAVAILABLE) {
         Car updateCar = (Car) new Car().buildObject(request, true);
         updateCar.setId(id);
         carService.updateCar(updateCar, id).buildObject(response, false);
         return ResponseEntity.ok(new ApiResponse<>(true, response));
+        }
+        return new ResponseEntity(new ApiError("Can not update because status is " + car.getStatus(), ""), HttpStatus.BAD_REQUEST);
     }
 
 

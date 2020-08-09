@@ -106,7 +106,7 @@ public class BookingController {
             }
             // if duplicate ngày booking thì sẽ cancel những request khônng được approve
             if (booking.getStatus() == BookingEnum.REQUEST && status == BookingEnum.PENDING){
-                bookingService.updateCancelBookingDuplicateDate(booking.getFromDate(),booking.getCar().getId());
+                bookingService.updateCancelBookingDuplicateDate(booking);
             }
             //Save to BLC
             if (status == BookingEnum.CONFIRM){
@@ -168,76 +168,4 @@ public class BookingController {
                 PagingPayload.builder().data(responses).count((int) bookings.getTotalElements()).build();
         return ResponseEntity.ok(new ApiResponse<>(true, pagingPayload));
     }
-
-    //    @GetMapping("/hiring/{id}")
-//    @RolesAllowed({RoleEnum.RoleType.USER, RoleEnum.RoleType.ADMINISTRATOR})
-//    public ResponseEntity<?> getUserHiringBookingList(@PathVariable("id") int id) {
-//        List<Booking> bookings = bookingService.getUserHiringBookingList(id);
-//        if (bookings.isEmpty()) {
-//            return new ResponseEntity(new ApiResponse<>(false, "Dont have any booking with id " + id), HttpStatus.BAD_REQUEST);
-//        }
-//        List<BookingPayload.ResponseCreateBooking> responseList = ObjectMapperUtils.mapAll(bookings, BookingPayload.ResponseCreateBooking.class);
-//        return ResponseEntity.ok(new ApiResponse<>(true, "Get list booking successful", responseList));
-//
-//    }
-
-    //    @PutMapping("/return/{id}")
-//    @RolesAllowed(RoleEnum.RoleType.USER)
-//    public ResponseEntity<?> returnBookingCar(@PathVariable("id") int id) {
-//        try {
-//            Booking booking = bookingService.updateBookingStatus(id, BookingEnum.RETURN.toString());
-//            BookingPayload.ResponseCreateBooking response = ObjectMapperUtils.map(booking, BookingPayload.ResponseCreateBooking.class);
-//            return ResponseEntity.ok(new ApiResponse<>(true, "Booking status was updated", response));
-//        } catch (BadRequestException ex) {
-//            return ResponseEntity.badRequest().body(new ApiResponse<>(false, ex.getMessage(), null));
-//        }
-//    }
-
-    //    @PutMapping("/finish/{id}")
-//    @RolesAllowed(RoleEnum.RoleType.USER)
-//    private ResponseEntity<?> finishBookingCar(@PathVariable("id") int id, int fixingMoney) {
-//        try {
-//            Booking booking = bookingService.finishBooking(id, fixingMoney);
-//            BookingPayload.ResponseCreateBooking response = ObjectMapperUtils.map(booking, BookingPayload.ResponseCreateBooking.class);
-//            return ResponseEntity.ok(new ApiResponse<>(true, "Booking status was updated", response));
-//        } catch (BadRequestException ex) {
-//            return ResponseEntity.badRequest().body(new ApiResponse<>(false, ex.getMessage(), null));
-//        }
-//    }
-//    @PutMapping("/paid/{id}")
-//    @RolesAllowed(RoleEnum.RoleType.USER)
-//    public ResponseEntity<?> returnMoney(@PathVariable("id") int id) {
-//        try {
-//            Booking booking = bookingService.updateBookingStatus(id, BookingEnum.PAID.toString());
-//            BookingPayload.ResponseCreateBooking response = ObjectMapperUtils.map(booking, BookingPayload.ResponseCreateBooking.class);
-//            return ResponseEntity.ok(new ApiResponse<>(true, "Booking status was updated", response));
-//        } catch (BadRequestException ex) {
-//            return ResponseEntity.badRequest().body(new ApiResponse<>(false, ex.getMessage(), null));
-//        }
-//    }
-
-//    @PutMapping("/checking/{id}")
-//    @RolesAllowed(RoleEnum.RoleType.USER)
-//    public ResponseEntity<?> checkCar(@PathVariable("id") int id, @Valid @RequestBody BookingPayload.RequestStatisticCarDamage request) {
-//        try {
-//            Booking booking = bookingService.statisticCarDamage(id, request);
-//            BookingPayload.ResponseCreateBooking response = ObjectMapperUtils.map(booking, BookingPayload.ResponseCreateBooking.class);
-//            return ResponseEntity.ok(new ApiResponse<>(true, "Car is checked", response));
-//        } catch (BadRequestException ex) {
-//            return ResponseEntity.badRequest().body(new ApiResponse<>(false, ex.getMessage(), null));
-//        }
-//    }
-
-
-//    @PutMapping("/finish/{id}")
-//    @RolesAllowed(RoleEnum.RoleType.USER)
-//    public ResponseEntity<?> finishBookingCar(@PathVariable("id") int id, int fixingMoney) {
-//        try {
-//            Booking booking = bookingService.finishBooking(id, fixingMoney);
-//            BookingPayload.ResponseCreateBooking response = ObjectMapperUtils.map(booking, BookingPayload.ResponseCreateBooking.class);
-//            return ResponseEntity.ok(new ApiResponse<>(true, "Booking status was updated", response));
-//        } catch (BadRequestException ex) {
-//            return ResponseEntity.badRequest().body(new ApiResponse<>(false, ex.getMessage(), null));
-//        }
-//    }
 }

@@ -2,7 +2,6 @@ package fpt.capstone.bpcrs.repository;
 
 import fpt.capstone.bpcrs.constant.BookingEnum;
 import fpt.capstone.bpcrs.model.Booking;
-import org.joda.time.DateTime;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -20,5 +19,6 @@ public interface BookingRepository extends JpaRepository<Booking, Integer> {
 
     Page<Booking> findAllByCar_Owner_IdAndStatusInOrderByCreatedDateDesc(int ownerId, BookingEnum[] status , Pageable paging);
 
-    List<Booking> findAllByFromDateLessThanEqualAndCarId(Date date, int carId);
+    List<Booking> findAllByFromDateBetweenOrToDateBetweenAndCarIdAndStatus(Date fromDate, Date toDate, Date fromDateBetween, Date toDateBetween, int carId, BookingEnum status);
+
 }
