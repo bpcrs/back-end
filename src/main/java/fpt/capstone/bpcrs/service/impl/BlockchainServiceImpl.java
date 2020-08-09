@@ -21,17 +21,16 @@ public class BlockchainServiceImpl implements BlockchainService {
         JSONObject requestBody = new JSONObject();
         requestBody.put("bookingId", booking.getId());
         requestBody.put("carId", booking.getCar().getId());
-        requestBody.put("renterId", booking.getRenter().getId());
-        requestBody.put("ownerId", booking.getCar().getOwner().getId());
+        requestBody.put("renter", booking.getRenter().getEmail());
+        requestBody.put("owner", booking.getCar().getOwner().getEmail());
         requestBody.put("fromDate", booking.getFromDate());
         requestBody.put("toDate", booking.getToDate());
-        requestBody.put("carPrice",booking.getCar().getPrice());
-        requestBody.put("totalPrice",booking.getTotalPrice());
-        requestBody.put("location",booking.getLocation());
-        requestBody.put("destination",booking.getDestination());
-        requestBody.put("criteria","[]");
-        DappPayload.ResultChaincode resultChaincode = restTemplateHelper.httpPost("submit-contract",requestBody);
-        System.out.println(resultChaincode.getData());
+        requestBody.put("carPrice", booking.getCar().getPrice());
+        requestBody.put("totalPrice", booking.getTotalPrice());
+        requestBody.put("location", booking.getLocation());
+        requestBody.put("destination", booking.getDestination());
+        requestBody.put("criteria", booking.agreementsToJSONArray());
+        DappPayload.ResultChaincode resultChaincode = restTemplateHelper.httpPost("submit-contract", requestBody);
         return resultChaincode.isSuccess();
     }
 
@@ -46,7 +45,20 @@ public class BlockchainServiceImpl implements BlockchainService {
     public boolean registerUser(String username) throws JSONException {
         JSONObject requestBody = new JSONObject();
         requestBody.put("username", username);
-        DappPayload.ResultChaincode resultChaincode = restTemplateHelper.httpPost("register",requestBody);
+        DappPayload.ResultChaincode resultChaincode = restTemplateHelper.httpPost("register", requestBody);
         return resultChaincode.isSuccess();
+    }
+
+    @Override
+    public DappPayload.ResultChaincode signingContract(Booking booking, boolean isOwner) throws JSONException {
+        JSONObject requestBody = new JSONObject();
+        requestBody.put("data", booking.toString());
+        requestBody.put("bookingId", booking.getId());
+        requestBody.put("carId", booking.getCar().getId());
+        requestBody.put("renter", booking.getRenter().getEmail());
+        requestBody.put("owner", booking.getCar().getOwner().getEmail());
+        requestBody.put("isOwner", isOwner);
+        DappPayload.ResultChaincode resultChaincode = restTemplateHelper.httpPost("sign-contract", requestBody);
+        return resultChaincode;
     }
 }

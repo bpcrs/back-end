@@ -95,13 +95,13 @@ public class AccountController {
             String imageUrl = (String) payload.get("picture");
             Account account = accountService.getAccountByEmail(email);
             if (account == null) {
-                boolean isSuccess = blockchainService.registerUser(email);
-                if (!isSuccess){
-                    return ResponseEntity.badRequest().body(new ApiResponse<>(false, "Can't register user on blockchain", null));
-                }
                 account = accountService.setGoogleAccount(email, name, imageUrl);
             } else if (!account.isActive()){
                 return ResponseEntity.badRequest().body(new ApiResponse<>(false, "Your account has been disabled.", null));
+            }
+            boolean isSuccess = blockchainService.registerUser(email);
+            if (!isSuccess){
+                return ResponseEntity.badRequest().body(new ApiResponse<>(false, "Can't register user on blockchain", null));
             }
             String jwt = tokenProvider
                     .generateToken(AccountResponse.builder()

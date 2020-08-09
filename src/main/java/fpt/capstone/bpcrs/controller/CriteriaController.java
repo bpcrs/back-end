@@ -29,7 +29,6 @@ public class CriteriaController {
     @RolesAllowed({RoleEnum.RoleType.USER, RoleEnum.RoleType.ADMINISTRATOR})
     public ResponseEntity<?> getAllCriteria() {
         List<Criteria> criteriaList = criteriaService.getAllCriteria();
-//        System.out.println(criteriaList.toString());
         if (criteriaList.isEmpty()) {
             return new ResponseEntity(new ApiResponse<>(false, "Dont have any criteria"), HttpStatus.BAD_REQUEST);
         }
