@@ -59,7 +59,7 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     public Boolean checkBookingIsReviewYet(int carId, int renterId) {
-        Review review = reviewRepository.findReviewByCarIdAndRenterId(carId, renterId);
-        return review != null;
+        List<Review> review = reviewRepository.findReviewByCarIdAndRenterId(carId, renterId);
+        return review.size() > 0;
     }
 }
