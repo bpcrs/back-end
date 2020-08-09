@@ -37,9 +37,6 @@ public class ContractController {
             Account currentUser = accountService.getCurrentUser();
             Booking booking = bookingService.getBookingInformation(id);
             if (booking != null){
-                if (!bookingService.checkStatusBookingBySM(booking.getStatus(),BookingEnum.RENTER_SIGNED)){
-                    return ResponseEntity.badRequest().body(new ApiResponse<>(false, "Contract must confirm before sign"));
-                }
                 if (booking.getCar().getOwner().equals(currentUser) && booking.getStatus() == BookingEnum.CONFIRM){
                     return ResponseEntity.badRequest().body(new ApiResponse<>(false, "Renter must signing contract first"));
                 }
