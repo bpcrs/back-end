@@ -37,12 +37,19 @@ public class ContractController {
             Account currentUser = accountService.getCurrentUser();
             Booking booking = bookingService.getBookingInformation(id);
             if (booking != null){
+                if (booking.getStatus() != BookingEnum.CONFIRM){
+                    return ResponseEntity.badRequest().body(new ApiResponse<>(false, "Contract must confirm before sign"));
+                }
                 if (booking.getCar().getOwner().equals(currentUser) && booking.getStatus() == BookingEnum.CONFIRM){
                     return ResponseEntity.badRequest().body(new ApiResponse<>(false, "Renter must signing contract first"));
                 }
                 DappPayload.ResultChaincode resultChaincode = blockchainService.signingContract(booking,booking.getCar().getOwner().equals(currentUser));
                 if (resultChaincode.isSuccess()) {
-                    bookingService.updateBookingStatus(booking, BookingEnum.RENTER_SIGNED);
+                    if (booking.getStatus() == BookingEnum.RENTER_SIGNED){
+                        bookingService.updateBookingStatus(booking, BookingEnum.DONE);
+                    } else {
+                        bookingService.updateBookingStatus(booking, BookingEnum.RENTER_SIGNED);
+                    }
                     return ResponseEntity.ok().body(new ApiResponse<>(true, "Signed contract with booking id=" + id, HttpStatus.OK));
                 } else {
                     return ResponseEntity.badRequest().body(new ApiResponse<>(false, resultChaincode.getData(), HttpStatus.OK));
