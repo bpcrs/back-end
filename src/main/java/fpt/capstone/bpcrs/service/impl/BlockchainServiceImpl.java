@@ -1,12 +1,10 @@
 package fpt.capstone.bpcrs.service.impl;
 
 import fpt.capstone.bpcrs.hepler.RestTemplateHelper;
-import fpt.capstone.bpcrs.model.Agreement;
 import fpt.capstone.bpcrs.model.Booking;
 import fpt.capstone.bpcrs.payload.DappPayload;
 import fpt.capstone.bpcrs.service.BlockchainService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.configurationprocessor.json.JSONArray;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.stereotype.Service;
@@ -52,16 +50,15 @@ public class BlockchainServiceImpl implements BlockchainService {
     }
 
     @Override
-    public boolean signingContract(Booking booking, boolean isOwner) throws JSONException {
+    public DappPayload.ResultChaincode signingContract(Booking booking, boolean isOwner) throws JSONException {
         JSONObject requestBody = new JSONObject();
-        requestBody.put("data", booking.toString() + "_" + booking.agreementsToJSONArray());
+        requestBody.put("data", booking.toString());
         requestBody.put("bookingId", booking.getId());
         requestBody.put("carId", booking.getCar().getId());
         requestBody.put("renter", booking.getRenter().getEmail());
         requestBody.put("owner", booking.getCar().getOwner().getEmail());
         requestBody.put("isOwner", isOwner);
         DappPayload.ResultChaincode resultChaincode = restTemplateHelper.httpPost("sign-contract", requestBody);
-        if (resultChaincode == null) return false;
-        return resultChaincode.isSuccess();
+        return resultChaincode;
     }
 }

@@ -84,7 +84,7 @@ public class Booking extends Auditing {
     public String toString() {
         DecimalFormat decimalFormat = new DecimalFormat("#.##");
 
-        return getCar().getId() + "_" + getCar().getOwner().getEmail() + "_" + getRenter().getEmail() + "_" + getFromDate() + "_" + getToDate() + "_" + decimalFormat.format(totalPrice)  + "_" + decimalFormat.format(getCar().getPrice())  + "_" + getLocation() + "_" + getDestination() + "_AGREEMENT";
+        return getCar().getId() + getCar().getOwner().getEmail() + getRenter().getEmail() + getFromDate() + getToDate() + decimalFormat.format(totalPrice) + decimalFormat.format(getCar().getPrice()) + getLocation() + getDestination();
     }
 
     public JSONArray agreementsToJSONArray() throws JSONException {
