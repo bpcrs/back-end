@@ -2,8 +2,8 @@ spring:
   datasource:
     username: root
     password: 1qaz2wsx
-    url: jdbc:mysql://localhost:3306/bpcrs
+    url: jdbc:mysql://bpcrs-db:3306/bpcrs
 app:
   host: api.bpcrs.network
 dapp:
-  host: http://localhost:6000
+  host: http://dapp-nest:6000
