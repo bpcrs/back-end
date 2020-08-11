@@ -64,9 +64,7 @@ public class BookingServiceImpl implements BookingService {
     public Booking finishBooking(int id, int money) {
         Booking booking = bookingRepository.findById(id).orElse(null);
         if (booking != null) {
-//            booking.setStatus(BookingEnum.DONE.toString());
             if (money != 0) {
-//                booking.setFixingPrice(money);
             }
             bookingRepository.save(booking);
         }
@@ -110,6 +108,8 @@ public class BookingServiceImpl implements BookingService {
                 return nextStatus == BookingEnum.PENDING || nextStatus == BookingEnum.DENY || nextStatus == BookingEnum.CANCEL;
             case PENDING:
                 return  nextStatus == BookingEnum.CANCEL || nextStatus == BookingEnum.OWNER_ACCEPTED;
+            case DENY:
+                return nextStatus == BookingEnum.REQUEST;
             case OWNER_ACCEPTED:
                 return nextStatus == BookingEnum.CONFIRM;
             case CONFIRM:
@@ -120,10 +120,10 @@ public class BookingServiceImpl implements BookingService {
         return false;
     }
 
-
     @Override
-    public void updateCancelBookingDuplicateDate(Booking approveBooking) {
+    public void updateBookingDuplicateDate(Booking approveBooking, BookingEnum status) {
         List<Booking> bookingList = bookingRepository.findAllByFromDateBetweenOrToDateBetweenAndCarIdAndStatus(approveBooking.getFromDate(), approveBooking.getToDate(), approveBooking.getFromDate(), approveBooking.getToDate(), approveBooking.getCar().getId(), BookingEnum.REQUEST);
-        bookingList.stream().filter(booking -> booking.getId() != approveBooking.getId()).forEach(booking -> updateBookingStatus(booking, BookingEnum.CANCEL));
+        bookingList.stream().filter(booking -> booking.getId() != approveBooking.getId()).forEach(booking -> updateBookingStatus(booking, status));
     }
+
 }
