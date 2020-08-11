@@ -43,6 +43,7 @@ public class CarPayload {
         private String location;
         private CarEnum status;
         private List<ImagePayload.ResponseCreateImage> images;
+        private int requestCounting;
     }
 
     @Data

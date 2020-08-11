@@ -84,4 +84,9 @@ public class AgreementServiceImpl implements AgreementService {
         agreement.setApproved(true);
         return agreementRepository.save(agreement);
     }
+
+    @Override
+    public void calculatePriceByBookingId() {
+
+    }
 }

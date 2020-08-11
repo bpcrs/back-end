@@ -36,4 +36,6 @@ public interface BookingService {
     boolean checkStatusBookingBySM (BookingEnum currentStatus, BookingEnum nextStatus);
 
     void updateCancelBookingDuplicateDate(Booking approveBooking);
+
+    int getCountRequestByCar(int id);
 }

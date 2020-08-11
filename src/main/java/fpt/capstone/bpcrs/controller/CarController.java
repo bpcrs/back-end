@@ -45,7 +45,8 @@ public class CarController {
     private ImageService imageService;
     @Autowired
     private GoogleMapsHelper googleMapsHelper;
-
+    @Autowired
+    private BookingService bookingService;
     @GetMapping
     public ResponseEntity<?> getCars(@RequestParam(defaultValue = "1") int page,
                                      @RequestParam(defaultValue = "10") int size,
@@ -140,6 +141,7 @@ public class CarController {
         }
         List<CarPayload.ResponseGetCar> carList = ObjectMapperUtils.mapAll(responses,
                 CarPayload.ResponseGetCar.class);
+        carList.stream().forEach(car -> car.setRequestCounting(bookingService.getCountRequestByCar(car.getId())));
         PagingPayload pagingPayload =
                 PagingPayload.builder().data(carList).count((int) cars.getTotalElements()).build();
         return ResponseEntity.ok(new ApiResponse<>(true, pagingPayload));
