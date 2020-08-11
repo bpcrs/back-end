@@ -120,7 +120,6 @@ public class BookingServiceImpl implements BookingService {
         return false;
     }
 
-
     @Override
     public void updateCancelBookingDuplicateDate(Booking approveBooking) {
         List<Booking> bookingList = bookingRepository.findAllByFromDateBetweenOrToDateBetweenAndCarIdAndStatus(approveBooking.getFromDate(), approveBooking.getToDate(), approveBooking.getFromDate(), approveBooking.getToDate(), approveBooking.getCar().getId(), BookingEnum.REQUEST);
