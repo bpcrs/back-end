@@ -110,7 +110,7 @@ public class AgreementController {
         if ((criteria.isRenter() && booking.getRenter().getId() == accountService.getCurrentUser().getId()) || (!criteria.isRenter() && booking.getCar().getOwner().getId() == accountService.getCurrentUser().getId())){
 
             AgreementPayload.ResponseCreateAgreement response = new AgreementPayload.ResponseCreateAgreement();
-            agreementService.createOrUpdateAgreement(request).buildObject(response, false);
+            agreementService.createOrUpdateAgreement(request).modelMaplerToObject(response, false);
             return ResponseEntity.ok(new ApiResponse<>(true, response));
         }
         return new ResponseEntity(new ApiResponse<>(false, "Action can't performed"),

@@ -106,5 +106,13 @@ public class AccountServiceImpl implements AccountService {
         return accountRepository.save(account);
     }
 
+    @Override
+    public boolean sendOTP(Account account) throws AuthyException {
+        return authyHelper.sendOTPAuthy(account.getAuthyId());
+    }
 
+    @Override
+    public boolean confirmOTP(int authyId,String otp) throws AuthyException {
+        return authyHelper.confirmOTP(authyId,otp);
+    }
 }

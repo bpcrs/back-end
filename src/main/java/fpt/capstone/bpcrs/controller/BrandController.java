@@ -5,7 +5,6 @@ import fpt.capstone.bpcrs.model.Brand;
 import fpt.capstone.bpcrs.payload.ApiResponse;
 import fpt.capstone.bpcrs.payload.BrandPayload;
 import fpt.capstone.bpcrs.service.BrandService;
-import fpt.capstone.bpcrs.service.CarService;
 import fpt.capstone.bpcrs.util.ObjectMapperUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,8 +34,8 @@ public class BrandController {
     @RolesAllowed(RoleEnum.RoleType.ADMINISTRATOR)
     public ResponseEntity<?> createBrand(@Valid @RequestBody BrandPayload.RequestCreateBrand request) {
         BrandPayload.ResponseCreateBrand response = new BrandPayload.ResponseCreateBrand();
-        Brand newBrand = (Brand) new Brand().buildObject(request, true);
-        brandService.createBrand(newBrand).buildObject(response, false);
+        Brand newBrand = (Brand) new Brand().modelMaplerToObject(request, true);
+        brandService.createBrand(newBrand).modelMaplerToObject(response, false);
         return ResponseEntity.ok(new ApiResponse<>(true, response));
     }
 }

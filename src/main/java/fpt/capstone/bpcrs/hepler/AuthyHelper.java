@@ -24,5 +24,25 @@ public class AuthyHelper {
         }
     }
 
+    public boolean sendOTPAuthy(int authyId) throws AuthyException {
+        AuthyApiClient client = new AuthyApiClient(apiKey);
+        Hash response = client.getUsers().requestSms(authyId);
+        if (response.isSuccess()){
+            return true;
+        } else {
+            throw new AuthyException(response.getError().getMessage());
+        }
+    }
 
+    public boolean confirmOTP(int authyId, String otp) throws AuthyException {
+        AuthyApiClient client = new AuthyApiClient(apiKey);
+
+        Tokens tokens = client.getTokens();
+        Token response = tokens.verify(authyId, otp);
+        if (response.isOk()){
+            return true;
+        } else {
+            throw new AuthyException(response.getError().getMessage());
+        }
+    }
 }
