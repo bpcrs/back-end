@@ -16,4 +16,6 @@ public interface ReviewService {
     Boolean checkBookingCanReview(int bookingId);
 
     Boolean checkBookingIsReviewYet(int carId, int renterId);
+
+    Boolean checkUserCanReview(int carId, int renterId);
 }
