@@ -21,4 +21,5 @@ public interface BookingRepository extends JpaRepository<Booking, Integer> {
 
     List<Booking> findAllByFromDateBetweenOrToDateBetweenAndCarIdAndStatus(Date fromDate, Date toDate, Date fromDateBetween, Date toDateBetween, int carId, BookingEnum status);
 
+    int countAllByCarIdAndStatus(int id, BookingEnum status);
 }

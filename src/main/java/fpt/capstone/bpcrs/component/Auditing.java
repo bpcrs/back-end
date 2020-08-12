@@ -36,7 +36,7 @@ public abstract class Auditing {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Integer id;
 
-  public Object buildObject(Object request, boolean isRequest){
+  public Object modelMaplerToObject(Object request, boolean isRequest){
     ModelMapper modelMapper = ObjectMapperUtils.getModelMapper();
     if (isRequest) {
       modelMapper.map(request, this);

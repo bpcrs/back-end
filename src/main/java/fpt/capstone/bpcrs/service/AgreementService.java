@@ -18,4 +18,6 @@ public interface AgreementService {
     List<Agreement> updateAgreement(List<Agreement> agreements);
 
     Agreement acceptAgreementByCriteriaAndBooking(int criteriaId, int bookingId) throws BpcrsException;
+
+    void calculatePriceByBookingId();
 }

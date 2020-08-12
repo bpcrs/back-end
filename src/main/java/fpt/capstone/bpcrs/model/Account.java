@@ -65,4 +65,7 @@ public class Account extends Auditing {
 
     @Column(columnDefinition = "TINYINT(1) default 0")
     private boolean licenseCheck;
+
+    @Column()
+    private Integer authyId;
 }

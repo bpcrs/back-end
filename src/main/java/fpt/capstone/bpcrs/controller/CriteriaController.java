@@ -40,8 +40,8 @@ public class CriteriaController {
     @RolesAllowed({RoleEnum.RoleType.USER, RoleEnum.RoleType.ADMINISTRATOR})
     public ResponseEntity<?> createCriteria(@Valid @RequestBody CriteriaPayload.RequestCreateCriteria request) {
         CriteriaPayload.ResposneCreateCriteria response = new CriteriaPayload.ResposneCreateCriteria();
-        Criteria criteria = (Criteria) new Criteria().buildObject(request, true);
-        criteriaService.createCriteria(criteria).buildObject(response, false);
+        Criteria criteria = (Criteria) new Criteria().modelMaplerToObject(request, true);
+        criteriaService.createCriteria(criteria).modelMaplerToObject(response, false);
         return ResponseEntity.ok(new ApiResponse<>(true, response));
     }
 
@@ -60,8 +60,8 @@ public class CriteriaController {
     @RolesAllowed({RoleEnum.RoleType.USER, RoleEnum.RoleType.ADMINISTRATOR})
     public ResponseEntity<?> updateCriteria(@PathVariable() int id, @RequestBody CriteriaPayload.RequestCreateCriteria request) {
         CriteriaPayload.ResposneCreateCriteria response =  new CriteriaPayload.ResposneCreateCriteria();
-        Criteria criteria = (Criteria) new Criteria().buildObject(request, true);
-                criteriaService.updateCriteria(criteria, id).buildObject(response, false);
+        Criteria criteria = (Criteria) new Criteria().modelMaplerToObject(request, true);
+                criteriaService.updateCriteria(criteria, id).modelMaplerToObject(response, false);
         return ResponseEntity.ok(new ApiResponse<>(true, response));
     }
 }
