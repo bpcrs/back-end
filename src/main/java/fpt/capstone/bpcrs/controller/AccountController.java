@@ -1,5 +1,6 @@
 package fpt.capstone.bpcrs.controller;
 
+import com.authy.AuthyException;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import fpt.capstone.bpcrs.component.JwtTokenProvider;
@@ -23,11 +24,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.security.RolesAllowed;
 import javax.validation.Valid;
-import java.io.IOException;
-import java.security.GeneralSecurityException;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 @RestController
 @RequestMapping("/account")
@@ -96,13 +93,15 @@ public class AccountController {
             Account account = accountService.getAccountByEmail(email);
             if (account == null) {
                 account = accountService.setGoogleAccount(email, name, imageUrl);
-            } else if (!account.isActive()){
-                return ResponseEntity.badRequest().body(new ApiResponse<>(false, "Your account has been disabled.", null));
+            } else if (!account.isActive()) {
+                return ResponseEntity.badRequest().body(new ApiResponse<>(false, "Your account has been disabled.",
+                        null));
             }
-            boolean isSuccess = blockchainService.registerUser(email);
-            if (!isSuccess){
-                return ResponseEntity.badRequest().body(new ApiResponse<>(false, "Can't register user on blockchain", null));
-            }
+//            boolean isSuccess = blockchainService.registerUser(email);
+//            if (!isSuccess) {
+//                return ResponseEntity.badRequest().body(new ApiResponse<>(false, "Can't register user on blockchain",
+//                        null));
+//            }
             String jwt = tokenProvider
                     .generateToken(AccountResponse.builder()
                             .id(account.getId())
@@ -110,6 +109,7 @@ public class AccountController {
                             .email(account.getEmail())
                             .fullName(account.getFullName())
                             .imageUrl(account.getImageUrl())
+                            .phone(account.getPhone())
                             .build());
             return ResponseEntity.ok(
                     new ApiResponse<>(true, "Logged successfully", jwt));
@@ -123,51 +123,71 @@ public class AccountController {
         AccountPayload.AccountResponse response = new AccountPayload.AccountResponse();
         Account account = accountService.getAccountById(id);
         if (account == null) {
-            return new ResponseEntity<>(new ApiError("Account with id= " + id + "not found", " "), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new ApiError("Account with id= " + id + "not found", " "),
+                    HttpStatus.BAD_REQUEST);
         }
-        account.buildObject(response, false);
+        account.modelMaplerToObject(response, false);
         return ResponseEntity.ok(new ApiResponse<>(true, response));
     }
 
-@PutMapping("/license/{id}")
-public ResponseEntity<?> updateAccountLicense(
-        @PathVariable("id") int id,
-        @RequestBody AccountPayload.AccountRequestUpdate request) {
-    try {
-        Account account = accountService.getAccountById(id);
-        if(account == null){
-            return new ResponseEntity(new ApiError("account with id=" + id + " not found", ""), HttpStatus.BAD_REQUEST);
-        }else {
-            Account updateAcc = (Account) new Account().buildObject(request, true);
-            updateAcc.setId(id);
-            updateAcc.setActive(true);
-            accountService.updateAccountLicense(updateAcc, id);
-
-            AccountPayload.AccountRequestUpdate response = ObjectMapperUtils.map(updateAcc, AccountPayload.AccountRequestUpdate.class);
-            return ResponseEntity.ok(new ApiResponse<>(true, response));
-        }
-
-    } catch (BadRequestException ex) {
-        return ResponseEntity.badRequest().body(new ApiResponse<>(false, ex.getMessage(), null));
-    }
-  }
-
-    @PutMapping("/{id}")
-    @RolesAllowed(RoleEnum.RoleType.USER)
-    public ResponseEntity<?> updateAccount(@PathVariable int id, @RequestParam String phone) {
+    @PutMapping("/license")
+    public ResponseEntity<?> updateAccountLicense(
+            @RequestBody AccountPayload.AccountRequestUpdate request) {
         try {
-//            String patterns = "^\\d{10}$" + "^\\d{11}$";
-//            Pattern pattern = Pattern.compile(patterns);
-//            Matcher matcher = pattern.matcher(phone);
-//            if (!matcher.matches()) {
-//                return ResponseEntity.badRequest().body(new ApiResponse<>(false, "Invalid phone number", null));
-//            }
-            Account account = accountService.updateAccount(id, phone);
-            AccountPayload.AccountResponse response = ObjectMapperUtils
-                    .map(account, AccountPayload.AccountResponse.class);
-            return ResponseEntity.ok(new ApiResponse<>(true, "Account updated", response));
-        } catch (BadRequestException ex) {
+            Account account = accountService.getCurrentUser();
+            account.setActive(true);
+            account.setImageLicense(request.getImageLicense());
+            account.setIdentification(request.getIdentification());
+            account = accountService.updateAccount(account, request.getPhone());
+            AccountPayload.AccountRequestUpdate response = ObjectMapperUtils.map(account,
+                    AccountPayload.AccountRequestUpdate.class);
+            return ResponseEntity.ok(new ApiResponse<>(true, response));
+
+        } catch (BadRequestException | AuthyException ex) {
             return ResponseEntity.badRequest().body(new ApiResponse<>(false, ex.getMessage(), null));
         }
     }
+
+    @PostMapping("/send-otp")
+    public ResponseEntity<?> sendRequestOTP() {
+        try {
+            Account account = accountService.getCurrentUser();
+            boolean isSuccess = accountService.sendOTP(account);
+            return ResponseEntity.ok(new ApiResponse<>(isSuccess, "Sent OTP to " + account.getPhone() + " or Authy " +
+                    "App"));
+        } catch (BadRequestException | AuthyException ex) {
+            return ResponseEntity.badRequest().body(new ApiResponse<>(false, ex.getMessage(), null));
+        }
+    }
+
+    @PostMapping("/confirm-otp")
+    public ResponseEntity<?> confrimOTP(@RequestParam String otp) {
+        try {
+            Account account = accountService.getCurrentUser();
+            boolean isSuccess = accountService.confirmOTP(account.getAuthyId(), otp);
+            return ResponseEntity.ok(new ApiResponse<>(isSuccess, "OTP is valid"));
+        } catch (BadRequestException | AuthyException ex) {
+            return ResponseEntity.badRequest().body(new ApiResponse<>(false, ex.getMessage(), null));
+        }
+    }
+//
+//    @PutMapping("license/{id}")
+//    @RolesAllowed(RoleEnum.RoleType.USER)
+//    public ResponseEntity<?> updateAccount(@RequestParam String phone) {
+//        try {
+////            String patterns = "^\\d{10}$" + "^\\d{11}$";
+////            Pattern pattern = Pattern.compile(patterns);
+////            Matcher matcher = pattern.matcher(phone);
+////            if (!matcher.matches()) {
+////                return ResponseEntity.badRequest().body(new ApiResponse<>(false, "Invalid phone number", null));
+////            }
+//            Account account = accountService.getCurrentUser();
+//            account = accountService.updateAccount(account, phone);
+//            AccountPayload.AccountResponse response = ObjectMapperUtils
+//                    .map(account, AccountPayload.AccountResponse.class);
+//            return ResponseEntity.ok(new ApiResponse<>(true, "Account updated", response));
+//        } catch (BadRequestException | AuthyException ex) {
+//            return ResponseEntity.badRequest().body(new ApiResponse<>(false, ex.getMessage(), null));
+//        }
+//    }
 }

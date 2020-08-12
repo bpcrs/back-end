@@ -34,7 +34,7 @@ public class AgreementServiceImpl implements AgreementService {
     public Agreement createOrUpdateAgreement(AgreementPayload.RequestCreateAgreement requestCreateAgreement) {
         Agreement agreement = agreementRepository.findByCriteria_IdAndBooking_Id(requestCreateAgreement.getCriteriaId(),requestCreateAgreement.getBookingId());
         if (agreement == null){
-            agreement = (Agreement) new Agreement().buildObject(requestCreateAgreement, true);
+            agreement = (Agreement) new Agreement().modelMaplerToObject(requestCreateAgreement, true);
             agreement.setBooking(bookingRepository.getOne(requestCreateAgreement.getBookingId()));
             agreement.setCriteria(criteriaRepository.getOne(requestCreateAgreement.getCriteriaId()));
             agreement.setApproved(false);
@@ -83,5 +83,10 @@ public class AgreementServiceImpl implements AgreementService {
         }
         agreement.setApproved(true);
         return agreementRepository.save(agreement);
+    }
+
+    @Override
+    public void calculatePriceByBookingId() {
+
     }
 }

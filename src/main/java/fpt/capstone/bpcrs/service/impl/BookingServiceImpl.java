@@ -126,4 +126,8 @@ public class BookingServiceImpl implements BookingService {
         bookingList.stream().filter(booking -> booking.getId() != approveBooking.getId()).forEach(booking -> updateBookingStatus(booking, status));
     }
 
+    @Override
+    public int getCountRequestByCar(int id) {
+        return bookingRepository.countAllByCarIdAndStatus(id,BookingEnum.REQUEST);
+    }
 }

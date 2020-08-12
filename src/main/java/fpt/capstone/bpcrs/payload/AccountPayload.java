@@ -125,9 +125,6 @@ public class AccountPayload {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class AccountRequestUpdate {
-        @NonNull
-        private int id;
-
         private String phone;
 
         private boolean active;

@@ -72,11 +72,11 @@ public class ReviewController {
 
             if(!checkBookingIsReviewYet){
                 ReviewPayload.ResponseCreateReview response = new ReviewPayload.ResponseCreateReview();
-                Review newReview = (Review) new Review().buildObject(request, true);
+                Review newReview = (Review) new Review().modelMaplerToObject(request, true);
                 newReview.setCar(car);
 
                 newReview.setRenter(accountService.getCurrentUser());
-                reviewService.createReview(newReview).buildObject(response, false);
+                reviewService.createReview(newReview).modelMaplerToObject(response, false);
                 return ResponseEntity.ok(new ApiResponse<>(true, response));
             }else{
                 return new ResponseEntity(new ApiError("this car have already rated", ""),

@@ -63,7 +63,7 @@ public class BookingController {
         Booking booking = bookingService.getBookingInformation(id);
         System.out.println(booking.toString());
         if (booking != null) {
-            booking.buildObject(response, false);
+            booking.modelMaplerToObject(response, false);
             return ResponseEntity.ok(new ApiResponse<>(true, response));
         }
         return ResponseEntity.badRequest().body(new ApiResponse<>(false, "Booking with id = " + id + " not found", HttpStatus.BAD_REQUEST));
@@ -86,7 +86,7 @@ public class BookingController {
                 .fromDate(request.getFromDate()).toDate(request.getToDate())
                 .location(request.getLocation()).destination(request.getDestination())
                 .status(BookingEnum.REQUEST).totalPrice(request.getTotalPrice()).build();
-        bookingService.createBooking(booking).buildObject(response, false);
+        bookingService.createBooking(booking).modelMaplerToObject(response, false);
         carService.updateCarStatus(car, CarEnum.REQUEST);
         return ResponseEntity.ok(new ApiResponse<>(true, response));
     }

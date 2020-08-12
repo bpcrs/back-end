@@ -15,6 +15,7 @@ public abstract class Account_ extends fpt.capstone.bpcrs.component.Auditing_ {
 	public static volatile SingularAttribute<Account, Boolean> active;
 	public static volatile SingularAttribute<Account, String> fullName;
 	public static volatile SingularAttribute<Account, Boolean> licenseCheck;
+	public static volatile SingularAttribute<Account, Integer> authyId;
 	public static volatile SingularAttribute<Account, String> email;
 	public static volatile SingularAttribute<Account, String> imageLicense;
 
@@ -25,6 +26,7 @@ public abstract class Account_ extends fpt.capstone.bpcrs.component.Auditing_ {
 	public static final String ACTIVE = "active";
 	public static final String FULL_NAME = "fullName";
 	public static final String LICENSE_CHECK = "licenseCheck";
+	public static final String AUTHY_ID = "authyId";
 	public static final String EMAIL = "email";
 	public static final String IMAGE_LICENSE = "imageLicense";
 
