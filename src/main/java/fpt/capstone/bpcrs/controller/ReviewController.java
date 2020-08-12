@@ -67,22 +67,30 @@ public class ReviewController {
         boolean checkBookingCanReview = reviewService.checkBookingCanReview(request.getBookingId());
         if(checkBookingCanReview){
 
-            boolean checkBookingIsReviewYet = reviewService.checkBookingIsReviewYet
+            boolean checkUserCanReview = reviewService.checkUserCanReview
                     (request.getCarId(), accountService.getCurrentUser().getId());
 
-            if(!checkBookingIsReviewYet){
-                ReviewPayload.ResponseCreateReview response = new ReviewPayload.ResponseCreateReview();
-                Review newReview = (Review) new Review().buildObject(request, true);
-                newReview.setCar(car);
+            if(!checkUserCanReview){
 
-                newReview.setRenter(accountService.getCurrentUser());
-                reviewService.createReview(newReview).buildObject(response, false);
-                return ResponseEntity.ok(new ApiResponse<>(true, response));
+                boolean checkBookingIsReviewYet = reviewService.checkBookingIsReviewYet
+                        (request.getCarId(), accountService.getCurrentUser().getId());
+
+                if(!checkBookingIsReviewYet){
+                    ReviewPayload.ResponseCreateReview response = new ReviewPayload.ResponseCreateReview();
+                    Review newReview = (Review) new Review().buildObject(request, true);
+                    newReview.setCar(car);
+
+                    newReview.setRenter(accountService.getCurrentUser());
+                    reviewService.createReview(newReview).buildObject(response, false);
+                    return ResponseEntity.ok(new ApiResponse<>(true, response));
+                }else{
+                    return new ResponseEntity(new ApiError("this car have already rated", ""),
+                            HttpStatus.BAD_REQUEST);
+                }
             }else{
-                return new ResponseEntity(new ApiError("this car have already rated", ""),
+                return new ResponseEntity(new ApiError("You can't review your car!!", ""),
                         HttpStatus.BAD_REQUEST);
             }
-
         }else{
             return new ResponseEntity(new ApiError("Your booking not done yet, please rating later", ""),
                     HttpStatus.BAD_REQUEST);
