@@ -26,6 +26,10 @@ public class AuthyHelper {
 
     public boolean sendOTPAuthy(int authyId) throws AuthyException {
         AuthyApiClient client = new AuthyApiClient(apiKey);
+        boolean isComfirmed = client.getUsers().requestStatus(authyId).isConfirmed();
+        if (!isComfirmed){
+            throw new AuthyException("Your phone not confirmed");
+        }
         Hash response = client.getUsers().requestSms(authyId);
         if (response.isSuccess()){
             return true;
@@ -36,7 +40,10 @@ public class AuthyHelper {
 
     public boolean confirmOTP(int authyId, String otp) throws AuthyException {
         AuthyApiClient client = new AuthyApiClient(apiKey);
-
+        boolean isComfirmed = client.getUsers().requestStatus(authyId).isConfirmed();
+        if (!isComfirmed){
+            throw new AuthyException("Your phone not confirmed");
+        }
         Tokens tokens = client.getTokens();
         Token response = tokens.verify(authyId, otp);
         if (response.isOk()){
