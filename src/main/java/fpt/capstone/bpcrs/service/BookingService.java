@@ -38,4 +38,5 @@ public interface BookingService {
     void updateCancelBookingDuplicateDate(Booking approveBooking);
 
     int getCountRequestByCar(int id);
+    void updateBookingDuplicateDate(Booking approveBooking, BookingEnum status);
 }

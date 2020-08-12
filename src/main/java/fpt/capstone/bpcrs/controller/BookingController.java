@@ -99,18 +99,24 @@ public class BookingController {
             if (booking == null) {
                 return ResponseEntity.badRequest().body(new ApiResponse<>(false, "Booking with id " + id + " not existed", null));
             }
+            BookingEnum nextStatus = status;
+            BookingEnum currentStatus = booking.getStatus();
             if (booking.getCar().getOwner().getId().intValue() != accountService.getCurrentUser().getId().intValue() && booking.getRenter().getId().intValue() != accountService.getCurrentUser().getId().intValue()) {
                 return ResponseEntity.badRequest().body(new ApiResponse<>(false, "User is not allowed", null));
             }
-            if (!bookingService.checkStatusBookingBySM(booking.getStatus(), status)) {
+            if (!bookingService.checkStatusBookingBySM(currentStatus, nextStatus)) {
                 return ResponseEntity.badRequest().body(new ApiResponse<>(false, "Invalid status request", null));
             }
             // if duplicate ngày booking thì sẽ cancel những request khônng được approve
-            if (booking.getStatus() == BookingEnum.REQUEST && status == BookingEnum.PENDING){
-                bookingService.updateCancelBookingDuplicateDate(booking);
+            if (currentStatus == BookingEnum.REQUEST && nextStatus == BookingEnum.PENDING){
+                bookingService.updateBookingDuplicateDate(booking, BookingEnum.DENY);
+            }
+            // cancel booking thì những request đã bị deny -> request
+            if (currentStatus == BookingEnum.PENDING && nextStatus == BookingEnum.CANCEL) {
+                bookingService.updateBookingDuplicateDate(booking, BookingEnum.REQUEST);
             }
             //Save to BLC
-            if (status == BookingEnum.CONFIRM || status == BookingEnum.OWNER_ACCEPTED){
+            if (nextStatus == BookingEnum.CONFIRM || nextStatus == BookingEnum.OWNER_ACCEPTED){
                 //check agreement before => CONFIRM
                 boolean isApproveAllAgreemet = booking.getAgreements().stream().allMatch(Agreement::isApproved);
                 if (!isApproveAllAgreemet){
