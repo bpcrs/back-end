@@ -1,8 +1,7 @@
 package fpt.capstone.bpcrs.service;
 
+import com.authy.AuthyException;
 import fpt.capstone.bpcrs.model.Account;
-import fpt.capstone.bpcrs.payload.AccountPayload;
-import org.springframework.data.domain.Page;
 
 import java.util.List;
 
@@ -22,7 +21,7 @@ public interface AccountService {
 
   Account updateAccountLicense(Account accountUpdate, int id);
 
-  Account updateAccount(int id, String phone);
+  Account updateAccount(Account account, String phone) throws AuthyException;
 
 
 }

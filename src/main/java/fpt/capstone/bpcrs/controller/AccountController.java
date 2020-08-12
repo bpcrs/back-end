@@ -1,5 +1,6 @@
 package fpt.capstone.bpcrs.controller;
 
+import com.authy.AuthyException;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import fpt.capstone.bpcrs.component.JwtTokenProvider;
@@ -110,6 +111,7 @@ public class AccountController {
                             .email(account.getEmail())
                             .fullName(account.getFullName())
                             .imageUrl(account.getImageUrl())
+                            .phone(account.getPhone())
                             .build());
             return ResponseEntity.ok(
                     new ApiResponse<>(true, "Logged successfully", jwt));
@@ -152,9 +154,9 @@ public ResponseEntity<?> updateAccountLicense(
     }
   }
 
-    @PutMapping("/{id}")
+    @PutMapping("/{id}/phone")
     @RolesAllowed(RoleEnum.RoleType.USER)
-    public ResponseEntity<?> updateAccount(@PathVariable int id, @RequestParam String phone) {
+    public ResponseEntity<?> updateAccount(@RequestParam String phone) {
         try {
 //            String patterns = "^\\d{10}$" + "^\\d{11}$";
 //            Pattern pattern = Pattern.compile(patterns);
@@ -162,11 +164,12 @@ public ResponseEntity<?> updateAccountLicense(
 //            if (!matcher.matches()) {
 //                return ResponseEntity.badRequest().body(new ApiResponse<>(false, "Invalid phone number", null));
 //            }
-            Account account = accountService.updateAccount(id, phone);
+            Account account = accountService.getCurrentUser();
+            account = accountService.updateAccount(account, phone);
             AccountPayload.AccountResponse response = ObjectMapperUtils
                     .map(account, AccountPayload.AccountResponse.class);
             return ResponseEntity.ok(new ApiResponse<>(true, "Account updated", response));
-        } catch (BadRequestException ex) {
+        } catch (BadRequestException | AuthyException ex) {
             return ResponseEntity.badRequest().body(new ApiResponse<>(false, ex.getMessage(), null));
         }
     }

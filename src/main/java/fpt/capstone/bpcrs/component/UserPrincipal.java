@@ -12,7 +12,7 @@ import java.util.Map;
 import java.util.Objects;
 
 @Data
-public class UserPrincipal implements UserDetails {
+public class    UserPrincipal implements UserDetails {
 
     private int id;
     private String fullName;

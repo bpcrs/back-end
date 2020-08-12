@@ -52,6 +52,7 @@ dependencies {
     compile group: 'javax.persistence', name: 'javax.persistence-api', version: '2.2'
     compile 'com.google.maps:google-maps-services:0.14.0'
     compile group: 'org.springframework.boot', name: 'spring-boot-configuration-processor', version: '2.3.0.RELEASE'
+    implementation group: 'com.authy', name: 'authy-java', version: '1.5.1'
 }
 
 
