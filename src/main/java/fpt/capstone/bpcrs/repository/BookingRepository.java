@@ -28,5 +28,4 @@ public interface BookingRepository extends JpaRepository<Booking, Integer> {
     double sumTotalPriceBookingByDay(BookingEnum status, LocalDateTime from, LocalDateTime to);
     int countAllByCarIdAndStatus(int id, BookingEnum status);
 
-
 }
