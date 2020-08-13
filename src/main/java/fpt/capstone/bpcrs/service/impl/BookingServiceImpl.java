@@ -134,7 +134,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public double sumAllBookingTotalPriceBetweenDate(LocalDateTime fromDate, LocalDateTime toDate) {
+    public Double sumAllBookingTotalPriceBetweenDate(LocalDateTime fromDate, LocalDateTime toDate) {
         return bookingRepository.sumTotalPriceBookingByDay(BookingEnum.DONE, fromDate, toDate);
     }
 

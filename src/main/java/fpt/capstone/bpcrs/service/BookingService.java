@@ -41,5 +41,5 @@ public interface BookingService {
     int getCountRequestByCar(int id);
     void updateBookingDuplicateDate(Booking approveBooking, BookingEnum status);
 
-    double sumAllBookingTotalPriceBetweenDate(LocalDateTime fromDate, LocalDateTime toDate);
+    Double sumAllBookingTotalPriceBetweenDate(LocalDateTime fromDate, LocalDateTime toDate);
 }

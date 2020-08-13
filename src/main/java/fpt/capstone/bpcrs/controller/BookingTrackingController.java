@@ -48,14 +48,5 @@ public class BookingTrackingController {
 
     }
 
-    @PostMapping()
-    @RolesAllowed(RoleEnum.RoleType.ADMINISTRATOR)
-    public ResponseEntity<?> getAllBookingWithFromDateToDateAndStatus(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date fromDate, @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date toDate,
-                                                                      @RequestParam BookingEnum status){
-        LocalDateTime fromDateTime = LocalDateTime.ofInstant(fromDate.toInstant(), ZoneId.systemDefault());
-        LocalDateTime toDateTime = LocalDateTime.ofInstant(toDate.toInstant(), ZoneId.systemDefault());
-        List<BookingTracking> bookingTrackingList = bookingTrackingService.getAllBookingWithFromDateAndToDate(fromDateTime,toDateTime,status);
-        List<BookingTrackingPayload.ResponseBookingTracking> response = ObjectMapperUtils.mapAll(bookingTrackingList, BookingTrackingPayload.ResponseBookingTracking.class);
-        return ResponseEntity.ok(new ApiResponse<>(true, response));
-    }
+
 }
