@@ -27,6 +27,11 @@ public class BrandServiceImpl implements BrandService {
     }
 
     @Override
+    public Page<Brand> getAllBrandByAdmin(int page, int size) {
+        return brandRepository.findAll(new Paging(page, size, Sort.unsorted()));
+    }
+
+    @Override
     public Brand getBrandById(int id) {
         return brandRepository.findById(id).orElse(null);
     }
