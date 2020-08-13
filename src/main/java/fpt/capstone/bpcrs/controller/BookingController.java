@@ -123,7 +123,8 @@ public class BookingController {
                     return ResponseEntity.badRequest().body(new ApiResponse<>(false, "All agreement must be approved", null));
                 }
                 boolean isSuccess = blockchainService.submitContract(booking);
-
+                
+                carService.updateCarStatus(booking.getCar(),CarEnum.BOOKED);
                 if (!isSuccess){
                     return ResponseEntity.badRequest().body(new ApiResponse<>(false, "Can't store in blockchain network", null));
                 }

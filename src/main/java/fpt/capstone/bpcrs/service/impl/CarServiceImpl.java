@@ -16,6 +16,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.Optional;
 
 @Service
@@ -60,9 +61,9 @@ public class CarServiceImpl implements CarService {
 
     @Override
     public Page<Car> getAllCarsPagingByFilters(int page, int size, Integer[] modelIds, Integer[] seat, Double fromPrice, Double toPrice, Integer[] brandIds, Integer ownerId) {
-        Specification conditon = (Specification) (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get(Car_.STATUS), CarEnum.AVAILABLE);
-        Specification conditonReq = (Specification) (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get(Car_.STATUS), CarEnum.REQUEST);
-        conditon = conditon.or(conditonReq);
+        Specification conditon = (Specification) (root, query, criteriaBuilder) -> criteriaBuilder.notEqual(root.get(Car_.STATUS), CarEnum.REGISTER);
+        Specification notEqualUnavaliable = (Specification) (root, query, criteriaBuilder) -> criteriaBuilder.notEqual(root.get(Car_.STATUS), CarEnum.UNAVAILABLE);
+        conditon = conditon.and(notEqualUnavaliable);
         conditon = conditon.and(CarSpecification.carNotOwner(ownerId));
         if (modelIds != null && modelIds.length != 0) {
             conditon = conditon.and(CarSpecification.carHasModelName(modelIds));
