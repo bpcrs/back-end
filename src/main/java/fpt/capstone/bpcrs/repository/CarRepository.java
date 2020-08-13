@@ -14,8 +14,7 @@ import java.util.List;
 public interface CarRepository extends JpaRepository<Car, Integer>,  JpaSpecificationExecutor<Car> {
     Page<Car> findAllByOwner_Id(int ownerId, Pageable paging);
     Page<Car> findAllByStatus(CarEnum status, Pageable paging);
-    Car findByVIN(String VIN);
-    Car findByPlateNum(String plateNum);
+    Car findByVINOrPlateNum(String VIN,String plateNum);
     List<Car> findCarByOwnerIdAndId(int ownerId, int carId);
 
 }

@@ -24,7 +24,5 @@ public interface CarService {
 
     boolean checkStatusCarBySM (CarEnum currentStatus, CarEnum nextStatus);
 
-    Car getCarByVinNumber(String VIN);
-//    Page<Car> getAllCarsByAvailable(boolean isAvailable, int page, int size);
-    Car getCarByPlateNum(String plateNum);
+    Car getCarByVinOrPlateNumber(String VIN,String plateNum);
 }
