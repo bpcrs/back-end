@@ -131,6 +131,7 @@ public class AccountController {
     }
 
     @PutMapping("/license")
+    @RolesAllowed(RoleEnum.RoleType.USER)
     public ResponseEntity<?> updateAccountLicense(
             @RequestBody AccountPayload.AccountRequestUpdate request) {
         try {
@@ -149,6 +150,7 @@ public class AccountController {
     }
 
     @PostMapping("/send-otp")
+    @RolesAllowed(RoleEnum.RoleType.USER)
     public ResponseEntity<?> sendRequestOTP() {
         try {
             Account account = accountService.getCurrentUser();
@@ -161,6 +163,7 @@ public class AccountController {
     }
 
     @PostMapping("/confirm-otp")
+    @RolesAllowed(RoleEnum.RoleType.USER)
     public ResponseEntity<?> confrimOTP(@RequestParam String otp) {
         try {
             Account account = accountService.getCurrentUser();
@@ -170,6 +173,18 @@ public class AccountController {
             return ResponseEntity.badRequest().body(new ApiResponse<>(false, ex.getMessage(), null));
         }
     }
+
+//    @PostMapping("/verify")
+//    @RolesAllowed(RoleEnum.RoleType.USER)
+//    public ResponseEntity<?> checkVerifiedAccount(){
+//        try {
+//            Account account = accountService.getCurrentUser();
+//            boolean isSuccess = accountService.verifyAccounnt(account.getAuthyId());
+//            return ResponseEntity.ok(new ApiResponse<>(isSuccess, isSuccess ? "Verified" : "Unverified"));
+//        } catch (BadRequestException | AuthyException ex) {
+//            return ResponseEntity.badRequest().body(new ApiResponse<>(false, ex.getMessage(), null));
+//        }
+//    }
 //
 //    @PutMapping("license/{id}")
 //    @RolesAllowed(RoleEnum.RoleType.USER)
