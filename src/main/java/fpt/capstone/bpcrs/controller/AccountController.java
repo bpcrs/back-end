@@ -90,18 +90,12 @@ public class AccountController {
             String email = payload.getEmail();
             String name = (String) payload.get("name");
             String imageUrl = (String) payload.get("picture");
-            Account account = accountService.getAccountByEmail(email);
-            if (account == null) {
-                account = accountService.setGoogleAccount(email, name, imageUrl);
-            } else if (!account.isActive()) {
-                return ResponseEntity.badRequest().body(new ApiResponse<>(false, "Your account has been disabled.",
+            Account account = accountService.setGoogleAccount(email, name, imageUrl);
+            boolean isSuccess = blockchainService.registerUser(email);
+            if (!isSuccess) {
+                return ResponseEntity.badRequest().body(new ApiResponse<>(false, "Can't register user on blockchain",
                         null));
             }
-//            boolean isSuccess = blockchainService.registerUser(email);
-//            if (!isSuccess) {
-//                return ResponseEntity.badRequest().body(new ApiResponse<>(false, "Can't register user on blockchain",
-//                        null));
-//            }
             String jwt = tokenProvider
                     .generateToken(AccountResponse.builder()
                             .id(account.getId())
