@@ -11,4 +11,5 @@ import java.util.List;
 public interface BookingTrackingRepository extends JpaRepository<BookingTracking,Integer> {
     List<BookingTracking> findAllByBooking_Id(int bookingId);
     List<BookingTracking> findAllByCreatedDateBetweenAndStatus(LocalDateTime fromDate, LocalDateTime toDate, BookingEnum status);
+    Integer countAllByCreatedDateBetweenAndStatus(LocalDateTime fromDate, LocalDateTime toDate, BookingEnum status);
 }
