@@ -179,6 +179,9 @@ public class AccountController {
     public ResponseEntity<?> checkVerifiedAccount(){
         try {
             Account account = accountService.getCurrentUser();
+            if (account.getAuthyId() == null){
+                return ResponseEntity.ok(new ApiResponse<>(false, "Unverified"));
+            }
             boolean isSuccess = accountService.verifyAccounnt(account.getAuthyId());
             return ResponseEntity.ok(new ApiResponse<>(isSuccess, isSuccess ? "Verified" : "Unverified"));
         } catch (BadRequestException | AuthyException ex) {
