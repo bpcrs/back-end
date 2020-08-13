@@ -1,12 +1,13 @@
 package fpt.capstone.bpcrs.service.impl;
 
+import com.authy.AuthyException;
 import fpt.capstone.bpcrs.component.IgnoreNullProperty;
 import fpt.capstone.bpcrs.component.UserPrincipal;
 import fpt.capstone.bpcrs.constant.RoleEnum;
 import fpt.capstone.bpcrs.exception.BadRequestException;
+import fpt.capstone.bpcrs.hepler.AuthyHelper;
 import fpt.capstone.bpcrs.model.Account;
 import fpt.capstone.bpcrs.model.Role;
-import fpt.capstone.bpcrs.payload.AccountPayload;
 import fpt.capstone.bpcrs.repository.AccountRepository;
 import fpt.capstone.bpcrs.repository.RoleRepository;
 import fpt.capstone.bpcrs.service.AccountService;
@@ -28,6 +29,9 @@ public class AccountServiceImpl implements AccountService {
 
     @Autowired
     private RoleRepository roleRepository;
+
+    @Autowired
+    private AuthyHelper authyHelper;
 
     @Override
     public List<Account> getAccounts() {
@@ -78,13 +82,11 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public Account updateAccount(int id, String phone) {
-        Account account = accountRepository.findById(id).orElse(null);
-        if (account == null) {
-            throw new BadRequestException("Account doesn't existed");
-        }
+    public Account updateAccount(Account account, String phone) throws AuthyException {
+        int authyId =  authyHelper.registerUserToAuthy(account.getEmail(),phone);
         account.setPhone(phone);
-        return account;
+        account.setAuthyId(authyId);
+        return accountRepository.save(account);
     }
 
     private Account setNewAccount(String email, String fullName, String imageUrl, Role role) {
@@ -104,5 +106,18 @@ public class AccountServiceImpl implements AccountService {
         return accountRepository.save(account);
     }
 
+    @Override
+    public boolean sendOTP(Account account) throws AuthyException {
+        return authyHelper.sendOTPAuthy(account.getAuthyId());
+    }
 
+    @Override
+    public boolean confirmOTP(int authyId,String otp) throws AuthyException {
+        return authyHelper.confirmOTP(authyId,otp);
+    }
+
+    @Override
+    public boolean verifyAccounnt(int authyId) throws AuthyException {
+        return authyHelper.verifyAccount(authyId);
+    }
 }

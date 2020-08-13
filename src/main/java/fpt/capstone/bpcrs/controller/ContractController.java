@@ -32,7 +32,7 @@ public class ContractController {
 
     @PostMapping()
     @RolesAllowed({RoleEnum.RoleType.USER})
-    public ResponseEntity<?> signContract(@RequestParam int id) {
+    public ResponseEntity<?> signContract(@RequestParam int id, @RequestParam String otp) {
         try {
             Account currentUser = accountService.getCurrentUser();
             Booking booking = bookingService.getBookingInformation(id);
@@ -43,6 +43,9 @@ public class ContractController {
                 if (booking.getCar().getOwner().equals(currentUser) && booking.getStatus() == BookingEnum.CONFIRM){
                     return ResponseEntity.badRequest().body(new ApiResponse<>(false, "Renter must signing contract first"));
                 }
+
+                //if success cont. otherwise throw EX
+                accountService.confirmOTP(currentUser.getAuthyId(),otp);
                 DappPayload.ResultChaincode resultChaincode = blockchainService.signingContract(booking,booking.getCar().getOwner().equals(currentUser));
                 if (resultChaincode.isSuccess()) {
                     if (booking.getStatus() == BookingEnum.RENTER_SIGNED){
@@ -57,7 +60,6 @@ public class ContractController {
             }
             return ResponseEntity.badRequest().body(new ApiResponse<>(false, "Can't signed contract with booking id= " + id));
         } catch (Exception e) {
-            e.printStackTrace();
             return new ResponseEntity(new ApiResponse<>(false, e.getMessage()), HttpStatus.BAD_REQUEST);
         }
     }

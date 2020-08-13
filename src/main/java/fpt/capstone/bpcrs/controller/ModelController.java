@@ -34,8 +34,8 @@ public class ModelController {
     @RolesAllowed(RoleEnum.RoleType.ADMINISTRATOR)
     public ResponseEntity<?> createModel(@Valid @RequestBody ModelPayload.RequestCreateModel request) {
         ModelPayload.ResponseCreateModel response = new ModelPayload.ResponseCreateModel();
-        Model newModel = (Model) new Model().buildObject(request, true);
-        modelService.createModel(newModel).buildObject(response, false);
+        Model newModel = (Model) new Model().modelMaplerToObject(request, true);
+        modelService.createModel(newModel).modelMaplerToObject(response, false);
         return ResponseEntity.ok(new ApiResponse<>(true, response));
     }
 
@@ -44,7 +44,7 @@ public class ModelController {
         ModelPayload.ResponseCreateModel response = new ModelPayload.ResponseCreateModel();
         Model model = modelService.getModelById(id);
         if (model != null) {
-            model.buildObject(response, false);
+            model.modelMaplerToObject(response, false);
             return ResponseEntity.ok(new ApiResponse<>(true, response));
         }
         return new ResponseEntity(new ApiResponse<>(false, "Model with id= " + id + "not found"), HttpStatus.BAD_REQUEST);

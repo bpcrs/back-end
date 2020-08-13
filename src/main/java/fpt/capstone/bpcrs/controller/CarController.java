@@ -45,7 +45,8 @@ public class CarController {
     private ImageService imageService;
     @Autowired
     private GoogleMapsHelper googleMapsHelper;
-
+    @Autowired
+    private BookingService bookingService;
     @GetMapping
     public ResponseEntity<?> getCars(@RequestParam(defaultValue = "1") int page,
                                      @RequestParam(defaultValue = "10") int size,
@@ -64,7 +65,7 @@ public class CarController {
             List<Image> images = imageService.getAllImage(car.getId(), ImageTypeEnum.CAR);
             car.setImages(images);
 
-            car.buildObject(response, false);
+            car.modelMaplerToObject(response, false);
             responses.add(car);
         }
         List<CarPayload.ResponseFilterCar> carList = ObjectMapperUtils.mapAll(responses,
@@ -104,13 +105,13 @@ public class CarController {
                     HttpStatus.BAD_REQUEST);
         }
         CarPayload.ResponseGetCar response = new CarPayload.ResponseGetCar();
-        Car newCar = (Car) new Car().buildObject(request, true);
+        Car newCar = (Car) new Car().modelMaplerToObject(request, true);
         newCar.setBrand(brand);
         newCar.setModel(model);
         newCar.setOwner(accountService.getCurrentUser());
         newCar.setStatus(CarEnum.REGISTER);
         newCar.setLocation("Ho Chi Minh City");
-        carService.createCar(newCar).buildObject(response, false);
+        carService.createCar(newCar).modelMaplerToObject(response, false);
         return ResponseEntity.ok(new ApiResponse<>(true, response));
     }
 
@@ -119,7 +120,7 @@ public class CarController {
         CarPayload.ResponseGetCar response = new CarPayload.ResponseGetCar();
         Car car = carService.getCarById(id);
         if (car != null) {
-            car.buildObject(response, false);
+            car.modelMaplerToObject(response, false);
             return ResponseEntity.ok(new ApiResponse<>(true, response));
         }
         return new ResponseEntity(new ApiResponse<>(false, "Car with id=" + id + " not found"), HttpStatus.BAD_REQUEST);
@@ -140,6 +141,7 @@ public class CarController {
         }
         List<CarPayload.ResponseGetCar> carList = ObjectMapperUtils.mapAll(responses,
                 CarPayload.ResponseGetCar.class);
+        carList.stream().forEach(car -> car.setRequestCounting(bookingService.getCountRequestByCar(car.getId())));
         PagingPayload pagingPayload =
                 PagingPayload.builder().data(carList).count((int) cars.getTotalElements()).build();
         return ResponseEntity.ok(new ApiResponse<>(true, pagingPayload));
@@ -154,9 +156,9 @@ public class CarController {
         }
         CarPayload.RequestUpdateCar response = new CarPayload.RequestUpdateCar();
         if (car.getStatus() == CarEnum.AVAILABLE || car.getStatus() == CarEnum.UNAVAILABLE) {
-        Car updateCar = (Car) new Car().buildObject(request, true);
+        Car updateCar = (Car) new Car().modelMaplerToObject(request, true);
         updateCar.setId(id);
-        carService.updateCar(updateCar, id).buildObject(response, false);
+        carService.updateCar(updateCar, id).modelMaplerToObject(response, false);
         return ResponseEntity.ok(new ApiResponse<>(true, response));
         }
         return new ResponseEntity(new ApiError("Can not update because status is " + car.getStatus(), ""), HttpStatus.BAD_REQUEST);
