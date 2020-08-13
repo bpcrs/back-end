@@ -47,6 +47,7 @@ public class CarController {
     private GoogleMapsHelper googleMapsHelper;
     @Autowired
     private BookingService bookingService;
+
     @GetMapping
     public ResponseEntity<?> getCars(@RequestParam(defaultValue = "1") int page,
                                      @RequestParam(defaultValue = "10") int size,
@@ -59,7 +60,8 @@ public class CarController {
 
     ) {
         List<Car> responses = new ArrayList<>();
-        Page<Car> cars = carService.getAllCarsPagingByFilters(page, size, models, seat, fromPrice, toPrice, brand, accountService.getCurrentUser().getId());
+        Page<Car> cars = carService.getAllCarsPagingByFilters(page, size, models, seat, fromPrice, toPrice, brand,
+                accountService.getCurrentUser().getId());
         for (Car car : cars) {
             CarPayload.ResponseFilterCar response = new CarPayload.ResponseFilterCar();
             List<Image> images = imageService.getAllImage(car.getId(), ImageTypeEnum.CAR);
@@ -90,7 +92,8 @@ public class CarController {
 //                    HttpStatus.BAD_REQUEST);
 //        }
 //        if (carService.getCarByPlateNum(request.getPlateNum()) != null) {
-//            return new ResponseEntity(new ApiError("Car with plate number " + request.getPlateNum() + " is existed", ""),
+//            return new ResponseEntity(new ApiError("Car with plate number " + request.getPlateNum() + " is
+//            existed", ""),
 //                    HttpStatus.BAD_REQUEST);
 //        }
 
@@ -156,12 +159,13 @@ public class CarController {
         }
         CarPayload.RequestUpdateCar response = new CarPayload.RequestUpdateCar();
         if (car.getStatus() == CarEnum.AVAILABLE || car.getStatus() == CarEnum.UNAVAILABLE) {
-        Car updateCar = (Car) new Car().modelMaplerToObject(request, true);
-        updateCar.setId(id);
-        carService.updateCar(updateCar, id).modelMaplerToObject(response, false);
-        return ResponseEntity.ok(new ApiResponse<>(true, response));
+            Car updateCar = (Car) new Car().modelMaplerToObject(request, true);
+            updateCar.setId(id);
+            carService.updateCar(updateCar, id).modelMaplerToObject(response, false);
+            return ResponseEntity.ok(new ApiResponse<>(true, response));
         }
-        return new ResponseEntity(new ApiError("Can not update because status is " + car.getStatus(), ""), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity(new ApiError("Can not update because status is " + car.getStatus(), ""),
+                HttpStatus.BAD_REQUEST);
     }
 
 
@@ -190,31 +194,21 @@ public class CarController {
             return new ResponseEntity(new ApiError("Car with id=" + id + " not found", ""), HttpStatus.BAD_REQUEST);
         }
         if (!carService.checkStatusCarBySM(car.getStatus(), status)) {
-            return new ResponseEntity(new ApiError("Next status is not available " + status, ""), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity(new ApiError("Next status is not available " + status, ""),
+                    HttpStatus.BAD_REQUEST);
         }
         Car updateCar = carService.updateCarStatus(car, status);
         CarPayload.ResponseGetCar response = ObjectMapperUtils.map(updateCar, CarPayload.ResponseGetCar.class);
         return ResponseEntity.ok(new ApiResponse<>(true, response));
     }
 
-//    @GetMapping("/available")
-//    @RolesAllowed(RoleEnum.RoleType.ADMINISTRATOR)
-//    public ResponseEntity<?> getCarsByAvailable(@RequestParam(value = "isAvailable", required = false, defaultValue = "true") boolean isAvailable,
-//                                                @RequestParam(defaultValue = "1") int page,
-//                                                @RequestParam(defaultValue = "10") int size) {
-//        List<Car> responses = new ArrayList<>();
-//        Page<Car> cars = carService.getAllCarsByAvailable(isAvailable, page, size);
-//        for (Car car : cars) {
-//            Page<Image> images = imageService.getAllImagePaging(page, size, car.getId(), ImageTypeEnum.CAR);
-//            car.setImages(images.toList());
-//            responses.add(car);
-//        }
-//        List<CarPayload.ResponseGetCar> carList = ObjectMapperUtils.mapAll(responses,
-//                CarPayload.ResponseGetCar.class);
-//        PagingPayload pagingPayload =
-//                PagingPayload.builder().data(carList).count((int) cars.getTotalElements()).build();
-//        return ResponseEntity.ok(new ApiResponse<>(true, pagingPayload));
-//    }
-
-
+    @PostMapping("/check-car")
+    @RolesAllowed({RoleEnum.RoleType.USER})
+    public ResponseEntity<?> checkCarValidate(@RequestParam String vin, @RequestParam String plateNum) {
+        Car car = carService.getCarByVinOrPlateNumber(vin, plateNum);
+        if (car != null){
+            return new ResponseEntity(new ApiError("Car with VIN " + vin + " and Plate Num " + plateNum + " already taken." , ""), HttpStatus.BAD_REQUEST);
+        }
+        return ResponseEntity.ok(new ApiResponse<>(true, ""));
+    }
 }

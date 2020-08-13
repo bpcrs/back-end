@@ -43,7 +43,9 @@ public class ContractController {
                 if (booking.getCar().getOwner().equals(currentUser) && booking.getStatus() == BookingEnum.CONFIRM){
                     return ResponseEntity.badRequest().body(new ApiResponse<>(false, "Renter must signing contract first"));
                 }
-
+                if (booking.getStatus() == BookingEnum.RENTER_SIGNED && booking.getRenter().getId() == currentUser.getId()){
+                    return ResponseEntity.badRequest().body(new ApiResponse<>(false, "You already signed"));
+                }
                 //if success cont. otherwise throw EX
                 accountService.confirmOTP(currentUser.getAuthyId(),otp);
                 DappPayload.ResultChaincode resultChaincode = blockchainService.signingContract(booking,booking.getCar().getOwner().equals(currentUser));

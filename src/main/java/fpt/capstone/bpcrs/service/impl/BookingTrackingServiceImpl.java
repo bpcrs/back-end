@@ -28,4 +28,9 @@ public class BookingTrackingServiceImpl implements BookingTrackingService {
     public List<BookingTracking> getAllBookingWithFromDateAndToDate(LocalDateTime fromDate, LocalDateTime toDate, BookingEnum status) {
         return bookingTrackingRepository.findAllByCreatedDateBetweenAndStatus(fromDate,toDate,status);
     }
+
+    @Override
+    public Integer countBookingWithFromDateAndToDate(LocalDateTime fromDate, LocalDateTime toDate, BookingEnum status) {
+        return bookingTrackingRepository.countAllByCreatedDateBetweenAndStatus(fromDate,toDate,status);
+    }
 }

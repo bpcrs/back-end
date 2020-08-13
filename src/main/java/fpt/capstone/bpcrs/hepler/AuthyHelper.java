@@ -26,10 +26,6 @@ public class AuthyHelper {
 
     public boolean sendOTPAuthy(int authyId) throws AuthyException {
         AuthyApiClient client = new AuthyApiClient(apiKey);
-        boolean isComfirmed = client.getUsers().requestStatus(authyId).isConfirmed();
-        if (!isComfirmed){
-            throw new AuthyException("Your phone not confirmed");
-        }
         Hash response = client.getUsers().requestSms(authyId);
         if (response.isSuccess()){
             return true;
