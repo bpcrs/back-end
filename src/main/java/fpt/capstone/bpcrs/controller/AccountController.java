@@ -176,8 +176,8 @@ public class AccountController {
             if (account.getAuthyId() == null){
                 return ResponseEntity.ok(new ApiResponse<>(false, "Unverified"));
             }
-            boolean isSuccess = accountService.verifyAccounnt(account.getAuthyId());
-            return ResponseEntity.ok(new ApiResponse<>(isSuccess, isSuccess ? "Verified" : "Unverified"));
+            boolean isSuccess = accountService.verifyAccounnt(account.getAuthyId()) && account.isLicenseCheck();
+            return ResponseEntity.ok(new ApiResponse<>(isSuccess  , isSuccess ? "Verified" : "Unverified"));
         } catch (BadRequestException | AuthyException ex) {
             return ResponseEntity.badRequest().body(new ApiResponse<>(false, ex.getMessage(), null));
         }

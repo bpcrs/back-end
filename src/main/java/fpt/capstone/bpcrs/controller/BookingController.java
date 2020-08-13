@@ -1,5 +1,6 @@
 package fpt.capstone.bpcrs.controller;
 
+import com.authy.AuthyException;
 import fpt.capstone.bpcrs.constant.BookingEnum;
 import fpt.capstone.bpcrs.constant.CarEnum;
 import fpt.capstone.bpcrs.constant.RoleEnum;
@@ -72,11 +73,11 @@ public class BookingController {
 
     @PostMapping
     @RolesAllowed(RoleEnum.RoleType.USER)
-    public ResponseEntity<?> createBooking(@Valid @RequestBody BookingPayload.RequestCreateBooking request) {
+    public ResponseEntity<?> createBooking(@Valid @RequestBody BookingPayload.RequestCreateBooking request) throws AuthyException {
         Car car = carService.getCarById(request.getCarId());
         Account renter = accountService.getAccountById(request.getRenterId());
 
-        if (renter.getPhone() == null || renter.getImageLicense() == null || renter.getIdentification() == null) {
+        if (renter.isLicenseCheck() && accountService.verifyAccounnt(renter.getAuthyId())) {
             return ResponseEntity.badRequest().body(new ApiResponse<>(false, "User is not eligible to book", HttpStatus.BAD_REQUEST));
         }
 
