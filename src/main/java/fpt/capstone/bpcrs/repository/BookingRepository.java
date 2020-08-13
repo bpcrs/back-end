@@ -27,4 +27,6 @@ public interface BookingRepository extends JpaRepository<Booking, Integer> {
     @Query("select sum (b.totalPrice) from Booking b where b.status = :status and b.createdDate between :from and :to")
     double sumTotalPriceBookingByDay(BookingEnum status, LocalDateTime from, LocalDateTime to);
     int countAllByCarIdAndStatus(int id, BookingEnum status);
+
+
 }
