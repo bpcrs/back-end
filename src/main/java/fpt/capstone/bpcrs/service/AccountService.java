@@ -26,4 +26,6 @@ public interface AccountService {
     boolean sendOTP(Account account) throws AuthyException;
 
     boolean confirmOTP(int authyId, String otp) throws AuthyException;
+
+    boolean verifyAccounnt(int authyId) throws AuthyException;
 }

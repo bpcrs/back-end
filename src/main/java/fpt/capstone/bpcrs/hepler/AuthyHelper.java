@@ -49,7 +49,12 @@ public class AuthyHelper {
         if (response.isOk()){
             return true;
         } else {
-            throw new AuthyException(response.getError().getMessage());
+            throw new AuthyException("Invalid OTP");
         }
+    }
+
+    public boolean verifyAccount(int authyId) throws AuthyException {
+        AuthyApiClient client = new AuthyApiClient(apiKey);
+        return client.getUsers().requestStatus(authyId).isConfirmed();
     }
 }

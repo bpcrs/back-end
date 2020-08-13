@@ -58,5 +58,4 @@ public class BookingTrackingController {
         List<BookingTrackingPayload.ResponseBookingTracking> response = ObjectMapperUtils.mapAll(bookingTrackingList, BookingTrackingPayload.ResponseBookingTracking.class);
         return ResponseEntity.ok(new ApiResponse<>(true, response));
     }
-
 }

@@ -115,4 +115,9 @@ public class AccountServiceImpl implements AccountService {
     public boolean confirmOTP(int authyId,String otp) throws AuthyException {
         return authyHelper.confirmOTP(authyId,otp);
     }
+
+    @Override
+    public boolean verifyAccounnt(int authyId) throws AuthyException {
+        return authyHelper.verifyAccount(authyId);
+    }
 }
