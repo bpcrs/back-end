@@ -3,9 +3,10 @@ package fpt.capstone.bpcrs.service.impl;
 import fpt.capstone.bpcrs.component.Paging;
 import fpt.capstone.bpcrs.constant.BookingEnum;
 import fpt.capstone.bpcrs.model.Booking;
+import fpt.capstone.bpcrs.model.Car;
 import fpt.capstone.bpcrs.model.Review;
-import fpt.capstone.bpcrs.repository.AccountRepository;
 import fpt.capstone.bpcrs.repository.BookingRepository;
+import fpt.capstone.bpcrs.repository.CarRepository;
 import fpt.capstone.bpcrs.repository.ReviewRepository;
 import fpt.capstone.bpcrs.service.ReviewService;
 import lombok.extern.slf4j.Slf4j;
@@ -27,7 +28,7 @@ public class ReviewServiceImpl implements ReviewService {
     @Autowired
     private BookingRepository bookingRepository;
     @Autowired
-    private AccountRepository accountRepository;
+    private CarRepository carRepository;
 
 //    @Override
 //    public List<Review> getAllReviewPaging(int page, int size, int carId) {
@@ -61,5 +62,11 @@ public class ReviewServiceImpl implements ReviewService {
     public Boolean checkBookingIsReviewYet(int carId, int renterId) {
         List<Review> review = reviewRepository.findReviewByCarIdAndRenterId(carId, renterId);
         return review.size() > 0;
+    }
+
+    @Override
+    public Boolean checkUserCanReview(int carId, int renterId) {
+        List<Car> cars = carRepository.findCarByOwnerIdAndId(renterId, carId);
+        return cars.size() > 0;
     }
 }

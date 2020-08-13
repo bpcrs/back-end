@@ -15,6 +15,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -129,6 +131,11 @@ public class BookingServiceImpl implements BookingService {
     public void updateBookingDuplicateDate(Booking approveBooking, BookingEnum status) {
         List<Booking> bookingList = bookingRepository.findAllByFromDateBetweenOrToDateBetweenAndCarIdAndStatus(approveBooking.getFromDate(), approveBooking.getToDate(), approveBooking.getFromDate(), approveBooking.getToDate(), approveBooking.getCar().getId(), BookingEnum.REQUEST);
         bookingList.stream().filter(booking -> booking.getId() != approveBooking.getId()).forEach(booking -> updateBookingStatus(booking, status));
+    }
+
+    @Override
+    public Double sumAllBookingTotalPriceBetweenDate(LocalDateTime fromDate, LocalDateTime toDate) {
+        return bookingRepository.sumTotalPriceBookingByDay(BookingEnum.DONE, fromDate, toDate);
     }
 
     @Override
