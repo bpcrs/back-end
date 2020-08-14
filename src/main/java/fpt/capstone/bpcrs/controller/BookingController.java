@@ -77,7 +77,7 @@ public class BookingController {
         Car car = carService.getCarById(request.getCarId());
         Account renter = accountService.getAccountById(request.getRenterId());
 
-        if (renter.isLicenseCheck() && accountService.verifyAccounnt(renter.getAuthyId())) {
+        if (!(renter.isLicenseCheck() && accountService.verifyAccounnt(renter.getAuthyId()))) {
             return ResponseEntity.badRequest().body(new ApiResponse<>(false, "User is not eligible to book", HttpStatus.BAD_REQUEST));
         }
 

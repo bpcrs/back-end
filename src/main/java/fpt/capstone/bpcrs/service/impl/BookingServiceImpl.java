@@ -117,6 +117,8 @@ public class BookingServiceImpl implements BookingService {
             case CONFIRM:
                 return nextStatus == BookingEnum.CANCEL || nextStatus == BookingEnum.RENTER_SIGNED;
             case RENTER_SIGNED:
+                return nextStatus == BookingEnum.PROCESSING;
+            case PROCESSING:
                 return nextStatus == BookingEnum.DONE;
         }
         return false;
