@@ -76,7 +76,6 @@ public class BookingController {
     public ResponseEntity<?> createBooking(@Valid @RequestBody BookingPayload.RequestCreateBooking request) throws AuthyException {
         Car car = carService.getCarById(request.getCarId());
         Account renter = accountService.getAccountById(request.getRenterId());
-        System.out.println(!(renter.isLicenseCheck() && accountService.verifyAccounnt(renter.getAuthyId())));
 
         if (!(renter.isLicenseCheck() && accountService.verifyAccounnt(renter.getAuthyId()))) {
             return ResponseEntity.badRequest().body(new ApiResponse<>(false, "User is not eligible to book", HttpStatus.BAD_REQUEST));
