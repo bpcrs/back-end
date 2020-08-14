@@ -1,5 +1,6 @@
 package fpt.capstone.bpcrs.model;
 
+import fpt.capstone.bpcrs.constant.CriteriaEnum;
 import javax.annotation.Generated;
 import javax.persistence.metamodel.CollectionAttribute;
 import javax.persistence.metamodel.SingularAttribute;
@@ -10,7 +11,7 @@ import javax.persistence.metamodel.StaticMetamodel;
 public abstract class Criteria_ extends fpt.capstone.bpcrs.component.Auditing_ {
 
 	public static volatile SingularAttribute<Criteria, String> unit;
-	public static volatile SingularAttribute<Criteria, String> name;
+	public static volatile SingularAttribute<Criteria, CriteriaEnum> name;
 	public static volatile SingularAttribute<Criteria, Boolean> isRenter;
 	public static volatile CollectionAttribute<Criteria, Agreement> agreements;
 

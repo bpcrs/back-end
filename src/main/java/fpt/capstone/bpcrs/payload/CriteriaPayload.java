@@ -34,4 +34,14 @@ public class CriteriaPayload {
 
         private boolean isRenter;
     }
+
+    @Data
+    @NoArgsConstructor
+    public static class PreReturnResponse {
+        private int mileageLimit;
+        private double extra;
+        private double deposit;
+        private double totalPrice;
+        private double insurance;
+    }
 }
