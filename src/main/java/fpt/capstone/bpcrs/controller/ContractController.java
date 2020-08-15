@@ -57,7 +57,7 @@ public class ContractController {
                 if (resultChaincode.isSuccess()) {
                     if (booking.getStatus() == BookingEnum.RENTER_SIGNED){
                         carService.updateCarStatus(booking.getCar(), CarEnum.RENTING);
-                        bookingService.updateBookingStatus(booking, BookingEnum.DONE);
+                        bookingService.updateBookingStatus(booking, BookingEnum.PROCESSING);
                     } else {
                         bookingService.updateBookingStatus(booking, BookingEnum.RENTER_SIGNED);
                     }

@@ -107,7 +107,7 @@ public class AgreementController {
         }
         // if user=renter => insert agreement have criteria with isRenter=true
         // overwise, user=owner => insert agreement have criteria with isRenter=false
-        if ((criteria.isRenter() && booking.getRenter().getId() == accountService.getCurrentUser().getId()) || (!criteria.isRenter() && booking.getCar().getOwner().getId() == accountService.getCurrentUser().getId())){
+        if (criteria.isRenter() && booking.getRenter().getId().equals(accountService.getCurrentUser().getId()) || !criteria.isRenter() && booking.getCar().getOwner().getId().equals(accountService.getCurrentUser().getId())){
 
             AgreementPayload.ResponseCreateAgreement response = new AgreementPayload.ResponseCreateAgreement();
             agreementService.createOrUpdateAgreement(request).modelMaplerToObject(response, false);
