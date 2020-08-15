@@ -60,7 +60,7 @@ public class Booking extends Auditing {
     @NotNull
     private double totalPrice;
 
-    @Column
+    @Column(columnDefinition = "int default 0")
     private int distance;
 
     @ManyToOne
