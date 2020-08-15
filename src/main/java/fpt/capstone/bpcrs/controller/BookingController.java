@@ -138,11 +138,15 @@ public class BookingController {
                             "network", null));
                 }
             }
+            if (nextStatus == BookingEnum.DONE){
+               CriteriaPayload.PreReturnResponse returnResponse =   criteriaService.estimatePriceByAgreement(booking.getAgreements(),booking,booking.getDistance());
+                booking.setTotalPrice(returnResponse.getTotalPrice());
+            }
             booking = bookingService.updateBookingStatus(booking, status);
             BookingPayload.ResponseCreateBooking response = ObjectMapperUtils.map(booking,
                     BookingPayload.ResponseCreateBooking.class);
             return ResponseEntity.ok(new ApiResponse<>(true, "Booking status was updated", response));
-        } catch (BadRequestException | JSONException ex) {
+        } catch (Exception ex) {
             return ResponseEntity.badRequest().body(new ApiResponse<>(false, ex.getMessage(), null));
         }
     }

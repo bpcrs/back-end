@@ -58,7 +58,10 @@ public class Booking extends Auditing {
 
     @Column
     @NotNull
-    private double totalDate;
+    private double totalPrice;
+
+    @Column
+    private int distance;
 
     @ManyToOne
     @JoinColumn(name = "renter_id")
