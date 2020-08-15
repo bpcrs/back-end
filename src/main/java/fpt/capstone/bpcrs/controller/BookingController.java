@@ -122,7 +122,7 @@ public class BookingController {
             //Save to BLC
             if (nextStatus == BookingEnum.CONFIRM || nextStatus == BookingEnum.OWNER_ACCEPTED) {
                 //check agreement before => CONFIRM
-                if (booking.getAgreements().size() == 0){
+                if (booking.getAgreements().isEmpty()){
                     return ResponseEntity.badRequest().body(new ApiResponse<>(false, "You must agreement before submit "
                             , null));
                 }
