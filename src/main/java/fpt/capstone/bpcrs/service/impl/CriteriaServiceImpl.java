@@ -7,6 +7,7 @@ import fpt.capstone.bpcrs.model.Agreement;
 import fpt.capstone.bpcrs.model.Booking;
 import fpt.capstone.bpcrs.model.Criteria;
 import fpt.capstone.bpcrs.payload.CriteriaPayload;
+import fpt.capstone.bpcrs.repository.BookingRepository;
 import fpt.capstone.bpcrs.repository.CriteriaRepository;
 import fpt.capstone.bpcrs.service.CriteriaService;
 import lombok.extern.slf4j.Slf4j;
@@ -27,6 +28,9 @@ public class CriteriaServiceImpl implements CriteriaService {
 
     @Autowired
     private CriteriaRepository criteriaRepository;
+
+    @Autowired
+    private BookingRepository bookingRepository;
 
     @Override
     public List<Criteria> getAllCriteria() {
@@ -74,6 +78,8 @@ public class CriteriaServiceImpl implements CriteriaService {
         JSONObject insurance = new JSONObject(agreement.getValue());
         result.setInsurance(Integer.parseInt(insurance.get("value").toString()));
         result.setTotalPrice(result.getDeposit() - result.getExtra() + result.getInsurance() - agreement.getBooking().getRentalPrice());
+        booking.setDistance(booking.getCar().getOdometer() - odmeter);
+        bookingRepository.save(booking);
         return result;
     }
 
