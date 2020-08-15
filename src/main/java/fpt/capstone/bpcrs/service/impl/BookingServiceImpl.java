@@ -15,9 +15,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
 
 @Service
@@ -88,7 +86,7 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public Page<Booking> getAllBookingsRequestByCar(int carId, BookingEnum[] status, int page, int size) {
-        return bookingRepository.findAllByCar_IdAndStatusInOrderByCreatedDateDesc(carId, status,
+        return bookingRepository.findAllByCarIdAndStatusInOrderByCreatedDateDesc(carId, status,
                 new Paging(page, size, Sort.unsorted()));
     }
 

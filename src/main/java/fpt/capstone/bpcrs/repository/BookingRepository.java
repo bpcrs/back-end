@@ -18,8 +18,7 @@ public interface BookingRepository extends JpaRepository<Booking, Integer> {
 
     Page<Booking> findAllByRenter_IdAndStatusInOrderByCreatedDateDesc(int ownerId, BookingEnum[] status, Pageable paging);
 
-    Page<Booking> findAllByCar_IdAndStatusInOrderByCreatedDateDesc(int carId, BookingEnum[] status , Pageable paging);
-
+    Page<Booking> findAllByCarIdAndStatusInOrderByCreatedDateDesc(int carId, BookingEnum[] status , Pageable paging);
     Page<Booking> findAllByCar_Owner_IdAndStatusInOrderByCreatedDateDesc(int ownerId, BookingEnum[] status , Pageable paging);
 
     List<Booking> findAllByFromDateBetweenOrToDateBetweenAndCarIdAndStatus(Date fromDate, Date toDate, Date fromDateBetween, Date toDateBetween, int carId, BookingEnum status);
