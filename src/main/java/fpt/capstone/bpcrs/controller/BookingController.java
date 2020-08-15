@@ -122,6 +122,10 @@ public class BookingController {
             //Save to BLC
             if (nextStatus == BookingEnum.CONFIRM || nextStatus == BookingEnum.OWNER_ACCEPTED) {
                 //check agreement before => CONFIRM
+                if (booking.getAgreements().size() == 0){
+                    return ResponseEntity.badRequest().body(new ApiResponse<>(false, "You must agreement before submit "
+                            , null));
+                }
                 boolean isApproveAllAgreemet = booking.getAgreements().stream().allMatch(Agreement::isApproved);
                 if (!isApproveAllAgreemet) {
                     return ResponseEntity.badRequest().body(new ApiResponse<>(false, "All agreement must be approved"
