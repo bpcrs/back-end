@@ -1,6 +1,7 @@
 package fpt.capstone.bpcrs.service;
 
 import fpt.capstone.bpcrs.constant.BookingEnum;
+import fpt.capstone.bpcrs.exception.BpcrsException;
 import fpt.capstone.bpcrs.model.Booking;
 import fpt.capstone.bpcrs.payload.BookingPayload;
 import org.springframework.data.domain.Page;
@@ -13,17 +14,13 @@ public interface BookingService {
 
     Booking createBooking(Booking booking);
 
-    Booking updateBookingStatus(Booking  booking, BookingEnum status);
+    Booking updateBookingStatus(Booking  booking, BookingEnum status) throws BpcrsException;
 
     Booking getBookingInformation(int id);
 
     List<Booking> getUserHiringBookingList(int id);
 
     List<Booking> getUserRentingBookingList(int id);
-
-    Booking finishBooking(int id, int money);
-
-    Booking statisticCarDamage(int id, BookingPayload.RequestStatisticCarDamage request);
 
     //Car
     Page<Booking> getAllBookingsRequestByCar(int carId, BookingEnum[] status, int page, int size);
@@ -34,10 +31,9 @@ public interface BookingService {
     //Renter
     Page<Booking> getAllBookingRequestsByRenter(int renterId, BookingEnum[] status, int page, int size);
 
-    boolean checkStatusBookingBySM (BookingEnum currentStatus, BookingEnum nextStatus);
 
     int getCountRequestByCar(int id);
-    void updateBookingDuplicateDate(Booking approveBooking, BookingEnum status);
+    void updateBookingDuplicateDate(Booking approveBooking, BookingEnum status) throws BpcrsException;
 
     Double sumAllBookingTotalPriceBetweenDate(LocalDateTime fromDate, LocalDateTime toDate);
 }

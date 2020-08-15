@@ -5,6 +5,7 @@ import fpt.capstone.bpcrs.constant.BookingEnum;
 import fpt.capstone.bpcrs.constant.CarEnum;
 import fpt.capstone.bpcrs.constant.RoleEnum;
 import fpt.capstone.bpcrs.exception.BadRequestException;
+import fpt.capstone.bpcrs.exception.BpcrsException;
 import fpt.capstone.bpcrs.model.Account;
 import fpt.capstone.bpcrs.model.Agreement;
 import fpt.capstone.bpcrs.model.Booking;
@@ -90,7 +91,12 @@ public class BookingController {
                 .location(request.getLocation()).destination(request.getDestination())
                 .status(BookingEnum.REQUEST).rentalPrice(request.getTotalPrice()).build();
         bookingService.createBooking(booking).modelMaplerToObject(response, false);
-        carService.updateCarStatus(car, CarEnum.REQUEST);
+        try {
+            carService.updateCarStatus(car, CarEnum.REQUEST);
+        } catch (BpcrsException e) {
+            return new ResponseEntity(new ApiError(e.getMessage(), ""),
+                    HttpStatus.BAD_REQUEST);
+        }
         return ResponseEntity.ok(new ApiResponse<>(true, response));
     }
 
@@ -107,9 +113,6 @@ public class BookingController {
             BookingEnum currentStatus = booking.getStatus();
             if (booking.getCar().getOwner().getId().intValue() != accountService.getCurrentUser().getId().intValue() && booking.getRenter().getId().intValue() != accountService.getCurrentUser().getId().intValue()) {
                 return ResponseEntity.badRequest().body(new ApiResponse<>(false, "User is not allowed", null));
-            }
-            if (!bookingService.checkStatusBookingBySM(currentStatus, nextStatus)) {
-                return ResponseEntity.badRequest().body(new ApiResponse<>(false, "Invalid status request", null));
             }
             // if duplicate ngày booking thì sẽ cancel những request khônng được approve
             if (currentStatus == BookingEnum.REQUEST && nextStatus == BookingEnum.PENDING) {
@@ -143,6 +146,7 @@ public class BookingController {
                 CriteriaPayload.PreReturnResponse returnResponse =
                         criteriaService.estimatePriceByAgreement(booking.getAgreements(), booking,
                                 booking.getDistance());
+                carService.updateCarStatus(booking.getCar(), CarEnum.UNAVAILABLE);
                 booking.setTotalPrice(returnResponse.getTotalPrice());
             }
             booking = bookingService.updateBookingStatus(booking, status);

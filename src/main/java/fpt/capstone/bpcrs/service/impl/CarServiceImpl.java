@@ -3,6 +3,7 @@ package fpt.capstone.bpcrs.service.impl;
 import fpt.capstone.bpcrs.component.IgnoreNullProperty;
 import fpt.capstone.bpcrs.component.Paging;
 import fpt.capstone.bpcrs.constant.CarEnum;
+import fpt.capstone.bpcrs.exception.BpcrsException;
 import fpt.capstone.bpcrs.model.Car;
 import fpt.capstone.bpcrs.model.Car_;
 import fpt.capstone.bpcrs.model.specification.CarSpecification;
@@ -93,13 +94,15 @@ public class CarServiceImpl implements CarService {
         return cars;
     }
 
-    public Car updateCarStatus(Car car, CarEnum status) {
+    public Car updateCarStatus(Car car, CarEnum status) throws BpcrsException {
+        if (!checkStatusCarBySM(car.getStatus(),status)){
+            throw new BpcrsException("Invalid CAR_STATUS");
+        }
         car.setStatus(status);
         return carRepository.save(car);
     }
 
-    @Override
-    public boolean checkStatusCarBySM(CarEnum currentStatus, CarEnum nextStatus) {
+    private boolean checkStatusCarBySM(CarEnum currentStatus, CarEnum nextStatus) {
         switch (currentStatus) {
             case UNAVAILABLE:
             case RENTING:
