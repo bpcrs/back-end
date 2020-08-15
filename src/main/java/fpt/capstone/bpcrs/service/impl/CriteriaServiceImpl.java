@@ -12,6 +12,7 @@ import fpt.capstone.bpcrs.service.CriteriaService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -70,7 +71,8 @@ public class CriteriaServiceImpl implements CriteriaService {
         agreement = getAgreementByCriteria(agreementList,CriteriaEnum.DEPOSIT);
         result.setDeposit(Integer.parseInt(agreement.getValue()) * agreement.getBooking().getCar().getPrice());
         agreement = getAgreementByCriteria(agreementList,CriteriaEnum.INSURANCE);
-        result.setInsurance(0);
+        JSONObject insurance = new JSONObject(agreement.getValue());
+        result.setInsurance(Integer.parseInt(insurance.get("value").toString()));
         result.setTotalPrice(result.getDeposit() - result.getExtra() + result.getInsurance() - agreement.getBooking().getRentalPrice());
         return result;
     }
