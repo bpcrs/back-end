@@ -76,12 +76,12 @@ public class Booking extends Auditing {
     @ToString.Exclude
     private Car car;
 
-    @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "booking")
     @ApiModelProperty(hidden = true)
     @ToString.Exclude
     private List<Agreement> agreements;
 
-    @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "booking")
     @ApiModelProperty(hidden = true)
     @ToString.Exclude
     private List<BookingTracking> trackings;

@@ -39,7 +39,7 @@ public class Criteria extends Auditing {
     private boolean isRenter;
 
 
-    @OneToMany(mappedBy = "criteria", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "criteria")
     @ApiModelProperty(hidden = true)
     private Collection<Agreement> agreements;
 }

@@ -29,6 +29,6 @@ public class Role extends Auditing {
     @Column(columnDefinition = "TINYINT(1) default 1")
     private boolean active;
 
-    @OneToMany(mappedBy = "role", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "role")
     private List<Account> accounts;
 }
