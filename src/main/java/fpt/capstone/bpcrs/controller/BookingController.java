@@ -9,10 +9,7 @@ import fpt.capstone.bpcrs.model.Account;
 import fpt.capstone.bpcrs.model.Agreement;
 import fpt.capstone.bpcrs.model.Booking;
 import fpt.capstone.bpcrs.model.Car;
-import fpt.capstone.bpcrs.payload.ApiResponse;
-import fpt.capstone.bpcrs.payload.BookingPayload;
-import fpt.capstone.bpcrs.payload.CriteriaPayload;
-import fpt.capstone.bpcrs.payload.PagingPayload;
+import fpt.capstone.bpcrs.payload.*;
 import fpt.capstone.bpcrs.service.*;
 import fpt.capstone.bpcrs.util.ObjectMapperUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -140,6 +137,8 @@ public class BookingController {
             }
             if (nextStatus == BookingEnum.DONE){
                CriteriaPayload.PreReturnResponse returnResponse =   criteriaService.estimatePriceByAgreement(booking.getAgreements(),booking,booking.getDistance());
+               returnResponse.setAgreements(ObjectMapperUtils.mapAll(booking.getAgreements(),
+                       AgreementPayload.ResponsePreReturn.class));
                 booking.setTotalPrice(returnResponse.getTotalPrice());
             }
             booking = bookingService.updateBookingStatus(booking, status);

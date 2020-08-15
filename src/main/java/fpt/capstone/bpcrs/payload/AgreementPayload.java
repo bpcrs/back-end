@@ -49,5 +49,13 @@ public class AgreementPayload {
         private boolean isApproved;
     }
 
+    @Data
+    @NoArgsConstructor
+    public static class ResponsePreReturn{
+        private CriteriaPayload.ResposneCreateCriteria criteria;
+
+        private String value;
+    }
+
 
 }
