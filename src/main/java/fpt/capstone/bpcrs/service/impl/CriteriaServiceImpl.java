@@ -66,7 +66,7 @@ public class CriteriaServiceImpl implements CriteriaService {
          agreement = getAgreementByCriteria(agreementList, CriteriaEnum.EXTRA);
          agreement = getAgreementByCriteria(agreementList, CriteriaEnum.DEPOSIT);
 
-        result.setMileageLimit(agreement.getBooking().getCar().getOdometer() - odmeter - Integer.parseInt( agreement.getValue()));
+        result.setMileageLimit(odmeter - agreement.getBooking().getCar().getOdometer());
         agreement = getAgreementByCriteria(agreementList, CriteriaEnum.EXTRA);
         result.setExtra(0);
         if (result.getMileageLimit() > 0){
