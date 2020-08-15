@@ -126,6 +126,7 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public void updateBookingDuplicateDate(Booking approveBooking, BookingEnum status) {
         List<Booking> bookingList = bookingRepository.findAllByFromDateBetweenOrToDateBetweenAndCarIdAndStatus(approveBooking.getFromDate(), approveBooking.getToDate(), approveBooking.getFromDate(), approveBooking.getToDate(), approveBooking.getCar().getId(), BookingEnum.REQUEST);
+        bookingList.stream().forEach(item -> log.info(item.getStatus().toString()));
         bookingList.stream().filter(booking -> booking.getId() != approveBooking.getId()).forEach(booking -> updateBookingStatus(booking, status));
     }
 
