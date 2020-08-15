@@ -88,11 +88,10 @@ public class BookingController {
         }
 
         BookingPayload.ResponseCreateBooking response = new BookingPayload.ResponseCreateBooking();
-
         Booking booking = Booking.builder().car(car).renter(renter)
                 .fromDate(request.getFromDate()).toDate(request.getToDate())
                 .location(request.getLocation()).destination(request.getDestination())
-                .status(BookingEnum.REQUEST).totalPrice(request.getTotalPrice()).build();
+                .status(BookingEnum.REQUEST).rentalPrice(request.getTotalPrice()).build();
         bookingService.createBooking(booking).modelMaplerToObject(response, false);
         carService.updateCarStatus(car, CarEnum.REQUEST);
         return ResponseEntity.ok(new ApiResponse<>(true, response));

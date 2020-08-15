@@ -54,8 +54,11 @@ public class Booking extends Auditing {
 
     @Column
     @NotNull
-    private double totalPrice;
+    private double rentalPrice;
 
+    @Column
+    @NotNull
+    private double totalDate;
 
     @ManyToOne
     @JoinColumn(name = "renter_id")
@@ -84,7 +87,7 @@ public class Booking extends Auditing {
     public String toString() {
         DecimalFormat decimalFormat = new DecimalFormat("#.##");
 
-        return getCar().getId() + getCar().getOwner().getEmail() + getRenter().getEmail() + getFromDate() + getToDate() + decimalFormat.format(totalPrice) + decimalFormat.format(getCar().getPrice()) + getLocation() + getDestination();
+        return getCar().getId() + getCar().getOwner().getEmail() + getRenter().getEmail() + getFromDate() + getToDate() + decimalFormat.format(rentalPrice) + decimalFormat.format(getCar().getPrice()) + getLocation() + getDestination();
     }
 
     public JSONArray agreementsToJSONArray() throws JSONException {

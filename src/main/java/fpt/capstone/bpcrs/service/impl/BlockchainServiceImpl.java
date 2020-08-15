@@ -26,7 +26,7 @@ public class BlockchainServiceImpl implements BlockchainService {
         requestBody.put("fromDate", booking.getFromDate());
         requestBody.put("toDate", booking.getToDate());
         requestBody.put("carPrice", booking.getCar().getPrice());
-        requestBody.put("totalPrice", booking.getTotalPrice());
+        requestBody.put("totalPrice", booking.getRentalPrice());
         requestBody.put("location", booking.getLocation());
         requestBody.put("destination", booking.getDestination());
         requestBody.put("criteria", booking.agreementsToJSONArray());

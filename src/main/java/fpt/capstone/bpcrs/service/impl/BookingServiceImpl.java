@@ -124,10 +124,6 @@ public class BookingServiceImpl implements BookingService {
         return false;
     }
 
-    @Override
-    public void updateCancelBookingDuplicateDate(Booking approveBooking) {
-
-    }
 
     @Override
     public void updateBookingDuplicateDate(Booking approveBooking, BookingEnum status) {
