@@ -135,10 +135,10 @@ public class BookingController {
                             "network", null));
                 }
             }
-            if (nextStatus == BookingEnum.DONE){
-               CriteriaPayload.PreReturnResponse returnResponse =   criteriaService.estimatePriceByAgreement(booking.getAgreements(),booking,booking.getDistance());
-               returnResponse.setAgreements(ObjectMapperUtils.mapAll(booking.getAgreements(),
-                       AgreementPayload.ResponsePreReturn.class));
+            if (nextStatus == BookingEnum.DONE) {
+                CriteriaPayload.PreReturnResponse returnResponse =
+                        criteriaService.estimatePriceByAgreement(booking.getAgreements(), booking,
+                                booking.getDistance());
                 booking.setTotalPrice(returnResponse.getTotalPrice());
             }
             booking = bookingService.updateBookingStatus(booking, status);
@@ -199,15 +199,18 @@ public class BookingController {
             return ResponseEntity.badRequest().body(new ApiResponse<>(false, "Booking with id " + id + " not existed"
                     , null));
         }
-        if (!accountService.getCurrentUser().getId().equals(booking.getCar().getOwner().getId())){
+        if (!accountService.getCurrentUser().getId().equals(booking.getCar().getOwner().getId())) {
             return ResponseEntity.badRequest().body(new ApiResponse<>(false, "User is not eligible to executed"
                     , null));
         }
         List<Agreement> agreementList = booking.getAgreements();
-        try{
-            CriteriaPayload.PreReturnResponse response = criteriaService.estimatePriceByAgreement(agreementList,booking,odmeter);
+        try {
+            CriteriaPayload.PreReturnResponse response = criteriaService.estimatePriceByAgreement(agreementList,
+                    booking, odmeter);
+            response.setAgreements(ObjectMapperUtils.mapAll(agreementList,
+                    AgreementPayload.ResponsePreReturn.class));
             return ResponseEntity.ok().body(new ApiResponse<>(true, response));
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.badRequest().body(new ApiResponse<>(false, e.getMessage()));
         }
