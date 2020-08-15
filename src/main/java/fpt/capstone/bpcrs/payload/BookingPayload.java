@@ -78,6 +78,8 @@ public class BookingPayload {
         private LocalDateTime createdDate;
 
         private List<BookingTracking> trackings;
+
+        private double rentalPrice;
     }
 
     @Data
