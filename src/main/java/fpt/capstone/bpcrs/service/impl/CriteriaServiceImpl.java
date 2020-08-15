@@ -61,11 +61,6 @@ public class CriteriaServiceImpl implements CriteriaService {
     public CriteriaPayload.PreReturnResponse estimatePriceByAgreement(List<Agreement> agreementList, Booking booking, int odmeter) throws Exception {
         CriteriaPayload.PreReturnResponse result = new CriteriaPayload.PreReturnResponse();
         Agreement agreement = getAgreementByCriteria(agreementList, CriteriaEnum.MILEAGE_LIMIT);
-         agreement = getAgreementByCriteria(agreementList, CriteriaEnum.INSURANCE);
-         agreement = getAgreementByCriteria(agreementList, CriteriaEnum.INDEMNTIFICATION);
-         agreement = getAgreementByCriteria(agreementList, CriteriaEnum.EXTRA);
-         agreement = getAgreementByCriteria(agreementList, CriteriaEnum.DEPOSIT);
-
         result.setMileageLimit(odmeter - agreement.getBooking().getCar().getOdometer());
         agreement = getAgreementByCriteria(agreementList, CriteriaEnum.EXTRA);
         result.setExtra(0);
@@ -76,7 +71,7 @@ public class CriteriaServiceImpl implements CriteriaService {
         result.setDeposit(Integer.parseInt(agreement.getValue()) * agreement.getBooking().getCar().getPrice());
         agreement = getAgreementByCriteria(agreementList,CriteriaEnum.INSURANCE);
         result.setInsurance(0);
-        result.setTotalPrice(result.getDeposit() - result.getExtra() - result.getInsurance());
+        result.setTotalPrice(result.getDeposit() - result.getExtra() + result.getInsurance() - agreement.getBooking().getRentalPrice());
         return result;
     }
 
