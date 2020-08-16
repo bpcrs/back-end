@@ -112,7 +112,7 @@ public class CarServiceImpl implements CarService {
             case REQUEST:
                 return nextStatus == CarEnum.BOOKED || nextStatus == CarEnum.AVAILABLE || nextStatus == CarEnum.REQUEST;
             case BOOKED:
-                return nextStatus == CarEnum.RENTING || nextStatus == CarEnum.AVAILABLE;
+                return nextStatus == CarEnum.RENTING || nextStatus == CarEnum.AVAILABLE || nextStatus == CarEnum.BOOKED;
             case REGISTER:
                 return nextStatus == CarEnum.UNAVAILABLE;
         }
