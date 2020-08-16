@@ -51,6 +51,7 @@ public class AccountServiceImpl implements AccountService {
             throw new BadRequestException("Account doesn't existed");
         }
         account.setActive(active);
+        account.setLicenseCheck(active);
         return accountRepository.save(account);
     }
 
