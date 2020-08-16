@@ -28,7 +28,7 @@ public class BrandController {
     @GetMapping
     public ResponseEntity<?> getBrands(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "10") int size) {
         List<Brand> brands = brandService.getAllBrand(page, size);
-        List<BrandPayload.ResponseCreateBrand> brandList = ObjectMapperUtils.mapAll(brands, BrandPayload.ResponseCreateBrand.class);
+        List<BrandPayload.ResponseBrand> brandList = ObjectMapperUtils.mapAll(brands, BrandPayload.ResponseBrand.class);
         return ResponseEntity.ok(new ApiResponse<>(true, brandList));
     }
 
@@ -39,7 +39,7 @@ public class BrandController {
         if (brands.isEmpty()) {
             return ResponseEntity.ok(new ApiResponse<>(false, ""));
         }
-        List<BrandPayload.ResponseCreateBrand> brandList = ObjectMapperUtils.mapAll(brands.toList(), BrandPayload.ResponseCreateBrand.class);
+        List<BrandPayload.ResponseBrand> brandList = ObjectMapperUtils.mapAll(brands.toList(), BrandPayload.ResponseBrand.class);
         PagingPayload pagingPayload =
                 PagingPayload.builder().data(brandList).count((int) brands.getTotalElements()).build();
         return ResponseEntity.ok(new ApiResponse<>(true, pagingPayload));
@@ -48,17 +48,16 @@ public class BrandController {
     @PutMapping("/{id}")
     @RolesAllowed(RoleEnum.RoleType.ADMINISTRATOR)
     public ResponseEntity<?> updateBrand(@PathVariable int id, @Valid @RequestParam String name, @Valid @RequestParam String imageUrl) {
-        BrandPayload.RequestUpdateBrand response = new BrandPayload.RequestUpdateBrand();
+        BrandPayload.ResponseBrand response = new BrandPayload.ResponseBrand();
         brandService.updateBrand(id, name, imageUrl).modelMaplerToObject(response, false);
         return ResponseEntity.ok(new ApiResponse<>(true, response));
     }
 
     @PostMapping
     @RolesAllowed(RoleEnum.RoleType.ADMINISTRATOR)
-    public ResponseEntity<?> createBrand(@Valid @RequestBody BrandPayload.RequestCreateBrand request) {
-        BrandPayload.ResponseCreateBrand response = new BrandPayload.ResponseCreateBrand();
-        Brand newBrand = (Brand) new Brand().modelMaplerToObject(request, true);
-        brandService.createBrand(newBrand).modelMaplerToObject(response, false);
+    public ResponseEntity<?> createBrand(@Valid @RequestParam String name, @Valid @RequestParam String imageUrl) {
+        BrandPayload.ResponseBrand response = new BrandPayload.ResponseBrand();
+        brandService.createBrand(name, imageUrl).modelMaplerToObject(response, false);
         return ResponseEntity.ok(new ApiResponse<>(true, response));
     }
 }

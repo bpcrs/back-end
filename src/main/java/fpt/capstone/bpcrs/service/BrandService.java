@@ -14,7 +14,7 @@ public interface BrandService {
 
     Brand getBrandById(int id);
 
-    Brand createBrand(Brand brand);
+    Brand createBrand(String name, String imageUrl);
 
     Brand updateBrand(int id, String name, String url);
 }

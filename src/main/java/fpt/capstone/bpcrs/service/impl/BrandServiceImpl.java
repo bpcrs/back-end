@@ -37,8 +37,8 @@ public class BrandServiceImpl implements BrandService {
     }
 
     @Override
-    public Brand createBrand(Brand brand) {
-        return brandRepository.save(brand);
+    public Brand createBrand(String name, String imageUrl) {
+        return brandRepository.save(Brand.builder().name(name).logoLink(imageUrl).build());
     }
 
     @Override
