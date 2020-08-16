@@ -2,6 +2,7 @@ package fpt.capstone.bpcrs.service.impl;
 
 import fpt.capstone.bpcrs.component.Paging;
 import fpt.capstone.bpcrs.constant.BookingEnum;
+import fpt.capstone.bpcrs.exception.BpcrsException;
 import fpt.capstone.bpcrs.model.Booking;
 import fpt.capstone.bpcrs.model.BookingTracking;
 import fpt.capstone.bpcrs.payload.BookingPayload;
@@ -15,9 +16,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
 
 @Service
@@ -41,7 +40,10 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public Booking updateBookingStatus(Booking booking, BookingEnum status) {
+    public Booking updateBookingStatus(Booking booking, BookingEnum status) throws BpcrsException {
+        if (!checkStatusBookingBySM(booking.getStatus(),status)){
+            throw new BpcrsException("Invalid BOOKING_STATUS");
+        }
         booking.setStatus(status);
         bookingTrackingRepository.save(BookingTracking.builder().booking(booking).status(status).build());
         return bookingRepository.save(booking);
@@ -62,33 +64,10 @@ public class BookingServiceImpl implements BookingService {
         return bookingRepository.findAllByRenter_Id(id);
     }
 
-    @Override
-    public Booking finishBooking(int id, int money) {
-        Booking booking = bookingRepository.findById(id).orElse(null);
-        if (booking != null) {
-            if (money != 0) {
-            }
-            bookingRepository.save(booking);
-        }
-        return booking;
-    }
-
-    @Override
-    public Booking statisticCarDamage(int id, BookingPayload.RequestStatisticCarDamage request) {
-        Booking booking = bookingRepository.findById(id).orElse(null);
-        if (booking != null) {
-            if (request.isDamage()) {
-//                booking.setFixingPrice(booking.getRentPrice() - request.getFixPrice());
-                booking.setLocation(request.getDamageDescription());
-                bookingRepository.save(booking);
-            }
-        }
-        return booking;
-    }
 
     @Override
     public Page<Booking> getAllBookingsRequestByCar(int carId, BookingEnum[] status, int page, int size) {
-        return bookingRepository.findAllByCar_IdAndStatusInOrderByCreatedDateDesc(carId, status,
+        return bookingRepository.findAllByCarIdAndStatusInOrderByCreatedDateDesc(carId, status,
                 new Paging(page, size, Sort.unsorted()));
     }
 
@@ -103,8 +82,7 @@ public class BookingServiceImpl implements BookingService {
                 new Paging(page, size, Sort.unsorted()));
     }
 
-    @Override
-    public boolean checkStatusBookingBySM(BookingEnum currentStatus, BookingEnum nextStatus) {
+    private boolean checkStatusBookingBySM(BookingEnum currentStatus, BookingEnum nextStatus) {
         switch (currentStatus) {
             case REQUEST:
                 return nextStatus == BookingEnum.PENDING || nextStatus == BookingEnum.DENY || nextStatus == BookingEnum.CANCEL;
@@ -117,20 +95,22 @@ public class BookingServiceImpl implements BookingService {
             case CONFIRM:
                 return nextStatus == BookingEnum.CANCEL || nextStatus == BookingEnum.RENTER_SIGNED;
             case RENTER_SIGNED:
+                return nextStatus == BookingEnum.PROCESSING;
+            case PROCESSING:
                 return nextStatus == BookingEnum.DONE;
         }
         return false;
     }
 
-    @Override
-    public void updateCancelBookingDuplicateDate(Booking approveBooking) {
-
-    }
 
     @Override
-    public void updateBookingDuplicateDate(Booking approveBooking, BookingEnum status) {
-        List<Booking> bookingList = bookingRepository.findAllByFromDateBetweenOrToDateBetweenAndCarIdAndStatus(approveBooking.getFromDate(), approveBooking.getToDate(), approveBooking.getFromDate(), approveBooking.getToDate(), approveBooking.getCar().getId(), BookingEnum.REQUEST);
-        bookingList.stream().filter(booking -> booking.getId() != approveBooking.getId()).forEach(booking -> updateBookingStatus(booking, status));
+    public void updateBookingDuplicateDate(Booking approveBooking, BookingEnum status) throws BpcrsException {
+        List<Booking> bookingList = bookingRepository.findAllByFromDateBetweenOrToDateBetweenAndCarId(approveBooking.getFromDate(), approveBooking.getToDate(), approveBooking.getFromDate(), approveBooking.getToDate(), approveBooking.getCar().getId());
+        for (Booking booking : bookingList) {
+            if (booking.getId() != approveBooking.getId() && booking.getStatus() == BookingEnum.REQUEST) {
+                updateBookingStatus(booking, status);
+            }
+        }
     }
 
     @Override

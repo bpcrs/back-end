@@ -168,6 +168,25 @@ public class CarController {
                 HttpStatus.BAD_REQUEST);
     }
 
+    @PutMapping("/odometer/{id}")
+    @RolesAllowed(RoleEnum.RoleType.USER)
+    public ResponseEntity<?> updateOdometerCar(@PathVariable() int id, @Valid @RequestParam int odometer) {
+        Car car = carService.getCarById(id);
+        if (car == null) {
+            return new ResponseEntity(new ApiError("Car with id=" + id + " not found", ""), HttpStatus.BAD_REQUEST);
+        }
+        if (odometer < car.getOdometer()) {
+            return new ResponseEntity(new ApiError("Odometer must be bigger than " + car.getOdometer(), ""), HttpStatus.BAD_REQUEST);
+        }
+        CarPayload.RequestUpdateCar response = new CarPayload.RequestUpdateCar();
+            Car updateCar = (Car) new Car().modelMaplerToObject(car, true);
+            updateCar.setId(id);
+            updateCar.setOdometer(odometer);
+            carService.updateCar(updateCar, id).modelMaplerToObject(response, false);
+            return ResponseEntity.ok(new ApiResponse<>(true, response));
+
+    }
+
 
     @GetMapping("/admin")
     @RolesAllowed({RoleEnum.RoleType.ADMINISTRATOR})
@@ -193,11 +212,13 @@ public class CarController {
         if (car == null) {
             return new ResponseEntity(new ApiError("Car with id=" + id + " not found", ""), HttpStatus.BAD_REQUEST);
         }
-        if (!carService.checkStatusCarBySM(car.getStatus(), status)) {
-            return new ResponseEntity(new ApiError("Next status is not available " + status, ""),
+        Car updateCar = null;
+        try {
+            updateCar = carService.updateCarStatus(car, status);
+        } catch (BpcrsException e) {
+            return new ResponseEntity(new ApiError(e.getMessage(), ""),
                     HttpStatus.BAD_REQUEST);
         }
-        Car updateCar = carService.updateCarStatus(car, status);
         CarPayload.ResponseGetCar response = ObjectMapperUtils.map(updateCar, CarPayload.ResponseGetCar.class);
         return ResponseEntity.ok(new ApiResponse<>(true, response));
     }

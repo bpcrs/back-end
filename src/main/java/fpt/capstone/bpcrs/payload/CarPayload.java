@@ -44,6 +44,7 @@ public class CarPayload {
         private CarEnum status;
         private List<ImagePayload.ResponseCreateImage> images;
         private int requestCounting;
+        private int odometer;
     }
 
     @Data
@@ -105,6 +106,7 @@ public class CarPayload {
         private double price;
         private CarEnum status;
         private String location;
+        private int odometer;
     }
 
 }

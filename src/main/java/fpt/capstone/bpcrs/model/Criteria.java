@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import fpt.capstone.bpcrs.component.Auditing;
+import fpt.capstone.bpcrs.constant.CriteriaEnum;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 
@@ -27,7 +28,8 @@ public class Criteria extends Auditing {
 
     @Column
     @NotNull
-    private String name;
+    @Enumerated(EnumType.STRING)
+    private CriteriaEnum name;
 
     @Column
     @NotNull
@@ -37,7 +39,7 @@ public class Criteria extends Auditing {
     private boolean isRenter;
 
 
-    @OneToMany(mappedBy = "criteria", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "criteria")
     @ApiModelProperty(hidden = true)
     private Collection<Agreement> agreements;
 }

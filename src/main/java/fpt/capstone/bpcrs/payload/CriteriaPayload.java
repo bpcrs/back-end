@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 @NoArgsConstructor
 public class CriteriaPayload {
@@ -33,5 +34,16 @@ public class CriteriaPayload {
         private String unit;
 
         private boolean isRenter;
+    }
+
+    @Data
+    @NoArgsConstructor
+    public static class PreReturnResponse {
+        private int mileageLimit;
+        private double extra;
+        private double deposit;
+        private double totalPrice;
+        private double insurance;
+        private List<AgreementPayload.ResponsePreReturn> agreements;
     }
 }

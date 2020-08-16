@@ -1,6 +1,7 @@
 package fpt.capstone.bpcrs.service;
 
 import fpt.capstone.bpcrs.constant.CarEnum;
+import fpt.capstone.bpcrs.exception.BpcrsException;
 import fpt.capstone.bpcrs.model.Car;
 import org.springframework.data.domain.Page;
 
@@ -20,9 +21,7 @@ public interface CarService {
 
     Page<Car> getAllCars(int page, int size);
 
-    Car updateCarStatus(Car car, CarEnum status);
-
-    boolean checkStatusCarBySM (CarEnum currentStatus, CarEnum nextStatus);
+    Car updateCarStatus(Car car, CarEnum status) throws BpcrsException;
 
     Car getCarByVinOrPlateNumber(String VIN,String plateNum);
 }

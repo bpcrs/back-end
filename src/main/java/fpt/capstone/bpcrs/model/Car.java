@@ -57,6 +57,9 @@ public class Car extends Auditing {
     @Column
     private String location;
 
+    @Column(columnDefinition = "int default 0")
+    private int odometer;
+
     @Column
     @NotNull
     @Enumerated(EnumType.STRING)
@@ -78,12 +81,11 @@ public class Car extends Auditing {
     private Model model;
 
     @ApiModelProperty(hidden = true)
-    @OneToMany(mappedBy = "car", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "car")
     private List<Booking> car;
 
-    @OneToMany(mappedBy = "car", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "car")
     @ApiModelProperty(hidden = true)
     private List<Image> images;
-
 
 }

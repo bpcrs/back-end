@@ -1,6 +1,7 @@
 package fpt.capstone.bpcrs.controller;
 
 import fpt.capstone.bpcrs.constant.BookingEnum;
+import fpt.capstone.bpcrs.constant.CarEnum;
 import fpt.capstone.bpcrs.constant.RoleEnum;
 import fpt.capstone.bpcrs.model.Account;
 import fpt.capstone.bpcrs.model.Booking;
@@ -9,6 +10,7 @@ import fpt.capstone.bpcrs.payload.DappPayload;
 import fpt.capstone.bpcrs.service.AccountService;
 import fpt.capstone.bpcrs.service.BlockchainService;
 import fpt.capstone.bpcrs.service.BookingService;
+import fpt.capstone.bpcrs.service.CarService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -30,6 +32,9 @@ public class ContractController {
     @Autowired
     private AccountService accountService;
 
+    @Autowired
+    private CarService carService;
+
     @PostMapping()
     @RolesAllowed({RoleEnum.RoleType.USER})
     public ResponseEntity<?> signContract(@RequestParam int id, @RequestParam String otp) {
@@ -43,7 +48,7 @@ public class ContractController {
                 if (booking.getCar().getOwner().equals(currentUser) && booking.getStatus() == BookingEnum.CONFIRM){
                     return ResponseEntity.badRequest().body(new ApiResponse<>(false, "Renter must signing contract first"));
                 }
-                if (booking.getStatus() == BookingEnum.RENTER_SIGNED && booking.getRenter().getId() == currentUser.getId()){
+                if (booking.getStatus() == BookingEnum.RENTER_SIGNED && booking.getRenter().getId().equals(currentUser.getId())){
                     return ResponseEntity.badRequest().body(new ApiResponse<>(false, "You already signed"));
                 }
                 //if success cont. otherwise throw EX
@@ -51,7 +56,8 @@ public class ContractController {
                 DappPayload.ResultChaincode resultChaincode = blockchainService.signingContract(booking,booking.getCar().getOwner().equals(currentUser));
                 if (resultChaincode.isSuccess()) {
                     if (booking.getStatus() == BookingEnum.RENTER_SIGNED){
-                        bookingService.updateBookingStatus(booking, BookingEnum.DONE);
+                        carService.updateCarStatus(booking.getCar(), CarEnum.RENTING);
+                        bookingService.updateBookingStatus(booking, BookingEnum.PROCESSING);
                     } else {
                         bookingService.updateBookingStatus(booking, BookingEnum.RENTER_SIGNED);
                     }

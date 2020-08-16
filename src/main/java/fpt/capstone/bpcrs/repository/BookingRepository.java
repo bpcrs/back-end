@@ -18,13 +18,11 @@ public interface BookingRepository extends JpaRepository<Booking, Integer> {
 
     Page<Booking> findAllByRenter_IdAndStatusInOrderByCreatedDateDesc(int ownerId, BookingEnum[] status, Pageable paging);
 
-    Page<Booking> findAllByCar_IdAndStatusInOrderByCreatedDateDesc(int carId, BookingEnum[] status , Pageable paging);
-
+    Page<Booking> findAllByCarIdAndStatusInOrderByCreatedDateDesc(int carId, BookingEnum[] status , Pageable paging);
     Page<Booking> findAllByCar_Owner_IdAndStatusInOrderByCreatedDateDesc(int ownerId, BookingEnum[] status , Pageable paging);
 
-    List<Booking> findAllByFromDateBetweenOrToDateBetweenAndCarIdAndStatus(Date fromDate, Date toDate, Date fromDateBetween, Date toDateBetween, int carId, BookingEnum status);
-
-    @Query("select sum (b.totalPrice) from Booking b where b.status = :status and b.createdDate between :from and :to")
+    List<Booking> findAllByFromDateBetweenOrToDateBetweenAndCarId(Date fromDate, Date toDate, Date fromDateBetween, Date toDateBetween, int carId);
+    @Query("select sum (b.rentalPrice) from Booking b where b.status = :status and b.createdDate between :from and :to")
     double sumTotalPriceBookingByDay(BookingEnum status, LocalDateTime from, LocalDateTime to);
     int countAllByCarIdAndStatus(int id, BookingEnum status);
 

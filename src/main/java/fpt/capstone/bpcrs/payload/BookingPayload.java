@@ -77,7 +77,9 @@ public class BookingPayload {
 
         private LocalDateTime createdDate;
 
-        private List<BookingTracking> trackings;
+        private List<BookingTrackingPayload.ResponseBookingTracking> trackings;
+
+        private double rentalPrice;
     }
 
     @Data

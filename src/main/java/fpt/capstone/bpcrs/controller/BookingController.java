@@ -1,19 +1,20 @@
 package fpt.capstone.bpcrs.controller;
 
+import com.authy.AuthyException;
 import fpt.capstone.bpcrs.constant.BookingEnum;
 import fpt.capstone.bpcrs.constant.CarEnum;
 import fpt.capstone.bpcrs.constant.RoleEnum;
 import fpt.capstone.bpcrs.exception.BadRequestException;
+import fpt.capstone.bpcrs.exception.BpcrsException;
 import fpt.capstone.bpcrs.model.Account;
 import fpt.capstone.bpcrs.model.Agreement;
 import fpt.capstone.bpcrs.model.Booking;
 import fpt.capstone.bpcrs.model.Car;
-import fpt.capstone.bpcrs.payload.ApiResponse;
-import fpt.capstone.bpcrs.payload.BookingPayload;
-import fpt.capstone.bpcrs.payload.PagingPayload;
+import fpt.capstone.bpcrs.payload.*;
 import fpt.capstone.bpcrs.service.*;
 import fpt.capstone.bpcrs.util.ObjectMapperUtils;
 import lombok.extern.slf4j.Slf4j;
+import net.bytebuddy.implementation.bind.annotation.Pipe;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.data.domain.Page;
@@ -40,7 +41,7 @@ public class BookingController {
     private AccountService accountService;
 
     @Autowired
-    private AgreementService agreementService;
+    private CriteriaService criteriaService;
 
     @Autowired
     private BlockchainService blockchainService;
@@ -50,9 +51,11 @@ public class BookingController {
     public ResponseEntity<?> getUserRentingBookingList(@PathVariable("id") int id) {
         List<Booking> bookings = bookingService.getUserRentingBookingList(id);
         if (bookings.isEmpty()) {
-            return new ResponseEntity(new ApiResponse<>(false, "Dont have any user rent with id = " + id), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity(new ApiResponse<>(false, "Dont have any user rent with id = " + id),
+                    HttpStatus.BAD_REQUEST);
         }
-        List<BookingPayload.ResponseCreateBooking> responses = ObjectMapperUtils.mapAll(bookings, BookingPayload.ResponseCreateBooking.class);
+        List<BookingPayload.ResponseCreateBooking> responses = ObjectMapperUtils.mapAll(bookings,
+                BookingPayload.ResponseCreateBooking.class);
         return ResponseEntity.ok(new ApiResponse<>(true, "Get list booking successful", responses));
     }
 
@@ -66,28 +69,34 @@ public class BookingController {
             booking.modelMaplerToObject(response, false);
             return ResponseEntity.ok(new ApiResponse<>(true, response));
         }
-        return ResponseEntity.badRequest().body(new ApiResponse<>(false, "Booking with id = " + id + " not found", HttpStatus.BAD_REQUEST));
+        return ResponseEntity.badRequest().body(new ApiResponse<>(false, "Booking with id = " + id + " not found",
+                HttpStatus.BAD_REQUEST));
 
     }
 
     @PostMapping
     @RolesAllowed(RoleEnum.RoleType.USER)
-    public ResponseEntity<?> createBooking(@Valid @RequestBody BookingPayload.RequestCreateBooking request) {
+    public ResponseEntity<?> createBooking(@Valid @RequestBody BookingPayload.RequestCreateBooking request) throws AuthyException {
         Car car = carService.getCarById(request.getCarId());
         Account renter = accountService.getAccountById(request.getRenterId());
 
-        if (renter.getPhone() == null || renter.getImageLicense() == null || renter.getIdentification() == null) {
-            return ResponseEntity.badRequest().body(new ApiResponse<>(false, "User is not eligible to book", HttpStatus.BAD_REQUEST));
+        if (!(renter.isLicenseCheck() && accountService.verifyAccounnt(renter.getAuthyId()))) {
+            return ResponseEntity.badRequest().body(new ApiResponse<>(false, "User is not eligible to book",
+                    HttpStatus.BAD_REQUEST));
         }
 
         BookingPayload.ResponseCreateBooking response = new BookingPayload.ResponseCreateBooking();
-
         Booking booking = Booking.builder().car(car).renter(renter)
                 .fromDate(request.getFromDate()).toDate(request.getToDate())
                 .location(request.getLocation()).destination(request.getDestination())
-                .status(BookingEnum.REQUEST).totalPrice(request.getTotalPrice()).build();
+                .status(BookingEnum.REQUEST).rentalPrice(request.getTotalPrice()).build();
         bookingService.createBooking(booking).modelMaplerToObject(response, false);
-        carService.updateCarStatus(car, CarEnum.REQUEST);
+        try {
+            carService.updateCarStatus(car, CarEnum.REQUEST);
+        } catch (BpcrsException e) {
+            return new ResponseEntity(new ApiError(e.getMessage(), ""),
+                    HttpStatus.BAD_REQUEST);
+        }
         return ResponseEntity.ok(new ApiResponse<>(true, response));
     }
 
@@ -97,18 +106,16 @@ public class BookingController {
         try {
             Booking booking = bookingService.getBookingInformation(id);
             if (booking == null) {
-                return ResponseEntity.badRequest().body(new ApiResponse<>(false, "Booking with id " + id + " not existed", null));
+                return ResponseEntity.badRequest().body(new ApiResponse<>(false, "Booking with id " + id + " not " +
+                        "existed", null));
             }
             BookingEnum nextStatus = status;
             BookingEnum currentStatus = booking.getStatus();
             if (booking.getCar().getOwner().getId().intValue() != accountService.getCurrentUser().getId().intValue() && booking.getRenter().getId().intValue() != accountService.getCurrentUser().getId().intValue()) {
                 return ResponseEntity.badRequest().body(new ApiResponse<>(false, "User is not allowed", null));
             }
-            if (!bookingService.checkStatusBookingBySM(currentStatus, nextStatus)) {
-                return ResponseEntity.badRequest().body(new ApiResponse<>(false, "Invalid status request", null));
-            }
             // if duplicate ngày booking thì sẽ cancel những request khônng được approve
-            if (currentStatus == BookingEnum.REQUEST && nextStatus == BookingEnum.PENDING){
+            if (currentStatus == BookingEnum.REQUEST && nextStatus == BookingEnum.PENDING) {
                 bookingService.updateBookingDuplicateDate(booking, BookingEnum.DENY);
             }
             // cancel booking thì những request đã bị deny -> request
@@ -116,22 +123,37 @@ public class BookingController {
                 bookingService.updateBookingDuplicateDate(booking, BookingEnum.REQUEST);
             }
             //Save to BLC
-            if (nextStatus == BookingEnum.CONFIRM || nextStatus == BookingEnum.OWNER_ACCEPTED){
+            if (nextStatus == BookingEnum.CONFIRM || nextStatus == BookingEnum.OWNER_ACCEPTED) {
                 //check agreement before => CONFIRM
+                if (booking.getAgreements().isEmpty()){
+                    return ResponseEntity.badRequest().body(new ApiResponse<>(false, "You must agreement before submit "
+                            , null));
+                }
                 boolean isApproveAllAgreemet = booking.getAgreements().stream().allMatch(Agreement::isApproved);
-                if (!isApproveAllAgreemet){
-                    return ResponseEntity.badRequest().body(new ApiResponse<>(false, "All agreement must be approved", null));
+                if (!isApproveAllAgreemet) {
+                    return ResponseEntity.badRequest().body(new ApiResponse<>(false, "All agreement must be approved"
+                            , null));
                 }
                 boolean isSuccess = blockchainService.submitContract(booking);
 
-                if (!isSuccess){
-                    return ResponseEntity.badRequest().body(new ApiResponse<>(false, "Can't store in blockchain network", null));
+                carService.updateCarStatus(booking.getCar(), CarEnum.BOOKED);
+                if (!isSuccess) {
+                    return ResponseEntity.badRequest().body(new ApiResponse<>(false, "Can't store in blockchain " +
+                            "network", null));
                 }
             }
+            if (nextStatus == BookingEnum.DONE) {
+                CriteriaPayload.PreReturnResponse returnResponse =
+                        criteriaService.estimatePriceByAgreement(booking.getAgreements(), booking,
+                                booking.getDistance());
+                carService.updateCarStatus(booking.getCar(), CarEnum.UNAVAILABLE);
+                booking.setTotalPrice(returnResponse.getTotalPrice());
+            }
             booking = bookingService.updateBookingStatus(booking, status);
-            BookingPayload.ResponseCreateBooking response = ObjectMapperUtils.map(booking, BookingPayload.ResponseCreateBooking.class);
+            BookingPayload.ResponseCreateBooking response = ObjectMapperUtils.map(booking,
+                    BookingPayload.ResponseCreateBooking.class);
             return ResponseEntity.ok(new ApiResponse<>(true, "Booking status was updated", response));
-        } catch (BadRequestException | JSONException ex) {
+        } catch (Exception ex) {
             return ResponseEntity.badRequest().body(new ApiResponse<>(false, ex.getMessage(), null));
         }
     }
@@ -167,13 +189,39 @@ public class BookingController {
         }
         if (bookings == null) {
             String role = isRenter ? "renter" : "owner";
-            return ResponseEntity.badRequest().body(new ApiResponse<>(false, "Dont have any bookings with user id = " + id + " with role = " + role, HttpStatus.BAD_REQUEST));
+            return ResponseEntity.badRequest().body(new ApiResponse<>(false,
+                    "Dont have any bookings with user id = " + id + " with role = " + role, HttpStatus.BAD_REQUEST));
         }
         List<BookingPayload.ResponseCreateBooking> responses = ObjectMapperUtils.mapAll(bookings.toList(),
                 BookingPayload.ResponseCreateBooking.class);
         PagingPayload pagingPayload =
                 PagingPayload.builder().data(responses).count((int) bookings.getTotalElements()).build();
         return ResponseEntity.ok(new ApiResponse<>(true, pagingPayload));
+    }
+
+    @PostMapping("/pre-return/{id}")
+    @RolesAllowed({RoleEnum.RoleType.USER})
+    public ResponseEntity<?> estimatePriceByBooking(@Valid @RequestParam int odmeter, @PathVariable int id) {
+        Booking booking = bookingService.getBookingInformation(id);
+        if (booking == null) {
+            return ResponseEntity.badRequest().body(new ApiResponse<>(false, "Booking with id " + id + " not existed"
+                    , null));
+        }
+        if (!accountService.getCurrentUser().getId().equals(booking.getCar().getOwner().getId())) {
+            return ResponseEntity.badRequest().body(new ApiResponse<>(false, "User is not eligible to executed"
+                    , null));
+        }
+        List<Agreement> agreementList = booking.getAgreements();
+        try {
+            CriteriaPayload.PreReturnResponse response = criteriaService.estimatePriceByAgreement(agreementList,
+                    booking, odmeter);
+            response.setAgreements(ObjectMapperUtils.mapAll(agreementList,
+                    AgreementPayload.ResponsePreReturn.class));
+            return ResponseEntity.ok().body(new ApiResponse<>(true, response));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.badRequest().body(new ApiResponse<>(false, e.getMessage()));
+        }
     }
 
 }

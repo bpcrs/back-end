@@ -3,6 +3,7 @@ package fpt.capstone.bpcrs.service.impl;
 import fpt.capstone.bpcrs.component.IgnoreNullProperty;
 import fpt.capstone.bpcrs.component.Paging;
 import fpt.capstone.bpcrs.constant.CarEnum;
+import fpt.capstone.bpcrs.exception.BpcrsException;
 import fpt.capstone.bpcrs.model.Car;
 import fpt.capstone.bpcrs.model.Car_;
 import fpt.capstone.bpcrs.model.specification.CarSpecification;
@@ -16,6 +17,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.Optional;
 
 @Service
@@ -60,9 +62,9 @@ public class CarServiceImpl implements CarService {
 
     @Override
     public Page<Car> getAllCarsPagingByFilters(int page, int size, Integer[] modelIds, Integer[] seat, Double fromPrice, Double toPrice, Integer[] brandIds, Integer ownerId) {
-        Specification conditon = (Specification) (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get(Car_.STATUS), CarEnum.AVAILABLE);
-        Specification conditonReq = (Specification) (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get(Car_.STATUS), CarEnum.REQUEST);
-        conditon = conditon.or(conditonReq);
+        Specification conditon = (Specification) (root, query, criteriaBuilder) -> criteriaBuilder.notEqual(root.get(Car_.STATUS), CarEnum.REGISTER);
+        Specification notEqualUnavaliable = (Specification) (root, query, criteriaBuilder) -> criteriaBuilder.notEqual(root.get(Car_.STATUS), CarEnum.UNAVAILABLE);
+        conditon = conditon.and(notEqualUnavaliable);
         conditon = conditon.and(CarSpecification.carNotOwner(ownerId));
         if (modelIds != null && modelIds.length != 0) {
             conditon = conditon.and(CarSpecification.carHasModelName(modelIds));
@@ -92,23 +94,25 @@ public class CarServiceImpl implements CarService {
         return cars;
     }
 
-    public Car updateCarStatus(Car car, CarEnum status) {
+    public Car updateCarStatus(Car car, CarEnum status) throws BpcrsException {
+        if (!checkStatusCarBySM(car.getStatus(),status)){
+            throw new BpcrsException("Invalid CAR_STATUS");
+        }
         car.setStatus(status);
         return carRepository.save(car);
     }
 
-    @Override
-    public boolean checkStatusCarBySM(CarEnum currentStatus, CarEnum nextStatus) {
+    private boolean checkStatusCarBySM(CarEnum currentStatus, CarEnum nextStatus) {
         switch (currentStatus) {
             case UNAVAILABLE:
             case RENTING:
-                return nextStatus == CarEnum.AVAILABLE;
+                return nextStatus == CarEnum.AVAILABLE || nextStatus == CarEnum.UNAVAILABLE;
             case AVAILABLE:
                 return nextStatus == CarEnum.UNAVAILABLE || nextStatus == CarEnum.REQUEST;
             case REQUEST:
                 return nextStatus == CarEnum.BOOKED || nextStatus == CarEnum.AVAILABLE || nextStatus == CarEnum.REQUEST;
             case BOOKED:
-                return nextStatus == CarEnum.RENTING || nextStatus == CarEnum.AVAILABLE;
+                return nextStatus == CarEnum.RENTING || nextStatus == CarEnum.AVAILABLE || nextStatus == CarEnum.BOOKED;
             case REGISTER:
                 return nextStatus == CarEnum.UNAVAILABLE;
         }

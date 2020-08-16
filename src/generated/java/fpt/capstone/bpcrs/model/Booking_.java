@@ -12,6 +12,8 @@ import javax.persistence.metamodel.StaticMetamodel;
 public abstract class Booking_ extends fpt.capstone.bpcrs.component.Auditing_ {
 
 	public static volatile SingularAttribute<Booking, Date> fromDate;
+	public static volatile SingularAttribute<Booking, Double> rentalPrice;
+	public static volatile SingularAttribute<Booking, Integer> distance;
 	public static volatile SingularAttribute<Booking, Double> totalPrice;
 	public static volatile SingularAttribute<Booking, Car> car;
 	public static volatile ListAttribute<Booking, BookingTracking> trackings;
@@ -23,6 +25,8 @@ public abstract class Booking_ extends fpt.capstone.bpcrs.component.Auditing_ {
 	public static volatile SingularAttribute<Booking, BookingEnum> status;
 
 	public static final String FROM_DATE = "fromDate";
+	public static final String RENTAL_PRICE = "rentalPrice";
+	public static final String DISTANCE = "distance";
 	public static final String TOTAL_PRICE = "totalPrice";
 	public static final String CAR = "car";
 	public static final String TRACKINGS = "trackings";
