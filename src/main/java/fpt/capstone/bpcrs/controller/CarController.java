@@ -176,7 +176,7 @@ public class CarController {
             return new ResponseEntity(new ApiError("Car with id=" + id + " not found", ""), HttpStatus.BAD_REQUEST);
         }
         if (odometer < car.getOdometer()) {
-            return new ResponseEntity(new ApiError("odometer must be larger than old odometer ", ""), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity(new ApiError("Odometer must be bigger than " + car.getOdometer(), ""), HttpStatus.BAD_REQUEST);
         }
         CarPayload.RequestUpdateCar response = new CarPayload.RequestUpdateCar();
             Car updateCar = (Car) new Car().modelMaplerToObject(car, true);
