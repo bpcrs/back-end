@@ -45,11 +45,11 @@ public class BrandController {
         return ResponseEntity.ok(new ApiResponse<>(true, pagingPayload));
     }
 
-    @PutMapping("/update")
+    @PutMapping("/{id}")
     @RolesAllowed(RoleEnum.RoleType.ADMINISTRATOR)
-    public ResponseEntity<?> updateBrand(@Valid @RequestBody BrandPayload.RequestUpdateBrand request) {
+    public ResponseEntity<?> updateBrand(@PathVariable int id, @Valid @RequestParam String name, @Valid @RequestParam String imageUrl) {
         BrandPayload.RequestUpdateBrand response = new BrandPayload.RequestUpdateBrand();
-        brandService.updateBrand(request).modelMaplerToObject(response, false);
+
         return ResponseEntity.ok(new ApiResponse<>(true, response));
     }
 

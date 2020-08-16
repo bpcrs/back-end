@@ -46,8 +46,12 @@ public class BrandServiceImpl implements BrandService {
     public Brand updateBrand(BrandPayload.RequestUpdateBrand requestUpdateBrand) {
         Brand brand = getBrandById(requestUpdateBrand.getId());
         if (brand != null) {
-            brand.setLogoLink(requestUpdateBrand.getLogoLink());
-            brand.setName(requestUpdateBrand.getName());
+            if (requestUpdateBrand.getLogoLink() != null) {
+                brand.setLogoLink(requestUpdateBrand.getLogoLink());
+            }
+            if (requestUpdateBrand.getName() != null) {
+                brand.setName(requestUpdateBrand.getName());
+            }
             brandRepository.save(brand);
         }
         return brand;
