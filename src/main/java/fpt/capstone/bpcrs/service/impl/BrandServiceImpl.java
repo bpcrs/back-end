@@ -2,6 +2,7 @@ package fpt.capstone.bpcrs.service.impl;
 
 import fpt.capstone.bpcrs.component.Paging;
 import fpt.capstone.bpcrs.model.Brand;
+import fpt.capstone.bpcrs.payload.BrandPayload;
 import fpt.capstone.bpcrs.repository.BrandRepository;
 import fpt.capstone.bpcrs.service.BrandService;
 import lombok.extern.slf4j.Slf4j;
@@ -39,5 +40,16 @@ public class BrandServiceImpl implements BrandService {
     @Override
     public Brand createBrand(Brand brand) {
         return brandRepository.save(brand);
+    }
+
+    @Override
+    public Brand updateBrand(BrandPayload.RequestUpdateBrand requestUpdateBrand) {
+        Brand brand = getBrandById(requestUpdateBrand.getId());
+        if (brand != null) {
+            brand.setLogoLink(requestUpdateBrand.getLogoLink());
+            brand.setName(requestUpdateBrand.getName());
+            brandRepository.save(brand);
+        }
+        return brand;
     }
 }

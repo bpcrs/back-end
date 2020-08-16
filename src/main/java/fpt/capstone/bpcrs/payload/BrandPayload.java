@@ -29,4 +29,16 @@ public class BrandPayload {
         private int id;
     }
 
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class RequestUpdateBrand {
+        @NotNull
+        private int id;
+        @NotNull
+        private String name;
+        @NotNull
+        private String logoLink;
+    }
+
 }
