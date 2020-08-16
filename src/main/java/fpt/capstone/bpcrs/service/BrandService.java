@@ -16,5 +16,5 @@ public interface BrandService {
 
     Brand createBrand(Brand brand);
 
-    Brand updateBrand(BrandPayload.RequestUpdateBrand requestUpdateBrand);
+    Brand updateBrand(int id, String name, String url);
 }

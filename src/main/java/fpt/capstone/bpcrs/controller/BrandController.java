@@ -49,10 +49,9 @@ public class BrandController {
     @RolesAllowed(RoleEnum.RoleType.ADMINISTRATOR)
     public ResponseEntity<?> updateBrand(@PathVariable int id, @Valid @RequestParam String name, @Valid @RequestParam String imageUrl) {
         BrandPayload.RequestUpdateBrand response = new BrandPayload.RequestUpdateBrand();
-
+        brandService.updateBrand(id, name, imageUrl).modelMaplerToObject(response, false);
         return ResponseEntity.ok(new ApiResponse<>(true, response));
     }
-
 
     @PostMapping
     @RolesAllowed(RoleEnum.RoleType.ADMINISTRATOR)
