@@ -60,7 +60,7 @@ public class AccountController {
         return ResponseEntity.ok(new ApiResponse<>(true, "Get list account successful", responses));
     }
 
-    @PatchMapping("/{id}")
+    @PutMapping("/{id}")
     @RolesAllowed(RoleEnum.RoleType.ADMINISTRATOR)
     public ResponseEntity<?> updateAccountStatus(
             @PathVariable("id") int id, @RequestParam("active") boolean active) {
