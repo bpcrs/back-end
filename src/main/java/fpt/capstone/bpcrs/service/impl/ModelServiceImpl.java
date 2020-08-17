@@ -1,16 +1,16 @@
 package fpt.capstone.bpcrs.service.impl;
 
-import fpt.capstone.bpcrs.component.IgnoreNullProperty;
+import fpt.capstone.bpcrs.component.Paging;
 import fpt.capstone.bpcrs.model.Model;
 import fpt.capstone.bpcrs.repository.ModelRepository;
 import fpt.capstone.bpcrs.service.ModelService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @Slf4j
@@ -20,25 +20,34 @@ public class ModelServiceImpl implements ModelService {
     private ModelRepository modelRepository;
 
     @Override
-    public Model createModel(Model newModel) {
-        return modelRepository.save(newModel);
+    public Model createModel(String name) {
+        return modelRepository.save(Model.builder().name(name).build());
     }
 
     @Override
     public Model getModelById(int id) {
-        Optional<Model> model = modelRepository.findById(id);
-        return model.orElse(null);
+        return modelRepository.findById(id).orElse(null);
     }
 
     @Override
-    public Model updateModel(Model model, int id) {
-        Model updateModel = modelRepository.getOne(id);
-        BeanUtils.copyProperties(model, updateModel, IgnoreNullProperty.getNullPropertyNames(model));
-        return modelRepository.save(updateModel);
+    public Model updateModel(int id, String name) {
+        Model model = getModelById(id);
+        if (model != null) {
+            model.setName(name);
+            modelRepository.save(model);
+        }
+        return model;
     }
 
     @Override
     public List<Model> getAll() {
         return modelRepository.findAll();
     }
+
+    @Override
+    public Page<Model> getAllModelByAdmin(int page, int size) {
+        return modelRepository.findAll(new Paging(page, size, Sort.unsorted()));
+    }
+
+
 }
