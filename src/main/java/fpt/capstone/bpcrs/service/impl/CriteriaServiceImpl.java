@@ -82,10 +82,12 @@ public class CriteriaServiceImpl implements CriteriaService {
         } else {
             result.setExtra(0);
         }
-        result.setTotalPrice(result.getEstimatePrice() + result.getExtra() - result.getDeposit());
         if (odmeter != booking.getCar().getOdometer()){
+            result.setTotalPrice(result.getEstimatePrice() + result.getExtra() - result.getDeposit());
             booking.setTotalPrice(result.getTotalPrice());
             bookingRepository.save(booking);
+        } else {
+            result.setTotalPrice(booking.getTotalPrice());
         }
         return result;
     }
