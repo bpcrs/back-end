@@ -24,9 +24,14 @@ public class BrandPayload {
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class ResponseCreateBrand extends RequestCreateBrand {
+    public static class ResponseBrand extends RequestCreateBrand {
         @NotNull
         private int id;
+        @NotNull
+        private String name;
+        @NotNull
+        private String logoLink;
     }
+
 
 }

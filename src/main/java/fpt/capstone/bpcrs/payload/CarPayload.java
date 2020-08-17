@@ -32,7 +32,7 @@ public class CarPayload {
         private boolean autoDriver;
         @NotNull
         private String plateNum;
-        private BrandPayload.ResponseCreateBrand brand;
+        private BrandPayload.ResponseBrand brand;
         @NotNull
         private int id;
         private String VIN;
@@ -64,7 +64,7 @@ public class CarPayload {
         private boolean autoDriver;
         @NotNull
         private String plateNum;
-        private BrandPayload.ResponseCreateBrand brand;
+        private BrandPayload.ResponseBrand brand;
         @NotNull
         private int id;
         private String VIN;
