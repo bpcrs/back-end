@@ -82,6 +82,8 @@ public class BookingPayload {
         private double rentalPrice;
 
         private List<BookingPayload.ResponseCreateBooking> duplicateList;
+
+        private int distance;
     }
 
     @Data
