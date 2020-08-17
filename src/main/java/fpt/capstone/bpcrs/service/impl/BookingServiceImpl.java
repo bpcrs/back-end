@@ -125,4 +125,5 @@ public class BookingServiceImpl implements BookingService {
     public int getCountRequestByCar(int id) {
         return bookingRepository.countAllByCarIdAndStatus(id,BookingEnum.REQUEST);
     }
+
 }
