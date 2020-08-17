@@ -222,17 +222,21 @@ public class BookingController {
         List<Agreement> agreementList = booking.getAgreements();
         try {
             boolean isApproveAllAgreemet = agreementList.stream().allMatch(Agreement::isApproved);
+            if (!agreementList.isEmpty()){
+                CriteriaPayload.PreReturnResponse response = criteriaService.estimatePriceByAgreement(agreementList,
+                        booking, booking.getCar().getOdometer());
+                if (!isApproveAllAgreemet){
+                    response.setEstimatePrice(0);
+                    response.setTotalPrice(0);
+                }
+                response.setAgreements(ObjectMapperUtils.mapAll(agreementList,
+                        AgreementPayload.ResponsePreReturn.class));
 
-            CriteriaPayload.PreReturnResponse response = criteriaService.estimatePriceByAgreement(agreementList,
-                    booking, booking.getCar().getOdometer());
-            if (!isApproveAllAgreemet){
-                response.setEstimatePrice(0);
-                response.setTotalPrice(0);
+                return ResponseEntity.ok().body(new ApiResponse<>(true, response));
+            } else {
+                return ResponseEntity.badRequest().body(new ApiResponse<>(false,"Booking did't had any agreements"));
             }
-            response.setAgreements(ObjectMapperUtils.mapAll(agreementList,
-                    AgreementPayload.ResponsePreReturn.class));
 
-            return ResponseEntity.ok().body(new ApiResponse<>(true, response));
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.badRequest().body(new ApiResponse<>(false, e.getMessage()));
