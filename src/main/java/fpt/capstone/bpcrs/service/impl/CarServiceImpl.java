@@ -107,14 +107,15 @@ public class CarServiceImpl implements CarService {
     private boolean checkStatusCarBySM(CarEnum currentStatus, CarEnum nextStatus) {
         switch (currentStatus) {
             case UNAVAILABLE:
+                return nextStatus == CarEnum.AVAILABLE;
             case RENTING:
-                return nextStatus == CarEnum.AVAILABLE || nextStatus == CarEnum.UNAVAILABLE;
+                return  nextStatus == CarEnum.UNAVAILABLE || nextStatus == CarEnum.RENTING;
             case AVAILABLE:
-                return nextStatus == CarEnum.UNAVAILABLE || nextStatus == CarEnum.REQUEST;
-            case REQUEST:
-                return nextStatus == CarEnum.BOOKED || nextStatus == CarEnum.AVAILABLE || nextStatus == CarEnum.REQUEST;
-            case BOOKED:
-                return nextStatus == CarEnum.RENTING || nextStatus == CarEnum.AVAILABLE || nextStatus == CarEnum.BOOKED;
+                return nextStatus == CarEnum.UNAVAILABLE || nextStatus == CarEnum.RENTING;
+//            case REQUEST:
+//                return nextStatus == CarEnum.BOOKED || nextStatus == CarEnum.AVAILABLE || nextStatus == CarEnum.REQUEST;
+//            case BOOKED:
+//                return nextStatus == CarEnum.RENTING || nextStatus == CarEnum.AVAILABLE || nextStatus == CarEnum.BOOKED;
             case REGISTER:
                 return nextStatus == CarEnum.UNAVAILABLE;
         }

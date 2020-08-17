@@ -92,7 +92,7 @@ public class BookingController {
                 .location(request.getLocation()).destination(request.getDestination())
                 .status(BookingEnum.REQUEST).rentalPrice(request.getTotalPrice()).build();
         try {
-            carService.updateCarStatus(car, CarEnum.REQUEST);
+            carService.updateCarStatus(car, CarEnum.RENTING);
             bookingService.createBooking(booking).modelMaplerToObject(response, false);
         } catch (BpcrsException e) {
             return new ResponseEntity(new ApiError(e.getMessage(), ""),
@@ -138,12 +138,11 @@ public class BookingController {
                             , null));
                 }
                 boolean isSuccess = blockchainService.submitContract(booking);
-
-                carService.updateCarStatus(booking.getCar(), CarEnum.BOOKED);
                 if (!isSuccess) {
                     return ResponseEntity.badRequest().body(new ApiResponse<>(false, "Can't store in blockchain " +
                             "network", null));
                 }
+                carService.updateCarStatus(booking.getCar(), CarEnum.RENTING);
             }
             if (nextStatus == BookingEnum.DONE) {
                 CriteriaPayload.PreReturnResponse returnResponse =
