@@ -1,13 +1,17 @@
 package fpt.capstone.bpcrs.controller;
 
 import fpt.capstone.bpcrs.constant.RoleEnum;
+import fpt.capstone.bpcrs.model.Brand;
 import fpt.capstone.bpcrs.model.Model;
 import fpt.capstone.bpcrs.payload.ApiResponse;
+import fpt.capstone.bpcrs.payload.BrandPayload;
 import fpt.capstone.bpcrs.payload.ModelPayload;
+import fpt.capstone.bpcrs.payload.PagingPayload;
 import fpt.capstone.bpcrs.service.ModelService;
 import fpt.capstone.bpcrs.util.ObjectMapperUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -30,12 +34,32 @@ public class ModelController {
         return  ResponseEntity.ok(new ApiResponse<>(true, modelList));
     }
 
+    @GetMapping("/admin")
+    @RolesAllowed(RoleEnum.RoleType.ADMINISTRATOR)
+    public ResponseEntity<?> getModelsByAdmin(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "10") int size) {
+        Page<Model> models = modelService.getAllModelByAdmin(page, size);
+        if (models.isEmpty()) {
+            return ResponseEntity.ok(new ApiResponse<>(false, ""));
+        }
+        List<ModelPayload.ResponseModel> modelList = ObjectMapperUtils.mapAll(models.toList(), ModelPayload.ResponseModel.class);
+        PagingPayload pagingPayload =
+                PagingPayload.builder().data(modelList).count((int) models.getTotalElements()).build();
+        return ResponseEntity.ok(new ApiResponse<>(true, pagingPayload));
+    }
+
+    @PutMapping("/{id}")
+    @RolesAllowed(RoleEnum.RoleType.ADMINISTRATOR)
+    public ResponseEntity<?> updateBrand(@PathVariable int id, @Valid @RequestParam String name) {
+        ModelPayload.ResponseModel response = new ModelPayload.ResponseModel();
+        modelService.updateModel(id, name).modelMaplerToObject(response, false);
+        return ResponseEntity.ok(new ApiResponse<>(true, response));
+    }
+
     @PostMapping
     @RolesAllowed(RoleEnum.RoleType.ADMINISTRATOR)
-    public ResponseEntity<?> createModel(@Valid @RequestBody ModelPayload.RequestCreateModel request) {
-        ModelPayload.ResponseCreateModel response = new ModelPayload.ResponseCreateModel();
-        Model newModel = (Model) new Model().modelMaplerToObject(request, true);
-        modelService.createModel(newModel).modelMaplerToObject(response, false);
+    public ResponseEntity<?> createModel(@Valid @RequestParam String name) {
+        ModelPayload.ResponseModel response = new ModelPayload.ResponseModel();
+        modelService.createModel(name).modelMaplerToObject(response, false);
         return ResponseEntity.ok(new ApiResponse<>(true, response));
     }
 

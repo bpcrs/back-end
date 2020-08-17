@@ -25,4 +25,14 @@ public class ModelPayload {
     public static class ResponseCreateModel extends ModelPayload.RequestCreateModel {
         private int id;
     }
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class ResponseModel {
+        @NotNull
+        private int id;
+        @NotNull
+        private String name;
+    }
 }
