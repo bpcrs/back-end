@@ -239,7 +239,7 @@ public class BookingController {
 
     @PostMapping("/return/{id}")
     @RolesAllowed({RoleEnum.RoleType.USER})
-    public ResponseEntity<?> returnPriceByBooking(@Valid @RequestParam int odmeter, @PathVariable int id) {
+    public ResponseEntity<?> returnPriceByBooking(@Valid @RequestParam int odometer, @PathVariable int id) {
         Booking booking = bookingService.getBookingInformation(id);
         if (booking == null) {
             return ResponseEntity.badRequest().body(new ApiResponse<>(false, "Booking with id " + id + " not existed"
@@ -253,7 +253,7 @@ public class BookingController {
         try {
             boolean isApproveAllAgreemet = agreementList.stream().allMatch(Agreement::isApproved);
             CriteriaPayload.PreReturnResponse response = criteriaService.estimatePriceByAgreement(agreementList,
-                    booking, odmeter);
+                    booking, odometer);
             if (!isApproveAllAgreemet){
                 response.setEstimatePrice(0);
                 response.setTotalPrice(0);
