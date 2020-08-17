@@ -65,7 +65,9 @@ public class CarServiceImpl implements CarService {
         Specification conditon = (Specification) (root, query, criteriaBuilder) -> criteriaBuilder.notEqual(root.get(Car_.STATUS), CarEnum.REGISTER);
         Specification notEqualUnavaliable = (Specification) (root, query, criteriaBuilder) -> criteriaBuilder.notEqual(root.get(Car_.STATUS), CarEnum.UNAVAILABLE);
         conditon = conditon.and(notEqualUnavaliable);
-        conditon = conditon.and(CarSpecification.carNotOwner(ownerId));
+        if (ownerId != null){
+            conditon = conditon.and(CarSpecification.carNotOwner(ownerId));
+        }
         if (modelIds != null && modelIds.length != 0) {
             conditon = conditon.and(CarSpecification.carHasModelName(modelIds));
         }

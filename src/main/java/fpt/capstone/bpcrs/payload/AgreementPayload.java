@@ -55,6 +55,8 @@ public class AgreementPayload {
         private CriteriaPayload.ResposneCreateCriteria criteria;
 
         private String value;
+
+        private boolean isApproved;
     }
 
 

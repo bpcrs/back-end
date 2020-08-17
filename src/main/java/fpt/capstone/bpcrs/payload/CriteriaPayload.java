@@ -43,6 +43,7 @@ public class CriteriaPayload {
         private double extra;
         private double deposit;
         private double totalPrice;
+        private double estimatePrice;
         private double insurance;
         private List<AgreementPayload.ResponsePreReturn> agreements;
     }

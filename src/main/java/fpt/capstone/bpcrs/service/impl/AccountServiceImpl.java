@@ -73,6 +73,7 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public Account getCurrentUser() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth.getPrincipal().equals("anonymousUser")) return null;
         UserPrincipal userPrincipal = (UserPrincipal) auth.getPrincipal();
         return getAccountByEmail(userPrincipal.getEmail());
     }

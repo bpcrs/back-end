@@ -28,7 +28,6 @@ public class MapsController {
             return new ResponseEntity(new ApiResponse<>(false, e.getMessage()), HttpStatus.BAD_REQUEST);
         }
         return ResponseEntity.ok(new ApiResponse<>(true, response));
-//        return new ResponseEntity(new ApiResponse<>(true, response), HttpStatus.BAD_REQUEST);
     }
 
 }

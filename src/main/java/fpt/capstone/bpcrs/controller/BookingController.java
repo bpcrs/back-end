@@ -216,16 +216,27 @@ public class BookingController {
             return ResponseEntity.badRequest().body(new ApiResponse<>(false, "Booking with id " + id + " not existed"
                     , null));
         }
-        if (!accountService.getCurrentUser().getId().equals(booking.getCar().getOwner().getId())) {
+        if (!accountService.getCurrentUser().getId().equals(booking.getCar().getOwner().getId()) && odmeter != 0) {
             return ResponseEntity.badRequest().body(new ApiResponse<>(false, "User is not eligible to executed"
                     , null));
         }
         List<Agreement> agreementList = booking.getAgreements();
         try {
+            //estimate without odometer
+            if (odmeter == 0){
+                odmeter = booking.getCar().getOdometer();
+            }
+            boolean isApproveAllAgreemet = agreementList.stream().allMatch(Agreement::isApproved);
+
             CriteriaPayload.PreReturnResponse response = criteriaService.estimatePriceByAgreement(agreementList,
                     booking, odmeter);
+            if (!isApproveAllAgreemet){
+                response.setEstimatePrice(0);
+                response.setTotalPrice(0);
+            }
             response.setAgreements(ObjectMapperUtils.mapAll(agreementList,
                     AgreementPayload.ResponsePreReturn.class));
+
             return ResponseEntity.ok().body(new ApiResponse<>(true, response));
         } catch (Exception e) {
             e.printStackTrace();

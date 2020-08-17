@@ -60,8 +60,12 @@ public class CarController {
 
     ) {
         List<Car> responses = new ArrayList<>();
+        boolean isGuest = true;
+        if (accountService.getCurrentUser() != null){
+            isGuest = false;
+        }
         Page<Car> cars = carService.getAllCarsPagingByFilters(page, size, models, seat, fromPrice, toPrice, brand,
-                accountService.getCurrentUser().getId());
+                isGuest ? null : accountService.getCurrentUser().getId());
         for (Car car : cars) {
             CarPayload.ResponseFilterCar response = new CarPayload.ResponseFilterCar();
             List<Image> images = imageService.getAllImage(car.getId(), ImageTypeEnum.CAR);

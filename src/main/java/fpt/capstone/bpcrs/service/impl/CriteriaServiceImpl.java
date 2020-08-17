@@ -66,19 +66,22 @@ public class CriteriaServiceImpl implements CriteriaService {
     public CriteriaPayload.PreReturnResponse estimatePriceByAgreement(List<Agreement> agreementList, Booking booking, int odmeter) throws Exception {
         CriteriaPayload.PreReturnResponse result = new CriteriaPayload.PreReturnResponse();
         Agreement agreement = getAgreementByCriteria(agreementList, CriteriaEnum.MILEAGE_LIMIT);
-        result.setMileageLimit(odmeter - agreement.getBooking().getCar().getOdometer() - Integer.parseInt(agreement.getValue()));
+        result.setMileageLimit(Integer.parseInt(agreement.getValue()));
         agreement = getAgreementByCriteria(agreementList, CriteriaEnum.EXTRA);
-        result.setExtra(0);
-        if (result.getMileageLimit() > 0){
-            result.setExtra(Integer.parseInt(agreement.getValue()) * result.getMileageLimit());
-        }
+        result.setExtra(Integer.parseInt(agreement.getValue()));
         agreement = getAgreementByCriteria(agreementList,CriteriaEnum.DEPOSIT);
         result.setDeposit(Integer.parseInt(agreement.getValue()) * agreement.getBooking().getCar().getPrice());
         agreement = getAgreementByCriteria(agreementList,CriteriaEnum.INSURANCE);
         JSONObject insurance = new JSONObject(agreement.getValue());
         result.setInsurance(Integer.parseInt(insurance.get("value").toString()));
-        result.setTotalPrice(result.getDeposit() - result.getExtra() + result.getInsurance() - agreement.getBooking().getRentalPrice());
+        result.setEstimatePrice(result.getDeposit() + result.getInsurance() + agreement.getBooking().getRentalPrice());
         booking.setDistance(odmeter - booking.getCar().getOdometer());
+        if (booking.getDistance() > result.getMileageLimit()){
+            result.setExtra((booking.getDistance() - result.getMileageLimit()) * result.getExtra());
+        } else {
+            result.setExtra(0);
+        }
+        result.setTotalPrice(result.getEstimatePrice() + result.getExtra() - result.getDeposit());
         bookingRepository.save(booking);
         return result;
     }
