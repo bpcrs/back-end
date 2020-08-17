@@ -149,7 +149,7 @@ public class BookingController {
                         criteriaService.estimatePriceByAgreement(booking.getAgreements(), booking,
                                 booking.getDistance());
                 BookingEnum[] listBookingStatusCarJoining = new BookingEnum[]{ BookingEnum.PENDING, BookingEnum.PROCESSING,BookingEnum.RENTER_SIGNED,BookingEnum.OWNER_ACCEPTED, BookingEnum.CONFIRM };
-                List<Booking> listBookingCarJoining = bookingService.getAllBookingsRequestByCar(booking.getCar().getId(),listBookingCarJoining,1,20);
+                Page<Booking> listBookingCarJoining = bookingService.getAllBookingsRequestByCar(booking.getCar().getId(),listBookingStatusCarJoining,1,20);
                if (listBookingCarJoining.isEmpty()){
                    carService.updateCarStatus(booking.getCar(), CarEnum.UNAVAILABLE);
                }
