@@ -155,6 +155,9 @@ public class BookingController {
                 carService.updateCar(car,car.getId());
                 booking.setTotalPrice(returnResponse.getTotalPrice());
             }
+            if (nextStatus == BookingEnum.CANCEL){
+                carService.updateCarStatus(booking.getCar(),CarEnum.UNAVAILABLE);
+            }
             booking = bookingService.updateBookingStatus(booking, status);
             BookingPayload.ResponseCreateBooking response = ObjectMapperUtils.map(booking,
                     BookingPayload.ResponseCreateBooking.class);
