@@ -5,7 +5,6 @@ import fpt.capstone.bpcrs.constant.BookingEnum;
 import fpt.capstone.bpcrs.exception.BpcrsException;
 import fpt.capstone.bpcrs.model.Booking;
 import fpt.capstone.bpcrs.model.BookingTracking;
-import fpt.capstone.bpcrs.payload.BookingPayload;
 import fpt.capstone.bpcrs.repository.BookingRepository;
 import fpt.capstone.bpcrs.repository.BookingTrackingRepository;
 import fpt.capstone.bpcrs.repository.CarRepository;
@@ -17,6 +16,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -104,13 +104,16 @@ public class BookingServiceImpl implements BookingService {
 
 
     @Override
-    public void updateBookingDuplicateDate(Booking approveBooking, BookingEnum status) throws BpcrsException {
-        List<Booking> bookingList = bookingRepository.findAllByFromDateBetweenOrToDateBetweenAndCarId(approveBooking.getFromDate(), approveBooking.getToDate(), approveBooking.getFromDate(), approveBooking.getToDate(), approveBooking.getCar().getId());
+    public List<Booking> updateBookingDuplicateDate(Booking approveBooking, BookingEnum status) throws BpcrsException {
+        List<Booking> bookingList = bookingRepository.findAllByFromDateBetweenOrToDateBetween(approveBooking.getFromDate(), approveBooking.getToDate(), approveBooking.getFromDate(), approveBooking.getToDate());
+        List<Booking> duplicateList = new ArrayList<>();
         for (Booking booking : bookingList) {
-            if (booking.getId() != approveBooking.getId() && booking.getStatus() == BookingEnum.REQUEST) {
-                updateBookingStatus(booking, status);
+            if (!booking.getId().equals(approveBooking.getId()) && booking.getStatus() == BookingEnum.REQUEST && approveBooking.getCar().getId().equals(booking.getCar().getId())) {
+                booking = updateBookingStatus(booking, status);
+                duplicateList.add(booking);
             }
         }
+        return duplicateList;
     }
 
     @Override

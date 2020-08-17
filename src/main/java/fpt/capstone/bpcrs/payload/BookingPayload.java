@@ -80,6 +80,8 @@ public class BookingPayload {
         private List<BookingTrackingPayload.ResponseBookingTracking> trackings;
 
         private double rentalPrice;
+
+        private List<BookingPayload.ResponseCreateBooking> duplicateList;
     }
 
     @Data

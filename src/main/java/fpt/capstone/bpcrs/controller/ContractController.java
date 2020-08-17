@@ -6,11 +6,13 @@ import fpt.capstone.bpcrs.constant.RoleEnum;
 import fpt.capstone.bpcrs.model.Account;
 import fpt.capstone.bpcrs.model.Booking;
 import fpt.capstone.bpcrs.payload.ApiResponse;
+import fpt.capstone.bpcrs.payload.BookingPayload;
 import fpt.capstone.bpcrs.payload.DappPayload;
 import fpt.capstone.bpcrs.service.AccountService;
 import fpt.capstone.bpcrs.service.BlockchainService;
 import fpt.capstone.bpcrs.service.BookingService;
 import fpt.capstone.bpcrs.service.CarService;
+import fpt.capstone.bpcrs.util.ObjectMapperUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -57,11 +59,13 @@ public class ContractController {
                 if (resultChaincode.isSuccess()) {
                     if (booking.getStatus() == BookingEnum.RENTER_SIGNED){
                         carService.updateCarStatus(booking.getCar(), CarEnum.RENTING);
-                        bookingService.updateBookingStatus(booking, BookingEnum.PROCESSING);
+                        booking = bookingService.updateBookingStatus(booking, BookingEnum.PROCESSING);
                     } else {
-                        bookingService.updateBookingStatus(booking, BookingEnum.RENTER_SIGNED);
+                        booking = bookingService.updateBookingStatus(booking, BookingEnum.RENTER_SIGNED);
                     }
-                    return ResponseEntity.ok().body(new ApiResponse<>(true, "Signed contract with booking id=" + id, HttpStatus.OK));
+                    BookingPayload.ResponseCreateBooking response = ObjectMapperUtils.map(booking,
+                            BookingPayload.ResponseCreateBooking.class);
+                    return ResponseEntity.ok(new ApiResponse<>(true, "Booking was signed successfully" ,response));
                 } else {
                     return ResponseEntity.badRequest().body(new ApiResponse<>(false, resultChaincode.getData(), HttpStatus.OK));
                 }

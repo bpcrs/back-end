@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.security.RolesAllowed;
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -90,9 +91,9 @@ public class BookingController {
                 .fromDate(request.getFromDate()).toDate(request.getToDate())
                 .location(request.getLocation()).destination(request.getDestination())
                 .status(BookingEnum.REQUEST).rentalPrice(request.getTotalPrice()).build();
-        bookingService.createBooking(booking).modelMaplerToObject(response, false);
         try {
             carService.updateCarStatus(car, CarEnum.REQUEST);
+            bookingService.createBooking(booking).modelMaplerToObject(response, false);
         } catch (BpcrsException e) {
             return new ResponseEntity(new ApiError(e.getMessage(), ""),
                     HttpStatus.BAD_REQUEST);
@@ -110,17 +111,19 @@ public class BookingController {
                         "existed", null));
             }
             BookingEnum nextStatus = status;
+            List<Booking> duplicateList = new ArrayList<>();
             BookingEnum currentStatus = booking.getStatus();
             if (booking.getCar().getOwner().getId().intValue() != accountService.getCurrentUser().getId().intValue() && booking.getRenter().getId().intValue() != accountService.getCurrentUser().getId().intValue()) {
                 return ResponseEntity.badRequest().body(new ApiResponse<>(false, "User is not allowed", null));
             }
             // if duplicate ngày booking thì sẽ cancel những request khônng được approve
             if (currentStatus == BookingEnum.REQUEST && nextStatus == BookingEnum.PENDING) {
-                bookingService.updateBookingDuplicateDate(booking, BookingEnum.DENY);
+                duplicateList = bookingService.updateBookingDuplicateDate(booking, BookingEnum.DENY);
+
             }
             // cancel booking thì những request đã bị deny -> request
             if (currentStatus == BookingEnum.PENDING && nextStatus == BookingEnum.CANCEL) {
-                bookingService.updateBookingDuplicateDate(booking, BookingEnum.REQUEST);
+                duplicateList = bookingService.updateBookingDuplicateDate(booking, BookingEnum.REQUEST);
             }
             //Save to BLC
             if (nextStatus == BookingEnum.CONFIRM || nextStatus == BookingEnum.OWNER_ACCEPTED) {
@@ -152,6 +155,9 @@ public class BookingController {
             booking = bookingService.updateBookingStatus(booking, status);
             BookingPayload.ResponseCreateBooking response = ObjectMapperUtils.map(booking,
                     BookingPayload.ResponseCreateBooking.class);
+            if (!duplicateList.isEmpty()){
+                response.setDuplicateList(ObjectMapperUtils.mapAll(duplicateList,BookingPayload.ResponseCreateBooking.class));
+            }
             return ResponseEntity.ok(new ApiResponse<>(true, "Booking status was updated", response));
         } catch (Exception ex) {
             return ResponseEntity.badRequest().body(new ApiResponse<>(false, ex.getMessage(), null));
