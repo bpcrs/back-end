@@ -208,26 +208,50 @@ public class BookingController {
         return ResponseEntity.ok(new ApiResponse<>(true, pagingPayload));
     }
 
-    @PostMapping("/pre-return/{id}")
+    @PostMapping("/estimate/{id}")
     @RolesAllowed({RoleEnum.RoleType.USER})
-    public ResponseEntity<?> estimatePriceByBooking(@Valid @RequestParam int odmeter, @PathVariable int id) {
+    public ResponseEntity<?> estimatePriceByBooking(@PathVariable int id) {
         Booking booking = bookingService.getBookingInformation(id);
         if (booking == null) {
             return ResponseEntity.badRequest().body(new ApiResponse<>(false, "Booking with id " + id + " not existed"
                     , null));
         }
-        if (!accountService.getCurrentUser().getId().equals(booking.getCar().getOwner().getId()) && odmeter != 0) {
+        List<Agreement> agreementList = booking.getAgreements();
+        try {
+            boolean isApproveAllAgreemet = agreementList.stream().allMatch(Agreement::isApproved);
+
+            CriteriaPayload.PreReturnResponse response = criteriaService.estimatePriceByAgreement(agreementList,
+                    booking, booking.getCar().getOdometer());
+            if (!isApproveAllAgreemet){
+                response.setEstimatePrice(0);
+                response.setTotalPrice(0);
+            }
+            response.setAgreements(ObjectMapperUtils.mapAll(agreementList,
+                    AgreementPayload.ResponsePreReturn.class));
+
+            return ResponseEntity.ok().body(new ApiResponse<>(true, response));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.badRequest().body(new ApiResponse<>(false, e.getMessage()));
+        }
+    }
+
+
+    @PostMapping("/return/{id}")
+    @RolesAllowed({RoleEnum.RoleType.USER})
+    public ResponseEntity<?> returnPriceByBooking(@Valid @RequestParam int odmeter, @PathVariable int id) {
+        Booking booking = bookingService.getBookingInformation(id);
+        if (booking == null) {
+            return ResponseEntity.badRequest().body(new ApiResponse<>(false, "Booking with id " + id + " not existed"
+                    , null));
+        }
+        if (!accountService.getCurrentUser().getId().equals(booking.getCar().getOwner().getId())) {
             return ResponseEntity.badRequest().body(new ApiResponse<>(false, "User is not eligible to executed"
                     , null));
         }
         List<Agreement> agreementList = booking.getAgreements();
         try {
-            //estimate without odometer
-            if (odmeter == 0){
-                odmeter = booking.getCar().getOdometer();
-            }
             boolean isApproveAllAgreemet = agreementList.stream().allMatch(Agreement::isApproved);
-
             CriteriaPayload.PreReturnResponse response = criteriaService.estimatePriceByAgreement(agreementList,
                     booking, odmeter);
             if (!isApproveAllAgreemet){
