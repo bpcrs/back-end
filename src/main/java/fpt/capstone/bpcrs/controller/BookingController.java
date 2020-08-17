@@ -150,6 +150,9 @@ public class BookingController {
                         criteriaService.estimatePriceByAgreement(booking.getAgreements(), booking,
                                 booking.getDistance());
                 carService.updateCarStatus(booking.getCar(), CarEnum.UNAVAILABLE);
+                Car car = booking.getCar();
+                car.setOdometer(car.getOdometer() + booking.getDistance());
+                carService.updateCar(car,car.getId());
                 booking.setTotalPrice(returnResponse.getTotalPrice());
             }
             booking = bookingService.updateBookingStatus(booking, status);
