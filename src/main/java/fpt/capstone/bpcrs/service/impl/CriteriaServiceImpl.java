@@ -75,9 +75,10 @@ public class CriteriaServiceImpl implements CriteriaService {
         JSONObject insurance = new JSONObject(agreement.getValue());
         result.setInsurance(Integer.parseInt(insurance.get("value").toString()));
         result.setEstimatePrice(result.getDeposit() + result.getInsurance() + agreement.getBooking().getRentalPrice());
-        booking.setDistance(odmeter - booking.getCar().getOdometer());
-        if (booking.getDistance() > result.getMileageLimit()){
-            result.setExtra((booking.getDistance() - result.getMileageLimit()) * result.getExtra());
+        int distance = odmeter - booking.getCar().getOdometer();
+        if (distance > result.getMileageLimit()){
+            booking.setDistance(distance);
+            result.setExtra((distance - result.getMileageLimit()) * result.getExtra());
         } else {
             result.setExtra(0);
         }
