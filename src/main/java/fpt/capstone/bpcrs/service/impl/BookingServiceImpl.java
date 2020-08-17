@@ -91,7 +91,7 @@ public class BookingServiceImpl implements BookingService {
             case DENY:
                 return nextStatus == BookingEnum.REQUEST;
             case OWNER_ACCEPTED:
-                return nextStatus == BookingEnum.CONFIRM;
+                return nextStatus == BookingEnum.CONFIRM || nextStatus == BookingEnum.CANCEL;
             case CONFIRM:
                 return nextStatus == BookingEnum.CANCEL || nextStatus == BookingEnum.RENTER_SIGNED;
             case RENTER_SIGNED:
