@@ -77,30 +77,23 @@ public class ReviewController {
         }
         if(booking.getStatus() == BookingEnum.DONE){
 
-            boolean checkUserCanReview = reviewService.checkUserCanReview
-                    (request.getCarId(), accountService.getCurrentUser().getId());
-
-            if(!checkUserCanReview){
-
-                boolean checkBookingIsReviewYet = reviewService.checkBookingIsReviewYet
-                        (request.getCarId(), accountService.getCurrentUser().getId());
-
-                if(!checkBookingIsReviewYet){
+            if (car.getOwner().getId() == accountService.getCurrentUser().getId()) {
+                return new ResponseEntity(new ApiError("You can review your car", ""),
+                        HttpStatus.BAD_REQUEST);
+            } else  {
+                if(reviewService.checkUserCanReview(booking.getId(), accountService.getCurrentUser().getId())){
                     ReviewPayload.ResponseCreateReview response = new ReviewPayload.ResponseCreateReview();
                     Review newReview = (Review) new Review().modelMaplerToObject(request, true);
                     newReview.setCar(car);
 
                     newReview.setRenter(accountService.getCurrentUser());
+                    newReview.setBooking(booking);
                     reviewService.createReview(newReview).modelMaplerToObject(response, false);
                     return ResponseEntity.ok(new ApiResponse<>(true, response));
                 }else{
                     return new ResponseEntity(new ApiError("this car have already rated", ""),
                             HttpStatus.BAD_REQUEST);
                 }
-
-            }else{
-                return new ResponseEntity(new ApiError("You can't review your car!!", ""),
-                        HttpStatus.BAD_REQUEST);
             }
         }else{
             return new ResponseEntity(new ApiError("Your booking not done yet, please rating later", ""),

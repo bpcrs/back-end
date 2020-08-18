@@ -8,11 +8,13 @@ import javax.persistence.metamodel.StaticMetamodel;
 @StaticMetamodel(Review.class)
 public abstract class Review_ extends fpt.capstone.bpcrs.component.Auditing_ {
 
+	public static volatile SingularAttribute<Review, Booking> booking;
 	public static volatile SingularAttribute<Review, Car> car;
 	public static volatile SingularAttribute<Review, Integer> rating;
 	public static volatile SingularAttribute<Review, String> comment;
 	public static volatile SingularAttribute<Review, Account> renter;
 
+	public static final String BOOKING = "booking";
 	public static final String CAR = "car";
 	public static final String RATING = "rating";
 	public static final String COMMENT = "comment";
