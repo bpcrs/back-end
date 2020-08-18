@@ -34,6 +34,11 @@ public class Review extends Auditing {
 
     @ManyToOne
     @ApiModelProperty(hidden = true)
+    @JoinColumn(name = "booking_id")
+    private Booking booking;
+
+    @ManyToOne
+    @ApiModelProperty(hidden = true)
     @JoinColumn(name = "account_id")
     private Account renter;
 }

@@ -1,6 +1,7 @@
 package fpt.capstone.bpcrs.payload;
 
 import com.google.api.client.util.DateTime;
+import fpt.capstone.bpcrs.model.Booking;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -41,7 +42,7 @@ public class ReviewPayload {
         private LocalDateTime createdDate;
         private int id;
         private AccountPayload.AccountResponse renter;
-
+        private BookingPayload.ResponseCreateBooking booking;
     }
 
 }

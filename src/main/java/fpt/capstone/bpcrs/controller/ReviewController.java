@@ -1,6 +1,8 @@
 package fpt.capstone.bpcrs.controller;
 
+import fpt.capstone.bpcrs.constant.BookingEnum;
 import fpt.capstone.bpcrs.constant.RoleEnum;
+import fpt.capstone.bpcrs.model.Booking;
 import fpt.capstone.bpcrs.model.Car;
 import fpt.capstone.bpcrs.model.Review;
 import fpt.capstone.bpcrs.payload.ApiError;
@@ -8,6 +10,7 @@ import fpt.capstone.bpcrs.payload.ApiResponse;
 import fpt.capstone.bpcrs.payload.PagingPayload;
 import fpt.capstone.bpcrs.payload.ReviewPayload;
 import fpt.capstone.bpcrs.service.AccountService;
+import fpt.capstone.bpcrs.service.BookingService;
 import fpt.capstone.bpcrs.service.CarService;
 import fpt.capstone.bpcrs.service.ReviewService;
 import fpt.capstone.bpcrs.util.ObjectMapperUtils;
@@ -32,6 +35,8 @@ public class ReviewController {
     private CarService carService;
     @Autowired
     private AccountService accountService;
+    @Autowired
+    private BookingService bookingService;
 
     @GetMapping
     public ResponseEntity<?> getReviews(@RequestParam(defaultValue = "1") int page,
@@ -65,32 +70,30 @@ public class ReviewController {
                     HttpStatus.BAD_REQUEST);
         }
         boolean checkBookingCanReview = reviewService.checkBookingCanReview(request.getBookingId());
-        if(checkBookingCanReview){
+        Booking booking = bookingService.getBookingInformation(request.getBookingId());
+        if (booking == null) {
+            return new ResponseEntity(new ApiError("Booking with id= " + request.getBookingId() + " not found", ""),
+                    HttpStatus.BAD_REQUEST);
+        }
+        if(booking.getStatus() == BookingEnum.DONE){
 
-            boolean checkUserCanReview = reviewService.checkUserCanReview
-                    (request.getCarId(), accountService.getCurrentUser().getId());
-
-            if(!checkUserCanReview){
-
-                boolean checkBookingIsReviewYet = reviewService.checkBookingIsReviewYet
-                        (request.getCarId(), accountService.getCurrentUser().getId());
-
-                if(!checkBookingIsReviewYet){
+            if (car.getOwner().getId() == accountService.getCurrentUser().getId()) {
+                return new ResponseEntity(new ApiError("You can review your car", ""),
+                        HttpStatus.BAD_REQUEST);
+            } else  {
+                if(reviewService.checkUserCanReview(booking.getId(), accountService.getCurrentUser().getId())){
                     ReviewPayload.ResponseCreateReview response = new ReviewPayload.ResponseCreateReview();
                     Review newReview = (Review) new Review().modelMaplerToObject(request, true);
                     newReview.setCar(car);
 
                     newReview.setRenter(accountService.getCurrentUser());
+                    newReview.setBooking(booking);
                     reviewService.createReview(newReview).modelMaplerToObject(response, false);
                     return ResponseEntity.ok(new ApiResponse<>(true, response));
                 }else{
                     return new ResponseEntity(new ApiError("this car have already rated", ""),
                             HttpStatus.BAD_REQUEST);
                 }
-
-            }else{
-                return new ResponseEntity(new ApiError("You can't review your car!!", ""),
-                        HttpStatus.BAD_REQUEST);
             }
         }else{
             return new ResponseEntity(new ApiError("Your booking not done yet, please rating later", ""),
