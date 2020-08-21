@@ -131,7 +131,9 @@ public class AccountController {
         try {
             Account account = accountService.getCurrentUser();
             account.setActive(true);
+            if (request.getImageLicense() != null) {
             account.setImageLicense(request.getImageLicense());
+            }
             account.setIdentification(request.getIdentification());
             account = accountService.updateAccount(account, request.getPhone());
             AccountPayload.AccountRequestUpdate response = ObjectMapperUtils.map(account,
