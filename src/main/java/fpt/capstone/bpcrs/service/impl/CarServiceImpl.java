@@ -80,7 +80,7 @@ public class CarServiceImpl implements CarService {
         if (brandIds != null && brandIds.length != 0) {
             conditon = conditon.and(CarSpecification.carHasBrand(brandIds));
         }
-        Page<Car> cars = carRepository.findAll(conditon, new Paging(page, size, Sort.unsorted()));
+        Page<Car> cars = carRepository.findAll(conditon, new Paging(page, size, Sort.by(Sort.Direction.ASC, "price")));
         return cars;
     }
 
@@ -117,7 +117,7 @@ public class CarServiceImpl implements CarService {
 //            case BOOKED:
 //                return nextStatus == CarEnum.RENTING || nextStatus == CarEnum.AVAILABLE || nextStatus == CarEnum.BOOKED;
             case REGISTER:
-                return nextStatus == CarEnum.UNAVAILABLE;
+                return nextStatus == CarEnum.UNAVAILABLE || nextStatus == CarEnum.REGISTER;
         }
         return false;
     }
