@@ -47,6 +47,9 @@ public class BookingController {
     @Autowired
     private BlockchainService blockchainService;
 
+    @Autowired
+    private ReviewService reviewService;
+
     @GetMapping("/renting/{id}")
     @RolesAllowed({RoleEnum.RoleType.USER, RoleEnum.RoleType.ADMINISTRATOR})
     public ResponseEntity<?> getUserRentingBookingList(@PathVariable("id") int id) {
@@ -275,6 +278,27 @@ public class BookingController {
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.badRequest().body(new ApiResponse<>(false, e.getMessage()));
+        }
+    }
+
+    @PostMapping("/review/{id}")
+    @RolesAllowed(RoleEnum.RoleType.USER)
+    public ResponseEntity<?> isBookingReviewYet(@PathVariable int id, @Valid @RequestParam int renterId) {
+        Booking booking = bookingService.getBookingInformation(id);
+        if (booking == null) {
+            return ResponseEntity.badRequest().body(new ApiResponse<>(false, "Booking with id " + id + " not existed"
+                    , null));
+        }
+        if (booking.getStatus() == BookingEnum.DONE) {
+        boolean isReview = reviewService.checkUserCanReview(id, renterId);
+        if (isReview) {
+            return ResponseEntity.ok().body(new ApiResponse<>(true, true));
+        } else  {
+            return ResponseEntity.badRequest().body(new ApiResponse<>(false, false));
+        }
+        } else  {
+            return ResponseEntity.badRequest().body(new ApiResponse<>(false, "Booking with id " + id + " not done yet"
+                    , null));
         }
     }
 
