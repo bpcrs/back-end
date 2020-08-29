@@ -23,7 +23,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.security.RolesAllowed;
-import javax.swing.text.html.parser.Entity;
 import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
