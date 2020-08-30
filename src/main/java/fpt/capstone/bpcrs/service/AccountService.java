@@ -2,12 +2,17 @@ package fpt.capstone.bpcrs.service;
 
 import com.authy.AuthyException;
 import fpt.capstone.bpcrs.model.Account;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
 public interface AccountService {
 
-    List<Account> getAccounts();
+    Page<Account> getAllAccountsByAdmin(int page, int size);
+
+    List<Account> getAccountsForLicenseCheck();
+
+    Account updateAccountStatusByAdmin(int id);
 
     Account getAccountByEmail(String email);
 

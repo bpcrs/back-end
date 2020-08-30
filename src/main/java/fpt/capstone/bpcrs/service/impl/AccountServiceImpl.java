@@ -2,6 +2,7 @@ package fpt.capstone.bpcrs.service.impl;
 
 import com.authy.AuthyException;
 import fpt.capstone.bpcrs.component.IgnoreNullProperty;
+import fpt.capstone.bpcrs.component.Paging;
 import fpt.capstone.bpcrs.component.UserPrincipal;
 import fpt.capstone.bpcrs.constant.RoleEnum;
 import fpt.capstone.bpcrs.exception.BadRequestException;
@@ -14,12 +15,13 @@ import fpt.capstone.bpcrs.service.AccountService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-
+import org.springframework.data.domain.Page;
 @Service
 @Slf4j
 public class AccountServiceImpl implements AccountService {
@@ -34,9 +36,24 @@ public class AccountServiceImpl implements AccountService {
     private AuthyHelper authyHelper;
 
     @Override
-    public List<Account> getAccounts() {
+    public Page<Account> getAllAccountsByAdmin(int page, int size) {
+        return accountRepository.findAll(new Paging(page, size, Sort.unsorted()));
+    }
+
+    @Override
+    public List<Account> getAccountsForLicenseCheck() {
         Role role = roleRepository.findByName(RoleEnum.USER.toString());
         return accountRepository.getAllByRole_IdAndLicenseCheck(role.getId(), false);
+    }
+
+    @Override
+    public Account updateAccountStatusByAdmin(int id) {
+        Account account = accountRepository.findById(id).orElse(null);
+        if (account == null) {
+            throw new BadRequestException("Account doesn't existed");
+        }
+        account.setActive(!account.isActive());
+        return accountRepository.save(account);
     }
 
     @Override
