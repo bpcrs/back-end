@@ -63,7 +63,7 @@ public class AccountController {
     @PutMapping("/status/{id}")
     @RolesAllowed(RoleEnum.RoleType.ADMINISTRATOR)
     public ResponseEntity<?> updateAccountStatus(@PathVariable("id") int id) {
-        AccountPayload.AccountResponse response = new AccountPayload.AccountResponse();
+        AccountPayload.AccountResponseChecking response = new AccountPayload.AccountResponseChecking();
         accountService.updateAccountStatusByAdmin(id).modelMaplerToObject(response, false);
         return ResponseEntity.ok(new ApiResponse<>(true, response));
     }
@@ -78,9 +78,6 @@ public class AccountController {
         }
         List<AccountPayload.AccountResponseChecking> responses = ObjectMapperUtils
                 .mapAll(accounts, AccountPayload.AccountResponseChecking.class);
-//        for (int i = 0; i < responses.size(); i++) {
-//            responses.get(i).setRole(accounts.get(i).getRole().getName());
-//        }
         return ResponseEntity.ok(new ApiResponse<>(true, "Get list account successful", responses));
     }
 
