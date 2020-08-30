@@ -11,11 +11,13 @@ import fpt.capstone.bpcrs.payload.AccountPayload;
 import fpt.capstone.bpcrs.payload.AccountPayload.AccountResponse;
 import fpt.capstone.bpcrs.payload.ApiError;
 import fpt.capstone.bpcrs.payload.ApiResponse;
+import fpt.capstone.bpcrs.payload.PagingPayload;
 import fpt.capstone.bpcrs.service.AccountService;
 import fpt.capstone.bpcrs.service.BlockchainService;
 import fpt.capstone.bpcrs.util.ObjectMapperUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -43,11 +45,33 @@ public class AccountController {
     @Autowired
     private BlockchainService blockchainService;
 
-
     @GetMapping
     @RolesAllowed(RoleEnum.RoleType.ADMINISTRATOR)
-    public ResponseEntity<?> getAccounts() {
-        List<Account> accounts = accountService.getAccounts();
+    public ResponseEntity<?> getAllAccountsByAdmin(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "10") int size) {
+        Page<Account> accounts = accountService.getAllAccountsByAdmin(page, size);
+        if (accounts.isEmpty()) {
+            return new ResponseEntity(new ApiResponse<>(false, "List account is empty"),
+                    HttpStatus.BAD_REQUEST);
+        }
+        List<AccountPayload.AccountResponseChecking> accountList = ObjectMapperUtils
+                .mapAll(accounts.toList(), AccountPayload.AccountResponseChecking.class);
+        PagingPayload pagingPayload =
+                PagingPayload.builder().data(accountList).count((int) accounts.getTotalElements()).build();
+        return ResponseEntity.ok(new ApiResponse<>(true, pagingPayload));
+    }
+
+    @PutMapping("/status/{id}")
+    @RolesAllowed(RoleEnum.RoleType.ADMINISTRATOR)
+    public ResponseEntity<?> updateAccountStatus(@PathVariable("id") int id) {
+        AccountPayload.AccountResponse response = new AccountPayload.AccountResponse();
+        accountService.updateAccountStatusByAdmin(id).modelMaplerToObject(response, false);
+        return ResponseEntity.ok(new ApiResponse<>(true, response));
+    }
+
+    @GetMapping("/admin")
+    @RolesAllowed(RoleEnum.RoleType.ADMINISTRATOR)
+    public ResponseEntity<?> getAccountsForLicenseCheck() {
+        List<Account> accounts = accountService.getAccountsForLicenseCheck();
         if (accounts.isEmpty()) {
             return new ResponseEntity(new ApiResponse<>(false, "List account is empty"),
                     HttpStatus.BAD_REQUEST);
@@ -62,7 +86,7 @@ public class AccountController {
 
     @PutMapping("/{id}")
     @RolesAllowed(RoleEnum.RoleType.ADMINISTRATOR)
-    public ResponseEntity<?> updateAccountStatus(
+    public ResponseEntity<?> updateAccountLicenseStatus(
             @PathVariable("id") int id, @RequestParam("active") boolean active) {
         try {
             Account account = accountService.updateAccountStatus(id, active);
@@ -124,7 +148,7 @@ public class AccountController {
         return ResponseEntity.ok(new ApiResponse<>(true, response));
     }
 
-    @PutMapping("/license")
+    @PutMapping("/licenses")
     @RolesAllowed(RoleEnum.RoleType.USER)
     public ResponseEntity<?> updateAccountLicense(
             @RequestBody AccountPayload.AccountRequestUpdate request) {
@@ -132,7 +156,7 @@ public class AccountController {
             Account account = accountService.getCurrentUser();
             account.setActive(true);
             if (request.getImageLicense() != null) {
-            account.setImageLicense(request.getImageLicense());
+                account.setImageLicense(request.getImageLicense());
             }
             account.setIdentification(request.getIdentification());
             account = accountService.updateAccount(account, request.getPhone());
@@ -172,14 +196,14 @@ public class AccountController {
 
     @PostMapping("/verify")
     @RolesAllowed(RoleEnum.RoleType.USER)
-    public ResponseEntity<?> checkVerifiedAccount(){
+    public ResponseEntity<?> checkVerifiedAccount() {
         try {
             Account account = accountService.getCurrentUser();
-            if (account.getAuthyId() == null){
+            if (account.getAuthyId() == null) {
                 return ResponseEntity.ok(new ApiResponse<>(false, "Unverified"));
             }
             boolean isSuccess = accountService.verifyAccounnt(account.getAuthyId()) && account.isLicenseCheck();
-            return ResponseEntity.ok(new ApiResponse<>(isSuccess  , isSuccess ? "Verified" : "Unverified"));
+            return ResponseEntity.ok(new ApiResponse<>(isSuccess, isSuccess ? "Verified" : "Unverified"));
         } catch (BadRequestException | AuthyException ex) {
             return ResponseEntity.badRequest().body(new ApiResponse<>(false, ex.getMessage(), null));
         }
