@@ -68,7 +68,7 @@ public class AccountController {
         return ResponseEntity.ok(new ApiResponse<>(true, response));
     }
 
-    @GetMapping("/admin")
+    @GetMapping("/licenses")
     @RolesAllowed(RoleEnum.RoleType.ADMINISTRATOR)
     public ResponseEntity<?> getAccountsForLicenseCheck() {
         List<Account> accounts = accountService.getAccountsForLicenseCheck();
