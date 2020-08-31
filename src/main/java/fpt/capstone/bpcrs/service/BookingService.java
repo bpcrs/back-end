@@ -34,4 +34,7 @@ public interface BookingService {
     List<Booking> updateBookingDuplicateDate(Booking approveBooking, BookingEnum status) throws BpcrsException;
 
     Double sumAllBookingTotalPriceBetweenDate(LocalDateTime fromDate, LocalDateTime toDate);
+
+    //car
+    List<Booking> getAllBookingsRequestCar (int carId, BookingEnum[] status);
 }
