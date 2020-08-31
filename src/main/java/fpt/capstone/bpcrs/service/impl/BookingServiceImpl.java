@@ -67,7 +67,7 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public Page<Booking> getAllBookingsRequestByCar(int carId, BookingEnum[] status, int page, int size) {
-        return bookingRepository.findAllByCarIdAndStatusInOrderByCreatedDateDesc(carId, status,
+        return bookingRepository.findAllByCar_IdAndStatusInOrderByCreatedDateDesc(carId, status,
                 new Paging(page, size, Sort.unsorted()));
     }
 
@@ -119,6 +119,11 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public Double sumAllBookingTotalPriceBetweenDate(LocalDateTime fromDate, LocalDateTime toDate) {
         return bookingRepository.sumTotalPriceBookingByDay(BookingEnum.DONE, fromDate, toDate);
+    }
+
+    @Override
+    public List<Booking> getAllBookingsRequestCar(int carId, BookingEnum[] status) {
+        return bookingRepository.findAllByCar_IdAndStatusIn(carId, status);
     }
 
     @Override

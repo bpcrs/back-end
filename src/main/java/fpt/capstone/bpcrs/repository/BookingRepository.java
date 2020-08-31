@@ -15,10 +15,9 @@ import java.util.List;
 @Repository
 public interface BookingRepository extends JpaRepository<Booking, Integer> {
     List<Booking> findAllByRenter_Id(Integer id);
-
+    List<Booking> findAllByCar_IdAndStatusIn(int carId, BookingEnum[] status);
     Page<Booking> findAllByRenter_IdAndStatusInOrderByCreatedDateDesc(int ownerId, BookingEnum[] status, Pageable paging);
-
-    Page<Booking> findAllByCarIdAndStatusInOrderByCreatedDateDesc(int carId, BookingEnum[] status , Pageable paging);
+    Page<Booking> findAllByCar_IdAndStatusInOrderByCreatedDateDesc(int carId, BookingEnum[] status , Pageable paging);
     Page<Booking> findAllByCar_Owner_IdAndStatusInOrderByCreatedDateDesc(int ownerId, BookingEnum[] status , Pageable paging);
 
     List<Booking> findAllByFromDateBetweenOrToDateBetween(Date fromDate, Date toDate, Date fromDateBetween, Date toDateBetween);
