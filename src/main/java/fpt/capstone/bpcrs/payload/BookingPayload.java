@@ -35,10 +35,10 @@ public class BookingPayload {
         private String destination;
 
         @NotNull
-        private Date toDate;
+        private LocalDateTime toDate;
 
         @NotNull
-        private Date fromDate;
+        private LocalDateTime fromDate;
 
         @NotNull
         private double totalPrice;
@@ -67,10 +67,10 @@ public class BookingPayload {
         private String destination;
 
         @NotNull
-        private Date toDate;
+        private LocalDateTime toDate;
 
         @NotNull
-        private Date fromDate;
+        private LocalDateTime fromDate;
 
         @NotNull
         private double totalPrice;

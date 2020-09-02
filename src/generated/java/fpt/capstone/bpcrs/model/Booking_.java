@@ -1,7 +1,7 @@
 package fpt.capstone.bpcrs.model;
 
 import fpt.capstone.bpcrs.constant.BookingEnum;
-import java.util.Date;
+import java.time.LocalDateTime;
 import javax.annotation.Generated;
 import javax.persistence.metamodel.ListAttribute;
 import javax.persistence.metamodel.SingularAttribute;
@@ -11,13 +11,13 @@ import javax.persistence.metamodel.StaticMetamodel;
 @StaticMetamodel(Booking.class)
 public abstract class Booking_ extends fpt.capstone.bpcrs.component.Auditing_ {
 
-	public static volatile SingularAttribute<Booking, Date> fromDate;
+	public static volatile SingularAttribute<Booking, LocalDateTime> fromDate;
 	public static volatile SingularAttribute<Booking, Double> rentalPrice;
 	public static volatile SingularAttribute<Booking, Integer> distance;
 	public static volatile SingularAttribute<Booking, Double> totalPrice;
 	public static volatile SingularAttribute<Booking, Car> car;
 	public static volatile ListAttribute<Booking, BookingTracking> trackings;
-	public static volatile SingularAttribute<Booking, Date> toDate;
+	public static volatile SingularAttribute<Booking, LocalDateTime> toDate;
 	public static volatile SingularAttribute<Booking, String> destination;
 	public static volatile ListAttribute<Booking, Agreement> agreements;
 	public static volatile SingularAttribute<Booking, String> location;
