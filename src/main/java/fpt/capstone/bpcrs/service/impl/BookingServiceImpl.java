@@ -141,13 +141,12 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public List<Booking> updateBookingOvertimeAgreement() throws BpcrsException {
         List<Booking> overTime = new ArrayList<>();
-        Date date = Date.from(LocalDate.now().plusDays(1).atTime(7, 0).atZone(ZoneId.systemDefault()).toInstant());
         List<Booking> bookingList =
                 bookingRepository.findAllByStatusIn(new BookingEnum[]{BookingEnum.PENDING,
                         BookingEnum.OWNER_ACCEPTED});
         for (Booking booking :
                 bookingList) {
-            if (booking.getFromDate().compareTo(date) <= 0){
+            if (booking.getFromDate().compareTo(LocalDate.now().plusDays(1).atTime(7, 0)) <= 0){
                 booking = updateBookingStatus(booking, BookingEnum.CANCEL);
                 overTime.add(booking);
             }
