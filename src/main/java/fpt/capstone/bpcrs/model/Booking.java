@@ -14,6 +14,7 @@ import org.springframework.boot.configurationprocessor.json.JSONObject;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.text.DecimalFormat;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -33,11 +34,11 @@ public class Booking extends Auditing {
 
     @Column
     @NotNull
-    private Date fromDate;
+    private LocalDateTime fromDate;
 
     @Column
     @NotNull
-    private Date toDate;
+    private LocalDateTime toDate;
 
     @Column
     @NotNull
