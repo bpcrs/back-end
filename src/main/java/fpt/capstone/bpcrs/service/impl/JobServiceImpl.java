@@ -19,7 +19,7 @@ public class JobServiceImpl implements JobService {
     private BookingService bookingService;
     //0 0 0 1/1 * ? *
     @Override
-    @Scheduled(cron = "0 0/1 * 1/1 * ?")
+    @Scheduled(cron = "0 0 0 1/1 * ?")
     public void cancelBookingOvertimeAgreements() throws BpcrsException {
         List<Booking> bookingList = bookingService.updateBookingOvertimeAgreement();
         bookingList.forEach(booking -> log.info("[JOB OVERTIME executed with booking \"" + booking.getId()  +"\"]"));
