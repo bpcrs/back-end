@@ -37,4 +37,6 @@ public interface BookingService {
 
     //car
     List<Booking> getAllBookingsRequestCar (int carId, BookingEnum[] status);
+
+    List<Booking> updateBookingOvertimeAgreement() throws BpcrsException;
 }

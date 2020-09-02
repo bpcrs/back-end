@@ -15,8 +15,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -41,7 +45,7 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public Booking updateBookingStatus(Booking booking, BookingEnum status) throws BpcrsException {
-        if (!checkStatusBookingBySM(booking.getStatus(),status)){
+        if (!checkStatusBookingBySM(booking.getStatus(), status)) {
             throw new BpcrsException("Invalid BOOKING_STATUS");
         }
         booking.setStatus(status);
@@ -73,7 +77,8 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public Page<Booking> getAllBookingRequestsByOwner(int onwerId, BookingEnum[] status, int page, int size) {
-        return bookingRepository.findAllByCar_Owner_IdAndStatusInOrderByCreatedDateDesc(onwerId, status, new Paging(page, size, Sort.unsorted()));
+        return bookingRepository.findAllByCar_Owner_IdAndStatusInOrderByCreatedDateDesc(onwerId, status,
+                new Paging(page, size, Sort.unsorted()));
     }
 
     @Override
@@ -87,7 +92,7 @@ public class BookingServiceImpl implements BookingService {
             case REQUEST:
                 return nextStatus == BookingEnum.PENDING || nextStatus == BookingEnum.DENY || nextStatus == BookingEnum.CANCEL;
             case PENDING:
-                return  nextStatus == BookingEnum.CANCEL || nextStatus == BookingEnum.OWNER_ACCEPTED;
+                return nextStatus == BookingEnum.CANCEL || nextStatus == BookingEnum.OWNER_ACCEPTED;
             case DENY:
                 return nextStatus == BookingEnum.REQUEST;
             case OWNER_ACCEPTED:
@@ -105,7 +110,9 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public List<Booking> updateBookingDuplicateDate(Booking approveBooking, BookingEnum status) throws BpcrsException {
-        List<Booking> bookingList = bookingRepository.findAllByFromDateBetweenOrToDateBetween(approveBooking.getFromDate(), approveBooking.getToDate(), approveBooking.getFromDate(), approveBooking.getToDate());
+        List<Booking> bookingList =
+                bookingRepository.findAllByFromDateBetweenOrToDateBetween(approveBooking.getFromDate(),
+                        approveBooking.getToDate(), approveBooking.getFromDate(), approveBooking.getToDate());
         List<Booking> duplicateList = new ArrayList<>();
         for (Booking booking : bookingList) {
             if (!booking.getId().equals(approveBooking.getId()) && booking.getStatus() == BookingEnum.REQUEST && approveBooking.getCar().getId().equals(booking.getCar().getId())) {
@@ -128,7 +135,23 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public int getCountRequestByCar(int id) {
-        return bookingRepository.countAllByCarIdAndStatus(id,BookingEnum.REQUEST);
+        return bookingRepository.countAllByCarIdAndStatus(id, BookingEnum.REQUEST);
     }
 
+    @Override
+    public List<Booking> updateBookingOvertimeAgreement() throws BpcrsException {
+        List<Booking> overTime = new ArrayList<>();
+        Date date = Date.from(LocalDate.now().plusDays(1).atTime(7, 0).atZone(ZoneId.systemDefault()).toInstant());
+        List<Booking> bookingList =
+                bookingRepository.findAllByStatusIn(new BookingEnum[]{BookingEnum.PENDING,
+                        BookingEnum.OWNER_ACCEPTED});
+        for (Booking booking :
+                bookingList) {
+            if (booking.getFromDate().compareTo(date) <= 0){
+                booking = updateBookingStatus(booking, BookingEnum.CANCEL);
+                overTime.add(booking);
+            }
+        }
+        return overTime;
+    }
 }
